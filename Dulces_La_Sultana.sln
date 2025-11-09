@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.API", "Sultana.API\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.WEB", "Sultana.WEB\Sultana.WEB.csproj", "{1C268BE5-5BF4-40C2-8540-2858F016C592}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.Shared", "Sultana.Shared\Sultana.Shared.csproj", "{BD5DC449-45B7-4410-8542-EAA212E61965}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1C268BE5-5BF4-40C2-8540-2858F016C592}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C268BE5-5BF4-40C2-8540-2858F016C592}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C268BE5-5BF4-40C2-8540-2858F016C592}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD5DC449-45B7-4410-8542-EAA212E61965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5DC449-45B7-4410-8542-EAA212E61965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD5DC449-45B7-4410-8542-EAA212E61965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5DC449-45B7-4410-8542-EAA212E61965}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
