@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36518.9 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.SHARED", "Sultana.SHARED\Sultana.SHARED.csproj", "{03B84A1E-DB11-4856-90E8-49A1CDF87BD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.Shared", "Sultana.SHARED\Sultana.Shared.csproj", "{03B84A1E-DB11-4856-90E8-49A1CDF87BD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.API", "Sultana.API\Sultana.API.csproj", "{6D3AB933-5AFF-41EB-B104-751CCED20509}"
 EndProject
