@@ -9,8 +9,8 @@ builder.Services.AddControllers();
 // Configure Swagger / OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("V1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    c.SwaggerDoc("V1", new OpenApiInfo { Title = "API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme. <br /> <br />
                       Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />
