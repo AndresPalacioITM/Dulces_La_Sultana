@@ -21,12 +21,6 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Barer"
     });
 
-    //Nuevo, Prueba para saber si hice bien el pull request
-
-
-
-
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
