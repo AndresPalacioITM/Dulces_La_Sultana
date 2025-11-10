@@ -20,6 +20,13 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Barer"
     });
+
+    //Nuevo, Prueba para saber si hice bien el pull request
+
+
+
+
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
         {
