@@ -5,7 +5,7 @@ using Sultana.Shared.Entities;
 
 namespace Sultana.API.Data
 {
-    public class DataContext : IdentityDbContext<User>
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
