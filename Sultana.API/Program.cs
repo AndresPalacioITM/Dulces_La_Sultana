@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Sultana.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,10 +42,15 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DefaultConnection"));
+builder.Services.AddTransient<SeedDb>();
+
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
