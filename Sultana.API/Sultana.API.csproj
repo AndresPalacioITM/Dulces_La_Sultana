@@ -23,4 +23,8 @@
 		<ProjectReference Include="..\Sultana.Shared\Sultana.Shared.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Controllers\" />
+	</ItemGroup>
+
 </Project>
