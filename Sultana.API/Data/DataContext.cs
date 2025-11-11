@@ -5,24 +5,36 @@ using Sultana.Shared.Entities;
 
 namespace Sultana.API.Data
 {
-    public class DataContext : IdentityDbContext<Empleado>
+    public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-
-
-
+        }
         public DbSet<Proveedor> Proveedores { get; set; }
 
-        public DbSet<Produccion> Producciones { get; set; }
+        public DbSet<LoteMateriaPrima> LoteMateriaPrimas { get; set; }
 
-        public DbSet<Materia_Prima> Materias_Primas { get; set; }
+        public DbSet<LoteProductoTerminado> LoteProductoTerminados { get; set; }
 
-        public DbSet<Producto_Venta> Productos_Ventas { get; set; }
+        public DbSet<MateriaPrima> MateriaPrimas { get; set; }
 
         public DbSet<Cliente> Clientes { get; set; }
 
-        public DbSet<Sellado> Sellados { get; set; }
+        public DbSet<ProductoTerminado> ProductoTerminados { get; set; }
+
+        public DbSet<OrdenProduccion> OrdenProducciones { get; set; }
+
+        public DbSet<ConsumoMP> ConsumoMPs { get; set; }
+
+        public DbSet<Empleado> Empleados { get; set; }
+
+        public DbSet<VentaCabecera> VentaCabeceras { get; set; }
+
+        public DbSet<VentaDetalle> VentaDetalles { get; set; }
+        
+        
+
+       
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
