@@ -19,16 +19,17 @@ namespace Sultana.Shared.Entities
 
         [Display(Name = "Responsable"), Required]
         public int ResponsableId { get; set; }
-
-        public OrdenProduccion OrdenProduccion { get; set; } = null!;
-        public LoteMateriaPrima LoteMateriaPrima { get; set; } = null!;
-        public Empleado Responsable { get; set; } = null!;
-
         [Display(Name = "Cantidad usada (kg)")]
         [Range(0, 1_000_000_000)]
         public decimal CantidadUsada { get; set; }
 
         [Display(Name = "Fecha"), Required]
         public DateTime FechaHora { get; set; } = DateTime.UtcNow;
+
+        //public OrdenProduccion OrdenProduccion { get; set; } = null!;
+        //public LoteMateriaPrima LoteMateriaPrima { get; set; } = null!;
+        public Empleado Responsable { get; set; } = null!;
+
+        
     }
 }

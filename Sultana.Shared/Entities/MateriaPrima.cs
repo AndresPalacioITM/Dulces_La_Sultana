@@ -24,6 +24,6 @@ namespace Sultana.Shared.Entities
         [Range(0, 999_999_999)]
         public decimal StockMinimo { get; set; } = 0;
 
-        [JsonIgnore] public ICollection<LoteMateriaPrima> Lotes { get; set; } = new List<LoteMateriaPrima>();
+        //[JsonIgnore] public ICollection<LoteMateriaPrima> Lotes { get; set; } = new List<LoteMateriaPrima>();
     }
 }

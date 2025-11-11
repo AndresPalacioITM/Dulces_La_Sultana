@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Sultana.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateV1 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,14 +104,40 @@ namespace Sultana.API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VentaCabeceras", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VentaDetalles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    VentaCabeceraId = table.Column<int>(type: "int", nullable: false),
+                    LoteProductoTerminadoId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VentaDetalles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConsumoMPs",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdenProduccionId = table.Column<int>(type: "int", nullable: false),
+                    LoteMateriaPrimaId = table.Column<int>(type: "int", nullable: false),
+                    ResponsableId = table.Column<int>(type: "int", nullable: false),
+                    CantidadUsada = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
+                    FechaHora = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsumoMPs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_VentaCabeceras_Clientes_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VentaCabeceras_Empleados_ResponsableId",
+                        name: "FK_ConsumoMPs_Empleados_ResponsableId",
                         column: x => x.ResponsableId,
                         principalTable: "Empleados",
                         principalColumn: "Id",
@@ -212,83 +238,11 @@ namespace Sultana.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ConsumoMPs",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrdenProduccionId = table.Column<int>(type: "int", nullable: false),
-                    LoteMateriaPrimaId = table.Column<int>(type: "int", nullable: false),
-                    ResponsableId = table.Column<int>(type: "int", nullable: false),
-                    CantidadUsada = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false),
-                    FechaHora = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ConsumoMPs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ConsumoMPs_Empleados_ResponsableId",
-                        column: x => x.ResponsableId,
-                        principalTable: "Empleados",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ConsumoMPs_LoteMateriaPrimas_LoteMateriaPrimaId",
-                        column: x => x.LoteMateriaPrimaId,
-                        principalTable: "LoteMateriaPrimas",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ConsumoMPs_OrdenProducciones_OrdenProduccionId",
-                        column: x => x.OrdenProduccionId,
-                        principalTable: "OrdenProducciones",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VentaDetalles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VentaCabeceraId = table.Column<int>(type: "int", nullable: false),
-                    LoteProductoTerminadoId = table.Column<int>(type: "int", nullable: false),
-                    Cantidad = table.Column<decimal>(type: "decimal(18,6)", precision: 18, scale: 6, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VentaDetalles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_VentaDetalles_LoteProductoTerminados_LoteProductoTerminadoId",
-                        column: x => x.LoteProductoTerminadoId,
-                        principalTable: "LoteProductoTerminados",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_VentaDetalles_VentaCabeceras_VentaCabeceraId",
-                        column: x => x.VentaCabeceraId,
-                        principalTable: "VentaCabeceras",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Clientes_Nit",
                 table: "Clientes",
                 column: "Nit",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ConsumoMPs_LoteMateriaPrimaId",
-                table: "ConsumoMPs",
-                column: "LoteMateriaPrimaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ConsumoMPs_OrdenProduccionId",
-                table: "ConsumoMPs",
-                column: "OrdenProduccionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ConsumoMPs_ResponsableId",
@@ -351,36 +305,16 @@ namespace Sultana.API.Migrations
                 table: "Proveedores",
                 column: "Nit",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VentaCabeceras_ClienteId",
-                table: "VentaCabeceras",
-                column: "ClienteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VentaCabeceras_ResponsableId",
-                table: "VentaCabeceras",
-                column: "ResponsableId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VentaDetalles_LoteProductoTerminadoId",
-                table: "VentaDetalles",
-                column: "LoteProductoTerminadoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_VentaDetalles_VentaCabeceraId",
-                table: "VentaDetalles",
-                column: "VentaCabeceraId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ConsumoMPs");
+                name: "Clientes");
 
             migrationBuilder.DropTable(
-                name: "VentaDetalles");
+                name: "ConsumoMPs");
 
             migrationBuilder.DropTable(
                 name: "LoteMateriaPrimas");
@@ -392,6 +326,9 @@ namespace Sultana.API.Migrations
                 name: "VentaCabeceras");
 
             migrationBuilder.DropTable(
+                name: "VentaDetalles");
+
+            migrationBuilder.DropTable(
                 name: "MateriaPrimas");
 
             migrationBuilder.DropTable(
@@ -399,9 +336,6 @@ namespace Sultana.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrdenProducciones");
-
-            migrationBuilder.DropTable(
-                name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "Empleados");

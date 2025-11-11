@@ -17,6 +17,6 @@ namespace Sultana.Shared.Entities
         [Required, MaxLength(120)]
         public string Nombre { get; set; } = null!;
 
-        [JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
+        //[JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
     }
 }

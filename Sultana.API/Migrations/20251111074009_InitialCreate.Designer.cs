@@ -12,8 +12,8 @@ using Sultana.API.Data;
 namespace Sultana.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251111064032_InitialCreateV1")]
-    partial class InitialCreateV1
+    [Migration("20251111074009_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,10 +88,6 @@ namespace Sultana.API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LoteMateriaPrimaId");
-
-                    b.HasIndex("OrdenProduccionId");
 
                     b.HasIndex("ResponsableId");
 
@@ -387,10 +383,6 @@ namespace Sultana.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("ResponsableId");
-
                     b.ToTable("VentaCabeceras");
                 });
 
@@ -414,36 +406,16 @@ namespace Sultana.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LoteProductoTerminadoId");
-
-                    b.HasIndex("VentaCabeceraId");
-
                     b.ToTable("VentaDetalles");
                 });
 
             modelBuilder.Entity("Sultana.Shared.Entities.ConsumoMP", b =>
                 {
-                    b.HasOne("Sultana.Shared.Entities.LoteMateriaPrima", "LoteMateriaPrima")
-                        .WithMany("Consumos")
-                        .HasForeignKey("LoteMateriaPrimaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Sultana.Shared.Entities.OrdenProduccion", "OrdenProduccion")
-                        .WithMany("Consumos")
-                        .HasForeignKey("OrdenProduccionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Sultana.Shared.Entities.Empleado", "Responsable")
-                        .WithMany("Consumos")
+                        .WithMany()
                         .HasForeignKey("ResponsableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("LoteMateriaPrima");
-
-                    b.Navigation("OrdenProduccion");
 
                     b.Navigation("Responsable");
                 });
@@ -451,19 +423,19 @@ namespace Sultana.API.Migrations
             modelBuilder.Entity("Sultana.Shared.Entities.LoteMateriaPrima", b =>
                 {
                     b.HasOne("Sultana.Shared.Entities.MateriaPrima", "MateriaPrima")
-                        .WithMany("Lotes")
+                        .WithMany()
                         .HasForeignKey("MateriaPrimaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Sultana.Shared.Entities.Proveedor", "Proveedor")
-                        .WithMany("LotesSuministrados")
+                        .WithMany()
                         .HasForeignKey("ProveedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Sultana.Shared.Entities.Empleado", "Responsable")
-                        .WithMany("LotesRecibidos")
+                        .WithMany()
                         .HasForeignKey("ResponsableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -489,13 +461,13 @@ namespace Sultana.API.Migrations
             modelBuilder.Entity("Sultana.Shared.Entities.OrdenProduccion", b =>
                 {
                     b.HasOne("Sultana.Shared.Entities.ProductoTerminado", "ProductoTerminado")
-                        .WithMany("Ordenes")
+                        .WithMany()
                         .HasForeignKey("ProductoTerminadoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Sultana.Shared.Entities.Empleado", "Responsable")
-                        .WithMany("Ordenes")
+                        .WithMany()
                         .HasForeignKey("ResponsableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -505,95 +477,9 @@ namespace Sultana.API.Migrations
                     b.Navigation("Responsable");
                 });
 
-            modelBuilder.Entity("Sultana.Shared.Entities.VentaCabecera", b =>
-                {
-                    b.HasOne("Sultana.Shared.Entities.Cliente", "Cliente")
-                        .WithMany("Ventas")
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Sultana.Shared.Entities.Empleado", "Responsable")
-                        .WithMany("VentasAtendidas")
-                        .HasForeignKey("ResponsableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
-
-                    b.Navigation("Responsable");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.VentaDetalle", b =>
-                {
-                    b.HasOne("Sultana.Shared.Entities.LoteProductoTerminado", "LoteProductoTerminado")
-                        .WithMany("Ventas")
-                        .HasForeignKey("LoteProductoTerminadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Sultana.Shared.Entities.VentaCabecera", "VentaCabecera")
-                        .WithMany("Detalles")
-                        .HasForeignKey("VentaCabeceraId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LoteProductoTerminado");
-
-                    b.Navigation("VentaCabecera");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.Cliente", b =>
-                {
-                    b.Navigation("Ventas");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.Empleado", b =>
-                {
-                    b.Navigation("Consumos");
-
-                    b.Navigation("LotesRecibidos");
-
-                    b.Navigation("Ordenes");
-
-                    b.Navigation("VentasAtendidas");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.LoteMateriaPrima", b =>
-                {
-                    b.Navigation("Consumos");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.LoteProductoTerminado", b =>
-                {
-                    b.Navigation("Ventas");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.MateriaPrima", b =>
-                {
-                    b.Navigation("Lotes");
-                });
-
             modelBuilder.Entity("Sultana.Shared.Entities.OrdenProduccion", b =>
                 {
-                    b.Navigation("Consumos");
-
                     b.Navigation("LotePT");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.ProductoTerminado", b =>
-                {
-                    b.Navigation("Ordenes");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.Proveedor", b =>
-                {
-                    b.Navigation("LotesSuministrados");
-                });
-
-            modelBuilder.Entity("Sultana.Shared.Entities.VentaCabecera", b =>
-                {
-                    b.Navigation("Detalles");
                 });
 #pragma warning restore 612, 618
         }

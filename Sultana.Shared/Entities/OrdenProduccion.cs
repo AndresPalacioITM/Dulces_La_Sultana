@@ -19,10 +19,7 @@ namespace Sultana.Shared.Entities
         public int ProductoTerminadoId { get; set; }
 
         [Display(Name = "Responsable"), Required]
-        public int ResponsableId { get; set; }
-
-        public ProductoTerminado ProductoTerminado { get; set; } = null!;
-        public Empleado Responsable { get; set; } = null!;
+        public int ResponsableId { get; set; }        
 
         [Display(Name = "Lote PT"), Required, MaxLength(60)]
         public string LoteProducto { get; set; } = null!;
@@ -34,7 +31,9 @@ namespace Sultana.Shared.Entities
         [Range(0, 1_000_000_000)]
         public decimal CantidadPeso { get; set; }
 
+        public ProductoTerminado ProductoTerminado { get; set; } = null!;
+        public Empleado Responsable { get; set; } = null!;
         public LoteProductoTerminado? LotePT { get; set; }
-        [JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
+        //[JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
     }
 }

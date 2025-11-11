@@ -16,11 +16,7 @@ namespace Sultana.Shared.Entities
         public int ProveedorId { get; set; }
 
         [Display(Name = "Responsable"), Required]
-        public int ResponsableId { get; set; }
-
-        public MateriaPrima MateriaPrima { get; set; } = null!;
-        public Proveedor Proveedor { get; set; } = null!;
-        public Empleado Responsable { get; set; } = null!;
+        public int ResponsableId { get; set; }     
 
         [Display(Name = "N° Lote"), Required, MaxLength(60)]
         public string NumeroLote { get; set; } = null!;
@@ -54,7 +50,11 @@ namespace Sultana.Shared.Entities
         [Display(Name = "Observaciones"), MaxLength(250)]
         public string? Observaciones { get; set; }
 
-        [JsonIgnore]
-        public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
+        public MateriaPrima MateriaPrima { get; set; } = null!;
+        public Proveedor Proveedor { get; set; } = null!;
+        public Empleado Responsable { get; set; } = null!;
+
+        //[JsonIgnore]
+        //public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
     }
 }

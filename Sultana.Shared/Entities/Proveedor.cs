@@ -31,7 +31,7 @@ namespace Sultana.Shared.Entities
         public string? Direccion { get; set; }
 
 
-        [JsonIgnore] public ICollection<LoteMateriaPrima> LotesSuministrados { get; set; } = new List<LoteMateriaPrima>();
+        //[JsonIgnore] public ICollection<LoteMateriaPrima> LotesSuministrados { get; set; } = new List<LoteMateriaPrima>();
     }
 }
 
