@@ -27,9 +27,9 @@ namespace Sultana.Shared.Entities
         [Display(Name = "Correo"), EmailAddress, MaxLength(120)]
         public string? Email { get; set; }
 
-        [JsonIgnore] public ICollection<LoteMateriaPrima> LotesRecibidos { get; set; } = new List<LoteMateriaPrima>();
-        [JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
-        [JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
-        [JsonIgnore] public ICollection<VentaCabecera> VentasAtendidas { get; set; } = new List<VentaCabecera>();
+        //[JsonIgnore] public ICollection<LoteMateriaPrima> LotesRecibidos { get; set; } = new List<LoteMateriaPrima>();
+        //[JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
+        //[JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
+        //[JsonIgnore] public ICollection<VentaCabecera> VentasAtendidas { get; set; } = new List<VentaCabecera>();
     }
 }

@@ -13,9 +13,7 @@ namespace Sultana.Shared.Entities
         public int Id { get; set; }
 
         [Display(Name = "OP"), Required]
-        public int OrdenProduccionId { get; set; }
-
-        public OrdenProduccion OrdenProduccion { get; set; } = null!;
+        public int OrdenProduccionId { get; set; }       
 
         [Display(Name = "Stock PT")]
         [Range(0, 1_000_000_000)]
@@ -24,6 +22,8 @@ namespace Sultana.Shared.Entities
         [Display(Name = "Vence PT")]
         public DateTime? FechaVencimientoPT { get; set; }
 
-        [JsonIgnore] public ICollection<VentaDetalle> Ventas { get; set; } = new List<VentaDetalle>();
+
+        public OrdenProduccion OrdenProduccion { get; set; } = null!;
+        //[JsonIgnore] public ICollection<VentaDetalle> Ventas { get; set; } = new List<VentaDetalle>();
     }
 }

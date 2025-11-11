@@ -15,13 +15,13 @@ namespace Sultana.Shared.Entities
         public int VentaCabeceraId { get; set; }
 
         [Display(Name = "Lote PT"), Required]
-        public int LoteProductoTerminadoId { get; set; }
-
-        public VentaCabecera VentaCabecera { get; set; } = null!;
-        public LoteProductoTerminado LoteProductoTerminado { get; set; } = null!;
+        public int LoteProductoTerminadoId { get; set; }        
 
         [Display(Name = "Cantidad")]
         [Range(0, 1_000_000_000)]
         public decimal Cantidad { get; set; }
+
+        //public VentaCabecera VentaCabecera { get; set; } = null!;
+        //public LoteProductoTerminado LoteProductoTerminado { get; set; } = null!;
     }
 }

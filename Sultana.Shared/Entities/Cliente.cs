@@ -29,7 +29,10 @@ namespace Sultana.Shared.Entities
         [Display(Name = "Contacto"), MaxLength(60)]
         public string? Contacto { get; set; }
 
-        [JsonIgnore] public ICollection<VentaCabecera> Ventas { get; set; } = new List<VentaCabecera>();
+
+
+        //[JsonIgnore] 
+        //public ICollection<VentaCabecera> Ventas { get; set; } = new List<VentaCabecera>();
     }
 
 }

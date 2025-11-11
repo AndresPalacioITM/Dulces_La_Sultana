@@ -19,10 +19,7 @@ namespace Sultana.Shared.Entities
         public int ClienteId { get; set; }
 
         [Display(Name = "Responsable"), Required]
-        public int ResponsableId { get; set; }
-
-        public Cliente Cliente { get; set; } = null!;
-        public Empleado Responsable { get; set; } = null!;
+        public int ResponsableId { get; set; }       
 
         [Display(Name = "Factura"), Required, MaxLength(60)]
         public string Factura { get; set; } = null!;
@@ -30,6 +27,9 @@ namespace Sultana.Shared.Entities
         [Display(Name = "Observaciones"), MaxLength(250)]
         public string? Observaciones { get; set; }
 
-        [JsonIgnore] public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
+
+        //public Cliente Cliente { get; set; } = null!;
+        //public Empleado Responsable { get; set; } = null!;
+        //[JsonIgnore] public ICollection<VentaDetalle> Detalles { get; set; } = new List<VentaDetalle>();
     }
 }
