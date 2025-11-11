@@ -1,19 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Sultana.Shared.Entities
 {
     public class OrdenProduccion
     {
-        public int IdOP { get; set; }
+        public int Id { get; set; }
+
+        [Display(Name = "Inicio"), Required]
         public DateTime FechaHoraInicio { get; set; } = DateTime.UtcNow;
-        public int IdPT { get; set; }
+
+        [Display(Name = "Producto"), Required]
+        public int ProductoTerminadoId { get; set; }
+
+        [Display(Name = "Responsable"), Required]
+        public int ResponsableId { get; set; }        
+
+        [Display(Name = "Lote PT"), Required, MaxLength(60)]
         public string LoteProducto { get; set; } = null!;
+
+        [Display(Name = "Vence PT")]
         public DateTime? FechaVencimientoPT { get; set; }
-        public decimal CantidadPeso { get; set; }          // kg objetivo
-        public int ResponsableId { get; set; }
+
+        [Display(Name = "Cantidad objetivo (kg)")]
+        [Range(0, 1_000_000_000)]
+        public decimal CantidadPeso { get; set; }
+
+        public ProductoTerminado ProductoTerminado { get; set; } = null!;
+        public Empleado Responsable { get; set; } = null!;
+        public LoteProductoTerminado? LotePT { get; set; }
+        //[JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
     }
 }
