@@ -45,7 +45,7 @@ builder.Services.AddSwaggerGen(c =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
 
-//builder.Services.AddTransient<SeedDb>();//
+//builder.Services.AddTransient<SeedDb>();
 
 
 builder.Services.AddOpenApi();
