@@ -55,6 +55,7 @@ builder.Services.AddOpenApi();
 //Register Helpers and Services
 builder.Services.AddScoped<IAlertaHelper, AlertaHelper>();
 builder.Services.AddHostedService<AlertaBackgroundService>();
+builder.Services.AddScoped<IInventarioHelper, InventarioHelper>(); // Registro del helper de inventario
 
 var app = builder.Build();
 
