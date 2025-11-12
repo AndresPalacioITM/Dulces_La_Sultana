@@ -1,0 +1,57 @@
+﻿@page "/empleados/edit/{id:int}"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.WEB.Repositories
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService swal
+
+<h3>Editar empleado</h3>
+
+@if (model is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <EmpleadoForm @ref="form" Model="model" OnSubmit="Save" ReturnAction="Return" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Empleado? model;
+    private EmpleadoForm? form;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var r = await repository.GetAsync<Empleado>($"/api/empleados/{id}");
+        if (r.Error)
+        {
+            if (r.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                nav.NavigateTo("/empleados");
+                return;
+            }
+            var msg = await r.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
+            return;
+        }
+        model = r.Response!;
+    }
+
+    private async Task Save()
+    {
+        var r = await repository.PutAsync($"/api/empleados/{id}", model!);
+        if (r.Error)
+        {
+            var msg = await r.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
+            return;
+        }
+        form!.FormPostedSuccessfully = true;
+        nav.NavigateTo("/empleados");
+    }
+
+    private void Return() => nav.NavigateTo("/empleados");
+}
+

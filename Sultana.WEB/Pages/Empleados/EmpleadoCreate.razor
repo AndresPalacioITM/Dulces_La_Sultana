@@ -1,0 +1,32 @@
+﻿@page "/empleados/create"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.WEB.Repositories
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService swal
+
+<h3>Crear empleado</h3>
+
+<EmpleadoForm @ref="form" Model="model" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private EmpleadoForm? form;
+    private Empleado model = new();
+
+    private async Task Create()
+    {
+        var r = await repository.PostAsync("/api/empleados", model);
+        if (r.Error)
+        {
+            var msg = await r.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg);
+            return;
+        }
+        form!.FormPostedSuccessfully = true;
+        nav.NavigateTo("/empleados");
+    }
+
+    private void Return() => nav.NavigateTo("/empleados");
+}
+

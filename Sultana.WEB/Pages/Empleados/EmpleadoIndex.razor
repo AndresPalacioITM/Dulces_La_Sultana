@@ -1,0 +1,79 @@
+﻿@page "/empleados"
+@using Sultana.Shared.Entities
+@using Sultana.WEB.Repositories
+@using Sultana.WEB.Shared
+@using CurrieTechnologies.Razor.SweetAlert2
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService swal
+
+<h3>Dulces La Sultana – Empleados</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/empleados/create">Nuevo empleado</a>
+</div>
+
+<GenericList MyList="lista">
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cargo</th>
+                    <th>Contacto</th>
+                    <th>Correo</th>
+                    <th style="width:180px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in lista!)
+                {
+                    <tr>
+                        <td>@e.Nombre</td>
+                        <td>@e.Cargo</td>
+                        <td>@e.Contacto</td>
+                        <td>@e.Email</td>
+                        <td>
+                            <a href="/empleados/edit/@e.Id" class="btn btn-warning btn-sm me-1">Editar</a>
+                            <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteAsync(e))">Borrar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Body>
+</GenericList>
+
+@code {
+    private List<Empleado> lista = new();
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load()
+    {
+        var r = await repository.GetAsync<List<Empleado>>("/api/empleados");
+        lista = (!r.Error && r.Response is not null) ? r.Response : new();
+    }
+
+    private async Task DeleteAsync(Empleado e)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions {
+            Title = "Confirmación",
+            Text = $"¿Seguro que deseas borrar a {e.Nombre}?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true
+        });
+
+        if (string.IsNullOrEmpty(result.Value)) return;
+
+        var resp = await repository.DeleteAsync($"/api/empleados/{e.Id}");
+        if (resp.Error)
+        {
+            var msg = await resp.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
+            return;
+        }
+        await Load();
+    }
+}
+
