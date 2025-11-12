@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sultana.API.Data;
+using Sultana.API.Helpers;
+using Sultana.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,10 @@ builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString)
 
 
 builder.Services.AddOpenApi();
+
+//Register Helpers and Services
+builder.Services.AddScoped<IAlertaHelper, AlertaHelper>();
+builder.Services.AddHostedService<AlertaBackgroundService>();
 
 var app = builder.Build();
 
