@@ -9,11 +9,23 @@
     <div class="sidebar">
         <NavMenu />
     </div>
+    <main class="d-flex flex-column min-vh-100">
+        <header class="top-row sticky-top bg-white border-bottom">
+            <div class="container-fluid d-flex justify-content-between align-items-center px-4 py-2">
+                <a class="navbar-brand m-0" href="/">Sultana</a>
+                <nav class="d-flex gap-3">
+                    <a class="nav-link p-0" href="/">Inicio</a>
+                    <a class="nav-link p-0" href="/empleados">Empleados</a>
+                    <a class="nav-link p-0" href="https://learn.microsoft.com/aspnet/core/" target="_blank">Docs</a>
+                </nav>
+            </div>
+        </header>
 
-    <main>
-        <div class="top-row px-4 d-flex justify-content-between align-items-center">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        <article class="content px-4 py-3">
+            @Body
+        </article>
+    </main>
+
 
         @* <!-- 🔔 Sección de alertas -->
         @if (alertas?.Any() == true)
@@ -32,7 +44,7 @@
         <article class="content px-4">
             @Body
         </article>
-    </main>
+   
 </div>
 
 @* @code {
