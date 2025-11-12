@@ -1,57 +1,61 @@
-﻿@page "/empleados/edit/{id:int}"
+﻿@page "/empleados/editar/{id:int}"
 @using Sultana.Shared.Entities
-@using CurrieTechnologies.Razor.SweetAlert2
 @using Sultana.WEB.Repositories
-@inject IRepository repository
+@inject IRepository repo
 @inject NavigationManager nav
-@inject SweetAlertService swal
 
 <h3>Editar empleado</h3>
 
 @if (model is null)
 {
-    <p>Cargando...</p>
+    <p>Cargando…</p>
 }
 else
 {
-    <EmpleadoForm @ref="form" Model="model" OnSubmit="Save" ReturnAction="Return" />
+    <EditForm Model="model" OnValidSubmit="GuardarAsync">
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label>Nombre</label>
+            <InputText class="form-control" @bind-Value="model.Nombre" />
+        </div>
+
+        <div class="mb-3">
+            <label>Cargo</label>
+            <InputText class="form-control" @bind-Value="model.Cargo" />
+        </div>
+
+        <div class="mb-3">
+            <label>Contacto</label>
+            <InputText class="form-control" @bind-Value="model.Contacto" />
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <InputText class="form-control" type="email" @bind-Value="model.Email" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Guardar</button>
+        <button class="btn btn-secondary ms-2" type="button" @onclick="Cancelar">Cancelar</button>
+    </EditForm>
 }
 
 @code {
     [Parameter] public int id { get; set; }
     private Empleado? model;
-    private EmpleadoForm? form;
 
     protected override async Task OnInitializedAsync()
     {
-        var r = await repository.GetAsync<Empleado>($"/api/empleados/{id}");
-        if (r.Error)
-        {
-            if (r.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                nav.NavigateTo("/empleados");
-                return;
-            }
-            var msg = await r.GetErrorMessageAsync();
-            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
-            return;
-        }
-        model = r.Response!;
+        var r = await repo.GetAsync<Empleado>($"/api/Empleado/{id}");
+        model = r.Error ? null : r.Response;
+        if (model is null) nav.NavigateTo("/empleados");
     }
 
-    private async Task Save()
+    private async Task GuardarAsync()
     {
-        var r = await repository.PutAsync($"/api/empleados/{id}", model!);
-        if (r.Error)
-        {
-            var msg = await r.GetErrorMessageAsync();
-            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
-            return;
-        }
-        form!.FormPostedSuccessfully = true;
-        nav.NavigateTo("/empleados");
+        var r = await repo.PutAsync($"/api/Empleado/{model!.Id}", model);
+        if (!r.Error) nav.NavigateTo("/empleados");
     }
 
-    private void Return() => nav.NavigateTo("/empleados");
+    private void Cancelar() => nav.NavigateTo("/empleados");
 }
-
