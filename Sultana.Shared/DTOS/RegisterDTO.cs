@@ -13,20 +13,11 @@ public class RegisterDTO
     [Required, MinLength(6)]
     public string Password { get; set; } = null!;
 
-    [MaxLength(20)]
-    public string? Document { get; set; }
-
-    [MaxLength(100)]
-    public string? FirstName { get; set; }
-
-    [MaxLength(100)]
-    public string? LastName { get; set; }
-
-    [MaxLength(200)]
-    public string? Direccion { get; set; }
+    [Required, MinLength(25)]
+    public string Contacto { get; set; } = null!;
 
     public string? Photo { get; set; }
 
-    public string? Rol { get; set; } = "Operario";
+    public string? Cargo { get; set; } = "Operario";
 }
 
