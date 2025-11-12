@@ -1,79 +1,58 @@
 ﻿@page "/empleados"
 @using Sultana.Shared.Entities
 @using Sultana.WEB.Repositories
-@using Sultana.WEB.Shared
-@using CurrieTechnologies.Razor.SweetAlert2
-@inject IRepository repository
-@inject NavigationManager nav
-@inject SweetAlertService swal
+@inject IRepository repo
 
-<h3>Dulces La Sultana – Empleados</h3>
+<h3>Empleados</h3>
 
 <div class="mb-3">
-    <a class="btn btn-primary" href="/empleados/create">Nuevo empleado</a>
+    <a href="/empleados/crear" class="btn btn-primary">Nuevo empleado</a>
 </div>
 
-<GenericList MyList="lista">
-    <Body>
-        <table class="table table-striped">
-            <thead>
+@if (empleados is null)
+{
+    <p>Cargando…</p>
+}
+else if (empleados.Count == 0)
+{
+    <div class="alert alert-info">No hay empleados.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cargo</th>
+                <th>Contacto</th>
+                <th>Email</th>
+                <th style="width:150px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in empleados)
+            {
                 <tr>
-                    <th>Nombre</th>
-                    <th>Cargo</th>
-                    <th>Contacto</th>
-                    <th>Correo</th>
-                    <th style="width:180px;">Acciones</th>
+                    <td>@e.Nombre</td>
+                    <td>@e.Cargo</td>
+                    <td>@e.Contacto</td>
+                    <td>@e.Email</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="/empleados/editar/@e.Id">Editar</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var e in lista!)
-                {
-                    <tr>
-                        <td>@e.Nombre</td>
-                        <td>@e.Cargo</td>
-                        <td>@e.Contacto</td>
-                        <td>@e.Email</td>
-                        <td>
-                            <a href="/empleados/edit/@e.Id" class="btn btn-warning btn-sm me-1">Editar</a>
-                            <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteAsync(e))">Borrar</button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </Body>
-</GenericList>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
-    private List<Empleado> lista = new();
+    private List<Empleado>? empleados;
 
-    protected override async Task OnInitializedAsync() => await Load();
-
-    private async Task Load()
+    protected override async Task OnInitializedAsync()
     {
-        var r = await repository.GetAsync<List<Empleado>>("/api/empleados");
-        lista = (!r.Error && r.Response is not null) ? r.Response : new();
-    }
-
-    private async Task DeleteAsync(Empleado e)
-    {
-        var result = await swal.FireAsync(new SweetAlertOptions {
-            Title = "Confirmación",
-            Text = $"¿Seguro que deseas borrar a {e.Nombre}?",
-            Icon = SweetAlertIcon.Question,
-            ShowCancelButton = true
-        });
-
-        if (string.IsNullOrEmpty(result.Value)) return;
-
-        var resp = await repository.DeleteAsync($"/api/empleados/{e.Id}");
-        if (resp.Error)
-        {
-            var msg = await resp.GetErrorMessageAsync();
-            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
-            return;
-        }
-        await Load();
+        var r = await repo.GetAsync<List<Empleado>>("/api/Empleado");
+        empleados = r.Error ? new() : r.Response ?? new();
     }
 }
 
