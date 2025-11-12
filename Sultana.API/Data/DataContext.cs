@@ -20,10 +20,12 @@ namespace Sultana.API.Data
         public DbSet<ConsumoMP> ConsumoMPs { get; set; }
         public DbSet<Empleado> Empleados { get; set; }
         public DbSet<VentaCabecera> VentaCabeceras { get; set; }
-        public DbSet<VentaDetalle> VentaDetalles { get; set; }        
+        public DbSet<VentaDetalle> VentaDetalles { get; set; }  
         
+        public DbSet<Alerta> Alertas { get; set; }
 
-       
+
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,0 +1,48 @@
+﻿@page "/auth/login"
+@inject IRepository repository
+@inject ILoginService loginService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager navigation
+
+<h3>Iniciar sesión</h3>
+
+<EditForm Model="model" OnValidSubmit="DoLogin">
+    <DataAnnotationsValidator />
+    <div class="mb-2">
+        <label>Email</label>
+        <InputText class="form-control" @bind-Value="model.Email" />
+        <ValidationMessage For="@(() => model.Email)" />
+    </div>
+    <div class="mb-2">
+        <label>Contraseña</label>
+        <InputText class="form-control" type="password" @bind-Value="model.Password" />
+        <ValidationMessage For="@(() => model.Password)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Entrar</button>
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="text-danger mt-2">@error</div>
+    }
+</EditForm>
+
+@code {
+    private LoginDTO model = new();
+    private string error = string.Empty;
+
+    private async Task DoLogin()
+    {
+        // API devuelve TokenDTO
+        var resp = await repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", model);
+
+        if (resp.Error || resp.Response is null)
+        {
+            error = await resp.GetErrorMessageAsync();
+            return;
+        }
+
+        await loginService.LoginAsync(resp.Response.Token);
+        (AuthProvider as JwtAuthenticationStateProvider)!.NotifyLogin();
+        navigation.NavigateTo("/");
+    }
+}

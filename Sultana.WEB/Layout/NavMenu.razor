@@ -1,4 +1,6 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Sultana.WEB</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,6 +11,8 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="nav flex-column">
+
+        <!-- Público -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
@@ -24,16 +28,59 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+
+        <!-- Privado (visible si hay sesión) -->
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="materias-primas">
+                        <span class="bi bi-archive-fill" aria-hidden="true"></span> Materias primas
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="produccion">
+                        <span class="bi bi-gear-fill" aria-hidden="true"></span> Producción
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="ventas">
+                        <span class="bi bi-bag-fill" aria-hidden="true"></span> Ventas
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="alertas">
+                        <span class="bi bi-bell-fill" aria-hidden="true"></span> Alertas
+                    </NavLink>
+                </div>
+
+                <hr class="my-2" />
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link text-danger" href="auth/logout">
+                        <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Cerrar sesión
+                    </NavLink>
+                </div>
+            </Authorized>
+
+            <NotAuthorized>
+                <hr class="my-2" />
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="auth/login">
+                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Iniciar sesión
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="auth/register">
+                        <span class="bi bi-person-plus-fill" aria-hidden="true"></span> Registrarse
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
 }
