@@ -1,30 +1,35 @@
+using System;
+using System.Net.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Sultana.WEB;
-using Sultana.WEB.Auth;
-using Sultana.WEB.Services;
-using Sultana.WEB.Repositories;
-using Sultana.WEB;
-using Sultana.WEB.Repositories;
+using CurrieTechnologies.Razor.SweetAlert2;
 
-
+using Sultana.WEB;
+using Sultana.WEB.Auth;          // JwtAuthenticationStateProvider, ILoginService, LoginService
+using Sultana.WEB.Repositories;  // IRepository, Repository
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Base URL de la API
-var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7000";
+// ?? Base de la API: pon TU puerto real y DEJA la barra final
+var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7000/";
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBase) });
 
-// Repositorio genérico (ya lo tienes en Repositories/)
+// Auth core para WASM
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
+
+// SweetAlert2
+builder.Services.AddSweetAlert2();
+
+// Repositorio HTTP
 builder.Services.AddScoped<IRepository, Repository>();
 
-// Auth (guardar token en localStorage y exponer AuthenticationState)
-builder.Services.AddScoped<Sultana.WEB.Auth.ILoginService, Sultana.WEB.Auth.LoginService>();
+// Auth provider + login service
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
-
-builder.Services.AddScoped<AlertasService>(); 
+builder.Services.AddScoped<ILoginService, LoginService>();
 
 await builder.Build().RunAsync();
+
