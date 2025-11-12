@@ -1,90 +1,78 @@
-﻿@page "/auth/register"
+﻿@page "/Register"
+
+@using Sultana.Shared.DTOs
+@using CurrieTechnologies.Razor.SweetAlert2
+
 @inject IRepository repository
-@inject NavigationManager navigation
+@inject ILoginService loginService
+@inject NavigationManager nav
+@inject SweetAlertService swal
 
-<h3>Registrar usuario</h3>
+<h3 class="mb-3">Registrar nuevo empleado</h3>
 
-<EditForm Model="model" OnValidSubmit="DoRegister">
+<EditForm Model="model" OnValidSubmit="RegisterAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="row g-2">
-        <div class="col-md-6">
-            <label>Nombres</label>
-            <InputText class="form-control" @bind-Value="model.FirstName" />
-        </div>
-        <div class="col-md-6">
-            <label>Apellidos</label>
-            <InputText class="form-control" @bind-Value="model.LastName" />
-        </div>
-        <div class="col-md-6">
-            <label>Documento</label>
-            <InputText class="form-control" @bind-Value="model.Document" />
-        </div>
-        <div class="col-md-6">
-            <label>Dirección</label>
-            <InputText class="form-control" @bind-Value="model.Direccion" />
-        </div>
-        <div class="col-md-6">
-            <label>Email</label>
-            <InputText class="form-control" @bind-Value="model.Email" />
-            <ValidationMessage For="@(() => model.Email)" />
-        </div>
-        <div class="col-md-6">
-            <label>Foto (URL/Base64)</label>
-            <InputText class="form-control" @bind-Value="model.Photo" />
-        </div>
-        <div class="col-md-6">
-            <label>Contraseña</label>
-            <InputText class="form-control" type="password" @bind-Value="model.Password" />
-            <ValidationMessage For="@(() => model.Password)" />
-        </div>
-        <div class="col-md-6">
-            <label>Confirmación</label>
-            <InputText class="form-control" type="password" @bind-Value="passwordConfirm" />
-            @if (!string.IsNullOrEmpty(passError))
-            {
-                <div class="text-danger">@passError</div>
-            }
-        </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <InputText class="form-control" @bind-Value="model.Nombre" />
+        <ValidationMessage For="@(() => model.Nombre)" />
     </div>
 
-    <button class="btn btn-primary mt-3" type="submit">Registrar</button>
-    @if (!string.IsNullOrEmpty(error))
-    {
-        <div class="text-danger mt-2">@error</div>
-    }
-    @if (!string.IsNullOrEmpty(ok))
-    {
-        <div class="text-success mt-2">@ok</div>
-    }
+    <div class="mb-3">
+        <label class="form-label">Cargo</label>
+        <InputText class="form-control" @bind-Value="model.Cargo" />
+        <ValidationMessage For="@(() => model.Cargo)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Contacto</label>
+        <InputText class="form-control" @bind-Value="model.Contacto" />
+        <ValidationMessage For="@(() => model.Contacto)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <InputText class="form-control" type="email" @bind-Value="model.Email" />
+        <ValidationMessage For="@(() => model.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Contraseña</label>
+        <InputText class="form-control" type="password" @bind-Value="model.Password" />
+        <ValidationMessage For="@(() => model.Password)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Confirmar contraseña</label>
+        <InputText class="form-control" type="password" @bind-Value="model.PasswordConfirm" />
+        <ValidationMessage For="@(() => model.PasswordConfirm)" />
+    </div>
+
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Crear cuenta</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="OnCancel">Cancelar</button>
+    </div>
 </EditForm>
 
 @code {
-    private UserDTO model = new();        
-    private string? passwordConfirm;
-    private string passError = string.Empty;
-    private string error = string.Empty;
-    private string ok = string.Empty;
+    private UserDTO model = new();
 
-    private async Task DoRegister()
+    private async Task RegisterAsync()
     {
-        error = ok = passError = string.Empty;
-        if (model.Password != passwordConfirm)
-        {
-            passError = "Las contraseñas no coinciden.";
-            return;
-        }
-
         var resp = await repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", model);
-
         if (resp.Error)
         {
-            error = await resp.GetErrorMessageAsync();
+            var msg = await resp.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
             return;
         }
 
-        ok = "Usuario creado. Ahora puedes iniciar sesión.";
-        // Redirigir al login:
-        navigation.NavigateTo("/auth/login");
+        await swal.FireAsync("¡Listo!", "Cuenta creada correctamente.", SweetAlertIcon.Success);
+        await loginService.LoginAsync(resp.Response!.Token);
+        nav.NavigateTo("/");
     }
+
+    private void OnCancel() => nav.NavigateTo("/");
 }
