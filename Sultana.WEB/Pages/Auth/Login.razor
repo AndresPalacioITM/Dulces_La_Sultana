@@ -32,7 +32,7 @@
 
     private async Task DoLogin()
     {
-        // Si tu API devuelve TokenDTO
+        // API devuelve TokenDTO
         var resp = await repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", model);
 
         if (resp.Error || resp.Response is null)
