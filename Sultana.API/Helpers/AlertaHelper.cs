@@ -27,7 +27,8 @@ namespace Sultana.API.Helpers
                                 Tipo = TipoAlerta.VencimientoProximo,
                                 Mensaje = $"El lote{lote.NumeroLote} de {lote.MateriaPrima.Nombre} vence en {Math.Max(0,(int)diasRestantes)} dias.",
                                 FechaGenerada = DateTime.UtcNow,
-                                Notificada = false
+                                Notificada = false,
+                                ProveedorId = lote.ProveedorId
                             });
                         }
                     }
@@ -41,6 +42,7 @@ namespace Sultana.API.Helpers
                             Mensaje = $"El lote {lote.NumeroLote} de {lote.MateriaPrima.Nombre} está agotado.",
                             FechaGenerada = DateTime.UtcNow,
                             Notificada = false,
+                            ProveedorId = lote.ProveedorId
                         });
                     }
                     else
@@ -56,6 +58,7 @@ namespace Sultana.API.Helpers
                                 Mensaje = $"El lote {lote.NumeroLote} de {lote.MateriaPrima.Nombre} tiene un stock bajo ({lote.CantidadDisponible}/{lote.CantidadIngresada}).",
                                 FechaGenerada = DateTime.UtcNow,
                                 Notificada = false,
+                                ProveedorId = lote.ProveedorId
                             });
                         }
                     }

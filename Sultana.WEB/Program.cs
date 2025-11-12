@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Sultana.WEB;
 using Sultana.WEB.Auth;
+using Sultana.WEB.Services;
 using Sultana.WEB.Repositories;
 using Sultana.WEB;
 using Sultana.WEB.Repositories;
+
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -19,7 +22,9 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBase) 
 builder.Services.AddScoped<IRepository, Repository>();
 
 // Auth (guardar token en localStorage y exponer AuthenticationState)
-builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<Sultana.WEB.Auth.ILoginService, Sultana.WEB.Auth.LoginService>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
+
+builder.Services.AddScoped<AlertasService>(); 
 
 await builder.Build().RunAsync();

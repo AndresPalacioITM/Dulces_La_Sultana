@@ -15,5 +15,8 @@ namespace Sultana.Shared.Entities
         public string Mensaje { get; set; } = null!;
         public DateTime FechaGenerada { get; set; } = DateTime.UtcNow;
         public bool Notificada { get; set; } = false;
+
+        public int ProveedorId { get; set; }
+        public Proveedor? Proveedor { get; set; }
     }
 }
