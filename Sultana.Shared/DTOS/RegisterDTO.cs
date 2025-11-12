@@ -1,23 +1,38 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// Sultana.Shared/DTOs/RegisterDTO.cs
+using System.ComponentModel.DataAnnotations;
 
 namespace Sultana.Shared.DTOs;
 
 public class RegisterDTO
 {
+    [Display(Name = "Nombre del empleado")]
     [Required, MaxLength(120)]
     public string Nombre { get; set; } = null!;
 
+    [Display(Name = "Cargo")]
+    [Required, MaxLength(80)]
+    public string Cargo { get; set; } = null!;
+
+    [Display(Name = "Contacto")]
+    [MaxLength(60)]
+    public string? Contacto { get; set; }
+
+    [Display(Name = "Correo")]
     [Required, EmailAddress, MaxLength(120)]
     public string Email { get; set; } = null!;
 
-    [Required, MinLength(6)]
-    public string Password { get; set; } = null!;
-
-    [Required, MinLength(25)]
-    public string Contacto { get; set; } = null!;
-
+    // Opcional (avatar)
     public string? Photo { get; set; }
 
-    public string? Cargo { get; set; } = "Operario";
+    [DataType(DataType.Password)]
+    [Display(Name = "Contraseña")]
+    [Required, StringLength(20, MinimumLength = 6)]
+    public string Password { get; set; } = null!;
+
+    [DataType(DataType.Password)]
+    [Display(Name = "Confirmación de contraseña")]
+    [Required, StringLength(20, MinimumLength = 6)]
+    [Compare("Password", ErrorMessage = "La contraseña y la confirmación no son iguales.")]
+    public string PasswordConfirm { get; set; } = null!;
 }
 
