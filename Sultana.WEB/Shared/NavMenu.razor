@@ -1,0 +1,32 @@
+﻿<nav class="navbar navbar-light flex-column p-3">
+    <a class="navbar-brand mb-3" href="/">
+        <!-- Pon aquí tu imagen si quieres -->
+        <span class="fw-bold">Sultana</span>
+    </a>
+
+    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+        <span class="bi bi-house me-2"></span>Inicio
+    </NavLink>
+
+    <NavLink class="nav-link" href="/empleados">
+        <span class="bi bi-people me-2"></span>Empleados
+    </NavLink>
+
+    <AuthorizeView>
+        <Authorized>
+            <NavLink class="nav-link" href="/logout">
+                <span class="bi bi-box-arrow-right me-2"></span>Cerrar sesión
+            </NavLink>
+        </Authorized>
+        <NotAuthorized>
+            <NavLink class="nav-link" href="/login">
+                <span class="bi bi-box-arrow-in-right me-2"></span>Iniciar sesión
+            </NavLink>
+            <NavLink class="nav-link" href="/register">
+                <span class="bi bi-person-plus me-2"></span>Registro
+            </NavLink>
+        </NotAuthorized>
+    </AuthorizeView>
+</nav>
+
+@code { /* sin lógica por ahora */ }

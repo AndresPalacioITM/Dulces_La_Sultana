@@ -1,0 +1,58 @@
+﻿@page "/empleados"
+@using Sultana.Shared.Entities
+@using Sultana.WEB.Repositories
+@inject IRepository repo
+
+<h3>Empleados</h3>
+
+<div class="mb-3">
+    <a href="/empleados/crear" class="btn btn-primary">Nuevo empleado</a>
+</div>
+
+@if (empleados is null)
+{
+    <p>Cargando…</p>
+}
+else if (empleados.Count == 0)
+{
+    <div class="alert alert-info">No hay empleados.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cargo</th>
+                <th>Contacto</th>
+                <th>Email</th>
+                <th style="width:150px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in empleados)
+            {
+                <tr>
+                    <td>@e.Nombre</td>
+                    <td>@e.Cargo</td>
+                    <td>@e.Contacto</td>
+                    <td>@e.Email</td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" href="/empleados/editar/@e.Id">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Empleado>? empleados;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var r = await repo.GetAsync<List<Empleado>>("/api/Empleado");
+        empleados = r.Error ? new() : r.Response ?? new();
+    }
+}
+

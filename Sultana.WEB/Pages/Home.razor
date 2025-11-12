@@ -1,7 +1,48 @@
-﻿﻿@page "/"
+﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Inicio</PageTitle>
 
-<h1>Bienvenidos!</h1>
+<h1 class="display-6 mb-3">Dulces La Sultana del Valle</h1>
+<p class="text-muted">Bienvenida, aquí gestionas Empleados, Producción e Inventarios.</p>
 
-Dulces la Sultana del Valle
+<div class="row g-3">
+    <div class="col-md-4">
+        <NavLink class="card text-decoration-none" href="/Empleados">
+            <div class="card-body">
+                <h5 class="card-title mb-1">Empleados</h5>
+                <p class="card-text text-muted">Crear, editar y eliminar empleados.</p>
+            </div>
+        </NavLink>
+    </div>
+
+    <div class="col-md-4">
+        <NavLink class="card text-decoration-none" href="/Login">
+            <div class="card-body">
+                <h5 class="card-title mb-1">Iniciar sesión</h5>
+                <p class="card-text text-muted">Accede para ver módulos protegidos.</p>
+            </div>
+        </NavLink>
+    </div>
+
+    <div class="col-md-4">
+        <NavLink class="card text-decoration-none" href="/Register">
+            <div class="card-body">
+                <h5 class="card-title mb-1">Registrarse</h5>
+                <p class="card-text text-muted">Crear cuenta de empleado.</p>
+            </div>
+        </NavLink>
+    </div>
+</div>
+
+<AuthorizeView>
+    <Authorized>
+        <div class="alert alert-success mt-3">
+            Sesión iniciada: @context.User.Identity!.Name
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-warning mt-3">
+            No has iniciado sesión.
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

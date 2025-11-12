@@ -1,90 +1,117 @@
-﻿@page "/auth/register"
+﻿@page "/Register"
+
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.Shared.DTOs
+@using Sultana.WEB.Repositories
+@using Sultana.WEB.Auth
+
 @inject IRepository repository
-@inject NavigationManager navigation
+@inject SweetAlertService sweet
+@inject NavigationManager nav
+@inject ILoginService loginService
 
-<h3>Registrar usuario</h3>
+<h3>Registrar nuevo empleado</h3>
 
-<EditForm Model="model" OnValidSubmit="DoRegister">
+<EditForm Model="model" OnValidSubmit="CreateAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="row g-2">
-        <div class="col-md-6">
-            <label>Nombres</label>
-            <InputText class="form-control" @bind-Value="model.FirstName" />
+
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-person-plus"></i> Registrar empleado</span>
+            <button class="btn btn-sm btn-primary" type="submit" disabled="@isSubmitting">
+                @if (isSubmitting)
+                {
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                }
+                Registrar
+            </button>
         </div>
-        <div class="col-md-6">
-            <label>Apellidos</label>
-            <InputText class="form-control" @bind-Value="model.LastName" />
-        </div>
-        <div class="col-md-6">
-            <label>Documento</label>
-            <InputText class="form-control" @bind-Value="model.Document" />
-        </div>
-        <div class="col-md-6">
-            <label>Dirección</label>
-            <InputText class="form-control" @bind-Value="model.Direccion" />
-        </div>
-        <div class="col-md-6">
-            <label>Email</label>
-            <InputText class="form-control" @bind-Value="model.Email" />
-            <ValidationMessage For="@(() => model.Email)" />
-        </div>
-        <div class="col-md-6">
-            <label>Foto (URL/Base64)</label>
-            <InputText class="form-control" @bind-Value="model.Photo" />
-        </div>
-        <div class="col-md-6">
-            <label>Contraseña</label>
-            <InputText class="form-control" type="password" @bind-Value="model.Password" />
-            <ValidationMessage For="@(() => model.Password)" />
-        </div>
-        <div class="col-md-6">
-            <label>Confirmación</label>
-            <InputText class="form-control" type="password" @bind-Value="passwordConfirm" />
-            @if (!string.IsNullOrEmpty(passError))
-            {
-                <div class="text-danger">@passError</div>
-            }
+
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+
+                    <div class="mb-2">
+                        <label class="form-label">Nombre</label>
+                        <InputText class="form-control" @bind-Value="model.Nombre" />
+                        <ValidationMessage For="@(() => model.Nombre)" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Cargo</label>
+                        <InputText class="form-control" @bind-Value="model.Cargo" />
+                        <ValidationMessage For="@(() => model.Cargo)" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Contacto</label>
+                        <InputText class="form-control" @bind-Value="model.Contacto" />
+                        <ValidationMessage For="@(() => model.Contacto)" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Correo</label>
+                        <InputText class="form-control" type="email" @bind-Value="model.Email" />
+                        <ValidationMessage For="@(() => model.Email)" />
+                    </div>
+
+                    <hr class="my-3" />
+
+                    <div class="mb-2">
+                        <label class="form-label">Contraseña</label>
+                        <InputText class="form-control" type="password" @bind-Value="model.Password" />
+                        <ValidationMessage For="@(() => model.Password)" />
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Confirmación de contraseña</label>
+                        <InputText class="form-control" type="password" @bind-Value="model.PasswordConfirm" />
+                        <ValidationMessage For="@(() => model.PasswordConfirm)" />
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-
-    <button class="btn btn-primary mt-3" type="submit">Registrar</button>
-    @if (!string.IsNullOrEmpty(error))
-    {
-        <div class="text-danger mt-2">@error</div>
-    }
-    @if (!string.IsNullOrEmpty(ok))
-    {
-        <div class="text-success mt-2">@ok</div>
-    }
 </EditForm>
 
 @code {
-    private UserDTO model = new();        
-    private string? passwordConfirm;
-    private string passError = string.Empty;
-    private string error = string.Empty;
-    private string ok = string.Empty;
+    private RegisterDTO model = new();
+    private bool isSubmitting;
 
-    private async Task DoRegister()
+    private async Task CreateAsync()
     {
-        error = ok = passError = string.Empty;
-        if (model.Password != passwordConfirm)
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        try
         {
-            passError = "Las contraseñas no coinciden.";
-            return;
+            // La API debe devolver TokenDTO { token, expiration }
+            var resp = await repository.PostAsync<RegisterDTO, TokenDTO>("/api/accounts/register", model);
+
+            if (resp.Error)
+            {
+                var msg = await resp.GetErrorMessageAsync();
+                await sweet.FireAsync("Error", msg, SweetAlertIcon.Error);
+                return;
+            }
+
+            // Guardar token en localStorage y notificar autenticación
+            await loginService.LoginAsync(resp.Response!.Token);
+
+            await sweet.FireAsync("Registro exitoso", "Bienvenida, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
+
+            // Redirige al home (o a otra página, por ejemplo /empleados)
+            nav.NavigateTo("/");
         }
-
-        var resp = await repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", model);
-
-        if (resp.Error)
+        catch (Exception ex)
         {
-            error = await resp.GetErrorMessageAsync();
-            return;
+            await sweet.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
         }
-
-        ok = "Usuario creado. Ahora puedes iniciar sesión.";
-        // Redirigir al login:
-        navigation.NavigateTo("/auth/login");
+        finally
+        {
+            isSubmitting = false;
+        }
     }
 }

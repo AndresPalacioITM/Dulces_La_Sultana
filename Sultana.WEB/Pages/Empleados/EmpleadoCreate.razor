@@ -1,0 +1,51 @@
+﻿@page "/empleados/crear"
+@using Sultana.Shared.Entities
+@using Sultana.WEB.Repositories
+@inject IRepository repo
+@inject NavigationManager nav
+
+<h3>Nuevo empleado</h3>
+
+<EditForm Model="model" OnValidSubmit="GuardarAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Nombre</label>
+        <InputText class="form-control" @bind-Value="model.Nombre" />
+        <ValidationMessage For="@(() => model.Nombre)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Cargo</label>
+        <InputText class="form-control" @bind-Value="model.Cargo" />
+        <ValidationMessage For="@(() => model.Cargo)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Contacto</label>
+        <InputText class="form-control" @bind-Value="model.Contacto" />
+        <ValidationMessage For="@(() => model.Contacto)" />
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText class="form-control" type="email" @bind-Value="model.Email" />
+        <ValidationMessage For="@(() => model.Email)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-secondary ms-2" type="button" @onclick="Cancelar">Cancelar</button>
+</EditForm>
+
+@code {
+    private Empleado model = new();
+
+    private async Task GuardarAsync()
+    {
+        var r = await repo.PostAsync("/api/Empleado", model);
+        if (!r.Error) nav.NavigateTo("/empleados");
+        // si quieres mostrar errores, lee: await r.GetErrorMessageAsync()
+    }
+
+    private void Cancelar() => nav.NavigateTo("/empleados");
+}

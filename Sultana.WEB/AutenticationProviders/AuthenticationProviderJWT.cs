@@ -1,65 +1,73 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using Sultana.WEB.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using Sultana.WEB.Auth;
 
-namespace Sultana.WEB.Auth
+namespace Sultana.WEB.AutenticationProviders
 {
     public class AuthenticationProviderJWT : AuthenticationStateProvider, ILoginService
     {
-        private readonly IJSRuntime _jSRuntime;
+        private readonly IJSRuntime _jsRuntime;
         private readonly HttpClient _httpClient;
-        private readonly String _tokenKey;
-        private readonly AuthenticationState _anonimous;
+        private const string TokenKey = "TOKEN_KEY";
+        private readonly AuthenticationState _anonymous =
+            new(new ClaimsPrincipal(new ClaimsIdentity()));
 
-        public AuthenticationProviderJWT(IJSRuntime jSRuntime, HttpClient httpClient)
+        public AuthenticationProviderJWT(IJSRuntime jsRuntime, HttpClient httpClient)
         {
-            _jSRuntime = jSRuntime;
+            _jsRuntime = jsRuntime;
             _httpClient = httpClient;
-            _tokenKey = "TOKEN_KEY";
-            _anonimous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
-        public async override Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var token = await _jSRuntime.GetLocalStorage(_tokenKey);
-            if (token is null)
-            {
-                return _anonimous;
-            }
 
-            return BuildAuthenticationState(token.ToString()!);
+            var token = await _jsRuntime.InvokeAsync<string?>("localStorage.getItem", TokenKey);
+            if (string.IsNullOrWhiteSpace(token))
+                return _anonymous;
+
+            return BuildAuthenticationState(token);
         }
 
         private AuthenticationState BuildAuthenticationState(string token)
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
-            var claims = ParseClaimsFromJWT(token);
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt")));
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+
+            var claims = ParseClaimsFromJwt(token);
+            var identity = new ClaimsIdentity(claims, "jwt");
+            return new AuthenticationState(new ClaimsPrincipal(identity));
         }
 
-        private IEnumerable<Claim> ParseClaimsFromJWT(string token)
+        private static IEnumerable<Claim> ParseClaimsFromJwt(string token)
         {
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            var unserializedToken = jwtSecurityTokenHandler.ReadJwtToken(token);
-            return unserializedToken.Claims;
-
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            return jwt.Claims;
         }
 
+        // ILoginService
         public async Task LoginAsync(string token)
         {
-            await _jSRuntime.SetLocalStorage(_tokenKey, token);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token);
             var authState = BuildAuthenticationState(token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
 
         public async Task LogoutAsync()
         {
-            await _jSRuntime.RemoveLocalStorage(_tokenKey);
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", TokenKey);
             _httpClient.DefaultRequestHeaders.Authorization = null;
-            NotifyAuthenticationStateChanged(Task.FromResult(_anonimous));
+            NotifyAuthenticationStateChanged(Task.FromResult(_anonymous));
+        }
+
+        public async Task<string?> GetTokenAsync()
+        {
+            var token = await _jsRuntime.InvokeAsync<string?>("localStorage.getItem", TokenKey);
+            return string.IsNullOrWhiteSpace(token) ? null : token;
         }
     }
 }
+

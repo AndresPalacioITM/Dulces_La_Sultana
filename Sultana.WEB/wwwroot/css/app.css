@@ -154,3 +154,44 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+/* ====== Layout Sultana: fija contenido arriba ====== */
+html, body {
+    height: 100%;
+}
+
+.page {
+    display: flex;
+    min-height: 100vh; /* página a altura de pantalla */
+}
+
+.sidebar {
+    width: 260px; /* ajusta si tu NavMenu es más angosto/ancho */
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* hace que el contenido inicie ARRIBA */
+}
+
+.top-row {
+    position: sticky; /* header fijo arriba */
+    top: 0;
+    z-index: 1030;
+    background: #fff;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.content {
+    margin-top: 0 !important; /* evita que algo lo empuje hacia abajo */
+    padding: 1rem;
+}
+
+/* Si en algún componente usaste utilidades que empujan hacia abajo, anúlalas: */
+.mt-auto {
+    margin-top: 0 !important;
+}
+
+.align-items-end {
+    align-items: flex-start !important;
+}
