@@ -1,127 +1,104 @@
 ﻿@page "/Register"
 
+@using CurrieTechnologies.Razor.SweetAlert2
 @using Sultana.Shared.DTOs
 @using Sultana.WEB.Repositories
-@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.WEB.Auth
 
 @inject IRepository repository
-@inject SweetAlertService sweetAlertService
-@inject NavigationManager navigationManager
+@inject SweetAlertService sweet
+@inject NavigationManager nav
+@inject ILoginService loginService
 
-<h3 class="mb-3">Registrar nuevo empleado</h3>
+<h3 class="mb-3 text-center">Registrar nuevo empleado</h3>
 
-<EditForm Model="userDTO" OnValidSubmit="CreateUserAsync">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<div class="card shadow-sm p-4" style="max-width: 600px; margin: 0 auto; background-color: #fffbe6;">
+    <EditForm Model="model" OnValidSubmit="CreateAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
 
-    <div class="card shadow-sm">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-person-plus-fill me-2"></i>Nuevo empleado</span>
-            <button class="btn btn-sm btn-primary" type="submit" disabled="@loading">
-                @if (loading)
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <InputText class="form-control form-control-sm" @bind-Value="model.Nombre" />
+            <ValidationMessage For="@(() => model.Nombre)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cargo</label>
+            <InputText class="form-control form-control-sm" @bind-Value="model.Cargo" />
+            <ValidationMessage For="@(() => model.Cargo)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contacto</label>
+            <InputText class="form-control form-control-sm" @bind-Value="model.Contacto" />
+            <ValidationMessage For="@(() => model.Contacto)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Correo</label>
+            <InputText class="form-control form-control-sm" type="email" @bind-Value="model.Email" />
+            <ValidationMessage For="@(() => model.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <InputText class="form-control form-control-sm" type="password" @bind-Value="model.Password" />
+            <ValidationMessage For="@(() => model.Password)" />
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Confirmar contraseña</label>
+            <InputText class="form-control form-control-sm" type="password" @bind-Value="model.PasswordConfirm" />
+            <ValidationMessage For="@(() => model.PasswordConfirm)" />
+        </div>
+
+        <div class="d-flex gap-2 justify-content-end">
+            <button class="btn btn-primary" type="submit" disabled="@isSubmitting">
+                @if (isSubmitting)
                 {
-                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
                 }
                 Registrar
             </button>
+            <button type="button" class="btn btn-outline-secondary" @onclick="OnCancel">Cancelar</button>
         </div>
-
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <!-- Nombre -->
-                    <div>
-                        <label class="form-label">Nombre del empleado</label>
-                        <InputText class="form-control" @bind-Value="userDTO.Nombre" />
-                        <ValidationMessage For="@(() => userDTO.Nombre)" />
-                    </div>
-
-                    <!-- Cargo -->
-                    <div>
-                        <label class="form-label">Cargo</label>
-                        <InputText class="form-control" @bind-Value="userDTO.Cargo" />
-                        <ValidationMessage For="@(() => userDTO.Cargo)" />
-                    </div>
-
-                    <!-- Contacto -->
-                    <div>
-                        <label class="form-label">Contacto</label>
-                        <InputText class="form-control" @bind-Value="userDTO.Contacto" />
-                        <ValidationMessage For="@(() => userDTO.Contacto)" />
-                    </div>
-
-                    <!-- Email -->
-                    <div>
-                        <label class="form-label">Correo</label>
-                        <InputText class="form-control" type="email" @bind-Value="userDTO.Email" />
-                        <ValidationMessage For="@(() => userDTO.Email)" />
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <!-- Foto (opcional) -->
-                    <div>
-                        <label class="form-label">Foto (URL/Base64) <span class="text-muted">(opcional)</span></label>
-                        <InputText class="form-control" @bind-Value="userDTO.Photo" />
-                    </div>
-
-                    <!-- Password -->
-                    <div>
-                        <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" type="password" @bind-Value="userDTO.Password" />
-                        <ValidationMessage For="@(() => userDTO.Password)" />
-                    </div>
-
-                    <!-- Confirmación -->
-                    <div>
-                        <label class="form-label">Confirmación de contraseña</label>
-                        <InputText class="form-control" type="password" @bind-Value="userDTO.PasswordConfirm" />
-                        <ValidationMessage For="@(() => userDTO.PasswordConfirm)" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-footer bg-white">
-            <a class="btn btn-outline-secondary" href="/">Cancelar</a>
-        </div>
-    </div>
-</EditForm>
+    </EditForm>
+</div>
 
 @code {
-    private UserDTO userDTO = new();
-    private bool loading;
+    private RegisterDTO model = new();
+    private bool isSubmitting;
 
-    private async Task CreateUserAsync()
+    private async Task CreateAsync()
     {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
         try
         {
-            loading = true;
+            var resp = await repository.PostAsync<RegisterDTO, TokenDTO>("/api/accounts/register", model);
 
-            // Si tu AccountsController devuelve token, podrías usar PostAsync<UserDTO, TokenDTO>.
-            // Aquí asumimos que basta con crear y luego ir a /Login.
-            var response = await repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
-
-            if (response.Error)
+            if (resp.Error)
             {
-                var message = await response.GetErrorMessageAsync();
-                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                var msg = await resp.GetErrorMessageAsync();
+                await sweet.FireAsync("Error", msg, SweetAlertIcon.Error);
                 return;
             }
 
-            await sweetAlertService.FireAsync("Confirmación",
-                "La cuenta ha sido creada con éxito. Ahora puedes iniciar sesión.",
-                SweetAlertIcon.Success);
-
-            navigationManager.NavigateTo("/Login");
+            await loginService.LoginAsync(resp.Response!.Token);
+            await sweet.FireAsync("Registro exitoso", "Bienvenida, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
+            nav.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+            await sweet.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
         }
         finally
         {
-            loading = false;
+            isSubmitting = false;
         }
     }
+
+    private void OnCancel() => nav.NavigateTo("/");
 }
