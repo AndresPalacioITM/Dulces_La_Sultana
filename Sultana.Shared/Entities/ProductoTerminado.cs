@@ -6,17 +6,16 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Sultana.Shared.Entities
+namespace Sultana.Shared.Entities;
+
+
+public class ProductoTerminado
 {
+    public int Id { get; set; }
 
-    public class ProductoTerminado
-    {
-        public int Id { get; set; }
+    [Display(Name = "Producto")]
+    [Required, MaxLength(120)]
+    public string Nombre { get; set; } = null!;
 
-        [Display(Name = "Producto")]
-        [Required, MaxLength(120)]
-        public string Nombre { get; set; } = null!;
-
-        //[JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
-    }
+    //[JsonIgnore] public ICollection<OrdenProduccion> Ordenes { get; set; } = new List<OrdenProduccion>();
 }
