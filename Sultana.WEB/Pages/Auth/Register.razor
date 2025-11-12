@@ -60,7 +60,7 @@
 </EditForm>
 
 @code {
-    private UserDTO model = new();          // o RegisterDTO si así lo definiste
+    private UserDTO model = new();        
     private string? passwordConfirm;
     private string passError = string.Empty;
     private string error = string.Empty;
@@ -75,7 +75,6 @@
             return;
         }
 
-        // Si CreateUser devuelve TokenDTO:
         var resp = await repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", model);
 
         if (resp.Error)
