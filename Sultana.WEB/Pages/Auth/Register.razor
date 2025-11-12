@@ -1,0 +1,90 @@
+﻿@page "/auth/register"
+@inject IRepository repository
+@inject NavigationManager navigation
+
+<h3>Registrar usuario</h3>
+
+<EditForm Model="model" OnValidSubmit="DoRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row g-2">
+        <div class="col-md-6">
+            <label>Nombres</label>
+            <InputText class="form-control" @bind-Value="model.FirstName" />
+        </div>
+        <div class="col-md-6">
+            <label>Apellidos</label>
+            <InputText class="form-control" @bind-Value="model.LastName" />
+        </div>
+        <div class="col-md-6">
+            <label>Documento</label>
+            <InputText class="form-control" @bind-Value="model.Document" />
+        </div>
+        <div class="col-md-6">
+            <label>Dirección</label>
+            <InputText class="form-control" @bind-Value="model.Direccion" />
+        </div>
+        <div class="col-md-6">
+            <label>Email</label>
+            <InputText class="form-control" @bind-Value="model.Email" />
+            <ValidationMessage For="@(() => model.Email)" />
+        </div>
+        <div class="col-md-6">
+            <label>Foto (URL/Base64)</label>
+            <InputText class="form-control" @bind-Value="model.Photo" />
+        </div>
+        <div class="col-md-6">
+            <label>Contraseña</label>
+            <InputText class="form-control" type="password" @bind-Value="model.Password" />
+            <ValidationMessage For="@(() => model.Password)" />
+        </div>
+        <div class="col-md-6">
+            <label>Confirmación</label>
+            <InputText class="form-control" type="password" @bind-Value="passwordConfirm" />
+            @if (!string.IsNullOrEmpty(passError))
+            {
+                <div class="text-danger">@passError</div>
+            }
+        </div>
+    </div>
+
+    <button class="btn btn-primary mt-3" type="submit">Registrar</button>
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="text-danger mt-2">@error</div>
+    }
+    @if (!string.IsNullOrEmpty(ok))
+    {
+        <div class="text-success mt-2">@ok</div>
+    }
+</EditForm>
+
+@code {
+    private UserDTO model = new();        
+    private string? passwordConfirm;
+    private string passError = string.Empty;
+    private string error = string.Empty;
+    private string ok = string.Empty;
+
+    private async Task DoRegister()
+    {
+        error = ok = passError = string.Empty;
+        if (model.Password != passwordConfirm)
+        {
+            passError = "Las contraseñas no coinciden.";
+            return;
+        }
+
+        var resp = await repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", model);
+
+        if (resp.Error)
+        {
+            error = await resp.GetErrorMessageAsync();
+            return;
+        }
+
+        ok = "Usuario creado. Ahora puedes iniciar sesión.";
+        // Redirigir al login:
+        navigation.NavigateTo("/auth/login");
+    }
+}
