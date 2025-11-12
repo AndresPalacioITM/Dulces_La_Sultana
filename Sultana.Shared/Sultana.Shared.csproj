@@ -4,11 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <RootNamespace>Sultana.Shared</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />

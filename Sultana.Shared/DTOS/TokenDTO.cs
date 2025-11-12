@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sultana.Shared.DTOS
-{
-    public class TokenDTO
-    {
-        public string Token { get; set; } = null!;
+namespace Sultana.Shared.DTOs;
 
-        public DateTime Expiration { get; set; }
-    }
+public class TokenDTO
+{
+    public string Token { get; set; } = null!;
+
+    public DateTime Expiration { get; set; }
 }
