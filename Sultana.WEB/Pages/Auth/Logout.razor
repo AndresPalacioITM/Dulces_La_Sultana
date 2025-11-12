@@ -1,0 +1,15 @@
+﻿@page "/auth/logout"
+@inject ILoginService loginService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager navigation
+
+<h3>Cerrando sesión…</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await loginService.LogoutAsync();
+        (AuthProvider as JwtAuthenticationStateProvider)!.NotifyLogout();
+        navigation.NavigateTo("/");
+    }
+}
