@@ -2,6 +2,48 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+:root {
+    /* Color Principal (Primary): Dorado / Amarillo Sultana */
+    --bs-primary: #FFB300; /* Un tono de amarillo dorado brillante */
+    --bs-primary-rgb: 255, 179, 0;
+    /* Color de Éxito (Success): Un verde que contrasta bien, bueno para mensajes */
+    --bs-success: #4CAF50;
+    /* Color de Alerta (Warning): El amarillo predeterminado de Bootstrap es bueno, lo dejamos o ajustamos */
+    --bs-warning: #FFC107;
+    /* Color de Fondo principal: Un color muy claro o blanco */
+    --bs-body-bg: #f8f9fa;
+    /* Color de Fuente principal: Un color oscuro legible */
+    --bs-body-color: #343a40;
+}
+
+
+/* Estilo adicional para mejorar la legibilidad y el cuerpo de la página */
+body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Puedes cambiar la fuente aquí */
+}
+
+/* Ajustes para la barra de navegación que se ve en la imagen */
+/* Si la barra de navegación es de color claro, aseguramos que los enlaces sean oscuros */
+.navbar-light .navbar-nav .nav-link {
+    color: var(--bs-body-color); /* Texto oscuro */
+    font-weight: 500;
+}
+
+    .navbar-light .navbar-nav .nav-link:hover {
+        color: var(--bs-primary); /* El color de marca al pasar el mouse */
+    }
+
+/* Ajuste para el h1 que aparece en la bienvenida */
+.display-5 {
+    font-weight: 700 !important;
+}
+
+
+
+
+
 h1:focus {
     outline: none;
 }
