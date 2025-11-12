@@ -1,16 +1,73 @@
 ﻿@inherits LayoutComponentBase
+
+@using Sultana.WEB.Services
+@using Sultana.Shared.Entities
+@inject AlertasService AlertasService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
+        <div class="top-row px-4 d-flex justify-content-between align-items-center">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
+
+        <!-- 🔔 Sección de alertas -->
+        @if (alertas?.Any() == true)
+        {
+            <div class="alertas-container p-3">
+                @foreach (var alerta in alertas)
+                {
+                    <div class="alert alert-warning alert-dismissible fade show mb-2 shadow-sm" role="alert">
+                        <strong>@alerta.Tipo:</strong> @alerta.Mensaje
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+            </div>
+        }
 
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    private List<Alerta> alertas = new();
+    private int proveedorId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Intentar obtener el ID del proveedor autenticado
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var claim = user.FindFirst("proveedorId");
+                if (claim != null && int.TryParse(claim.Value, out var id))
+                {
+                    proveedorId = id;
+                }
+            }
+
+             // Si no hay autenticación aún, usar un proveedorId fijo para pruebas
+             if (proveedorId == 0)
+             {
+                 proveedorId = 1; // ⚠️ cambia esto por un ID de proveedor real durante las pruebas
+             }
+
+            // Cargar las alertas del proveedor
+            alertas = await AlertasService.GetAlertasProveedorAsync(proveedorId);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error cargando alertas: {ex.Message}");
+        }
+    }
+}
