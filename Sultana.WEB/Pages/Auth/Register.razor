@@ -1,28 +1,26 @@
 ﻿@page "/Register"
 
-@using CurrieTechnologies.Razor.SweetAlert2
 @using Sultana.Shared.DTOs
 @using Sultana.WEB.Repositories
-@using Sultana.WEB.Auth
+@using CurrieTechnologies.Razor.SweetAlert2
 
 @inject IRepository repository
-@inject SweetAlertService sweet
-@inject NavigationManager nav
-@inject ILoginService loginService
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
 
-<h3>Registrar nuevo empleado</h3>
+<h3 class="mb-3">Registrar nuevo empleado</h3>
 
-<EditForm Model="model" OnValidSubmit="CreateAsync">
+<EditForm Model="userDTO" OnValidSubmit="CreateUserAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-person-plus"></i> Registrar empleado</span>
-            <button class="btn btn-sm btn-primary" type="submit" disabled="@isSubmitting">
-                @if (isSubmitting)
+            <span><i class="bi bi-person-plus-fill me-2"></i>Nuevo empleado</span>
+            <button class="btn btn-sm btn-primary" type="submit" disabled="@loading">
+                @if (loading)
                 {
-                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
                 }
                 Registrar
             </button>
@@ -31,87 +29,99 @@
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-
-                    <div class="mb-2">
-                        <label class="form-label">Nombre</label>
-                        <InputText class="form-control" @bind-Value="model.Nombre" />
-                        <ValidationMessage For="@(() => model.Nombre)" />
+                    <!-- Nombre -->
+                    <div>
+                        <label class="form-label">Nombre del empleado</label>
+                        <InputText class="form-control" @bind-Value="userDTO.Nombre" />
+                        <ValidationMessage For="@(() => userDTO.Nombre)" />
                     </div>
 
-                    <div class="mb-2">
+                    <!-- Cargo -->
+                    <div>
                         <label class="form-label">Cargo</label>
-                        <InputText class="form-control" @bind-Value="model.Cargo" />
-                        <ValidationMessage For="@(() => model.Cargo)" />
+                        <InputText class="form-control" @bind-Value="userDTO.Cargo" />
+                        <ValidationMessage For="@(() => userDTO.Cargo)" />
                     </div>
 
-                    <div class="mb-2">
+                    <!-- Contacto -->
+                    <div>
                         <label class="form-label">Contacto</label>
-                        <InputText class="form-control" @bind-Value="model.Contacto" />
-                        <ValidationMessage For="@(() => model.Contacto)" />
+                        <InputText class="form-control" @bind-Value="userDTO.Contacto" />
+                        <ValidationMessage For="@(() => userDTO.Contacto)" />
                     </div>
 
-                    <div class="mb-2">
+                    <!-- Email -->
+                    <div>
                         <label class="form-label">Correo</label>
-                        <InputText class="form-control" type="email" @bind-Value="model.Email" />
-                        <ValidationMessage For="@(() => model.Email)" />
+                        <InputText class="form-control" type="email" @bind-Value="userDTO.Email" />
+                        <ValidationMessage For="@(() => userDTO.Email)" />
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Foto (opcional) -->
+                    <div>
+                        <label class="form-label">Foto (URL/Base64) <span class="text-muted">(opcional)</span></label>
+                        <InputText class="form-control" @bind-Value="userDTO.Photo" />
                     </div>
 
-                    <hr class="my-3" />
-
-                    <div class="mb-2">
+                    <!-- Password -->
+                    <div>
                         <label class="form-label">Contraseña</label>
-                        <InputText class="form-control" type="password" @bind-Value="model.Password" />
-                        <ValidationMessage For="@(() => model.Password)" />
+                        <InputText class="form-control" type="password" @bind-Value="userDTO.Password" />
+                        <ValidationMessage For="@(() => userDTO.Password)" />
                     </div>
 
-                    <div class="mb-2">
+                    <!-- Confirmación -->
+                    <div>
                         <label class="form-label">Confirmación de contraseña</label>
-                        <InputText class="form-control" type="password" @bind-Value="model.PasswordConfirm" />
-                        <ValidationMessage For="@(() => model.PasswordConfirm)" />
+                        <InputText class="form-control" type="password" @bind-Value="userDTO.PasswordConfirm" />
+                        <ValidationMessage For="@(() => userDTO.PasswordConfirm)" />
                     </div>
-
                 </div>
             </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <a class="btn btn-outline-secondary" href="/">Cancelar</a>
         </div>
     </div>
 </EditForm>
 
 @code {
-    private RegisterDTO model = new();
-    private bool isSubmitting;
+    private UserDTO userDTO = new();
+    private bool loading;
 
-    private async Task CreateAsync()
+    private async Task CreateUserAsync()
     {
-        if (isSubmitting) return;
-        isSubmitting = true;
-
         try
         {
-            // La API debe devolver TokenDTO { token, expiration }
-            var resp = await repository.PostAsync<RegisterDTO, TokenDTO>("/api/accounts/register", model);
+            loading = true;
 
-            if (resp.Error)
+            // Si tu AccountsController devuelve token, podrías usar PostAsync<UserDTO, TokenDTO>.
+            // Aquí asumimos que basta con crear y luego ir a /Login.
+            var response = await repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
+
+            if (response.Error)
             {
-                var msg = await resp.GetErrorMessageAsync();
-                await sweet.FireAsync("Error", msg, SweetAlertIcon.Error);
+                var message = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
 
-            // Guardar token en localStorage y notificar autenticación
-            await loginService.LoginAsync(resp.Response!.Token);
+            await sweetAlertService.FireAsync("Confirmación",
+                "La cuenta ha sido creada con éxito. Ahora puedes iniciar sesión.",
+                SweetAlertIcon.Success);
 
-            await sweet.FireAsync("Registro exitoso", "Bienvenida, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
-
-            // Redirige al home (o a otra página, por ejemplo /empleados)
-            nav.NavigateTo("/");
+            navigationManager.NavigateTo("/Login");
         }
         catch (Exception ex)
         {
-            await sweet.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
         }
         finally
         {
-            isSubmitting = false;
+            loading = false;
         }
     }
 }
