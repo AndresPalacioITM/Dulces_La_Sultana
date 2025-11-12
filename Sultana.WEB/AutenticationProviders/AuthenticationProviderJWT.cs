@@ -3,8 +3,9 @@ using Microsoft.JSInterop;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using Sultana.WEB.Auth;
 
-namespace Sultana.WEB.Auth
+namespace Sultana.WEB.AutenticationProviders
 {
     public class AuthenticationProviderJWT : AuthenticationStateProvider, ILoginService
     {
