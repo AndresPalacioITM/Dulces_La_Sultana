@@ -1,64 +1,73 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Sultana.API.Data;
 using Sultana.Shared.Entities;
 
 namespace Sultana.API.Controllers
 {
+    [Route("/api/consumomp")]
     [ApiController]
-    [Route("api/[controller]")]
     public class ConsumoMPController : ControllerBase
     {
-        private readonly IConsumoMPService _consumoMPService;
-        public ConsumoMPController(IConsumoMPService consumoMPService)
+        private readonly DataContext _context;
+
+        public ConsumoMPController(DataContext context)
         {
-            _consumoMPService = consumoMPService;
+            _context = context;
         }
 
+        // Metodo GET
         [HttpGet]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> Get()
         {
-            var consumos = await _consumoMPService.GetAllAsync();
-            return Ok(consumos);
+            return Ok(await _context.ConsumoMPs.ToListAsync());
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ConsumoMP>> GetbyId(long id)
+        // GET: /api/consumomp/5
+        [HttpGet("{id:long}")]
+        public async Task<ActionResult> Get(long id)
         {
-            var consumo = await _consumoMPService.GetByIdAsync(id);
+            var consumo = await _context.ConsumoMPs
+                .FirstOrDefaultAsync(x => x.Id == id);
+
             if (consumo == null)
             {
                 return NotFound();
             }
+
             return Ok(consumo);
         }
 
+        // POST: /api/consumomp
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] ConsumoMP consumoMP)
+        public async Task<ActionResult> Post(ConsumoMP consumoMP)
         {
-            var createdConsumo = await _consumoMPService.CreateAsync(consumoMP);
-            return CreatedAtAction(nameof(GetbyId), new { id = createdConsumo.Id }, createdConsumo);
+            _context.ConsumoMPs.Add(consumoMP);
+            await _context.SaveChangesAsync();
+            return Ok(consumoMP); // 200
         }
 
-        [HttpPut("{id}"]
-        public async Task<ActionResult> Update(long id, [FromBody] ConsumoMP consumoMP)
+        // PUT: /api/consumomp
+        [HttpPut]
+        public async Task<ActionResult> Put(ConsumoMP consumoMP)
         {
-            var updatedConsumo = await _consumoMPService.UpdateAsync(id, consumoMP);
-            
-            if (!updatedConsumo)
-                return NotFound();
-
-            return NoContent();
+            _context.ConsumoMPs.Update(consumoMP);
+            await _context.SaveChangesAsync();
+            return Ok(consumoMP); // 200
         }
 
-        [HttpDelete("{id}")]
+        // DELETE: /api/consumomp/5
+        [HttpDelete("{id:long}")]
         public async Task<ActionResult> Delete(long id)
         {
-            var deleted = await _consumoMPService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound();
-            return NoContent();
+            var filas = await _context.ConsumoMPs
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
+
+            if (filas == 0)
+                return NotFound(); // 404
+
+            return NoContent(); // 204
         }
-
-
-
-
     }
+}
