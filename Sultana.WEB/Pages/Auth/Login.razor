@@ -1,48 +1,53 @@
-﻿@page "/auth/login"
+﻿@page "/Login"
+
+@using Sultana.Shared.DTOs
+@using CurrieTechnologies.Razor.SweetAlert2
+
 @inject IRepository repository
 @inject ILoginService loginService
-@inject AuthenticationStateProvider AuthProvider
-@inject NavigationManager navigation
+@inject NavigationManager nav
+@inject SweetAlertService swal
 
-<h3>Iniciar sesión</h3>
+<h3 class="mb-3">Iniciar sesión</h3>
 
-<EditForm Model="model" OnValidSubmit="DoLogin">
+<EditForm Model="model" OnValidSubmit="LoginAsync">
     <DataAnnotationsValidator />
-    <div class="mb-2">
-        <label>Email</label>
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
         <InputText class="form-control" @bind-Value="model.Email" />
         <ValidationMessage For="@(() => model.Email)" />
     </div>
-    <div class="mb-2">
-        <label>Contraseña</label>
+
+    <div class="mb-3">
+        <label class="form-label">Contraseña</label>
         <InputText class="form-control" type="password" @bind-Value="model.Password" />
         <ValidationMessage For="@(() => model.Password)" />
     </div>
 
-    <button class="btn btn-primary" type="submit">Entrar</button>
-    @if (!string.IsNullOrEmpty(error))
-    {
-        <div class="text-danger mt-2">@error</div>
-    }
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Ingresar</button>
+        <button type="button" class="btn btn-outline-secondary" @onclick="OnCancel">Cancelar</button>
+    </div>
 </EditForm>
 
 @code {
     private LoginDTO model = new();
-    private string error = string.Empty;
 
-    private async Task DoLogin()
+    private async Task LoginAsync()
     {
-        // API devuelve TokenDTO
         var resp = await repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", model);
-
-        if (resp.Error || resp.Response is null)
+        if (resp.Error)
         {
-            error = await resp.GetErrorMessageAsync();
+            var msg = await resp.GetErrorMessageAsync();
+            await swal.FireAsync("Error", msg, SweetAlertIcon.Error);
             return;
         }
 
-        await loginService.LoginAsync(resp.Response.Token);
-        (AuthProvider as JwtAuthenticationStateProvider)!.NotifyLogin();
-        navigation.NavigateTo("/");
+        await loginService.LoginAsync(resp.Response!.Token);
+        nav.NavigateTo("/");
     }
+
+    private void OnCancel() => nav.NavigateTo("/");
 }
