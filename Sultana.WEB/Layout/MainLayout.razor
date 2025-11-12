@@ -2,7 +2,7 @@
 
 @using Sultana.WEB.Services
 @using Sultana.Shared.Entities
-@inject AlertasService AlertasService
+@*@inject AlertasService AlertasService*@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="page">
@@ -15,7 +15,7 @@
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
 
-        <!-- 🔔 Sección de alertas -->
+        @* <!-- 🔔 Sección de alertas -->
         @if (alertas?.Any() == true)
         {
             <div class="alertas-container p-3">
@@ -27,7 +27,7 @@
                     </div>
                 }
             </div>
-        }
+        } *@
 
         <article class="content px-4">
             @Body
@@ -35,7 +35,7 @@
     </main>
 </div>
 
-@code {
+@* @code {
     private List<Alerta> alertas = new();
     private int proveedorId;
 
@@ -69,5 +69,5 @@
         {
             Console.WriteLine($"Error cargando alertas: {ex.Message}");
         }
-    }
-}
+    } *@
+
