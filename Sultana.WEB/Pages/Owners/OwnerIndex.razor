@@ -1,7 +1,8 @@
 ﻿@page "/owners"
 @using Owner = Sultana.Shared.Entities.Empleado
 @using Sultana.WEB.Repositories
-<Component />@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.WEB.Shared
+@using CurrieTechnologies.Razor.SweetAlert2
 
 @inject NavigationManager navigationManager
 @inject SweetAlertService swal
@@ -18,10 +19,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Documento</th>
                     <th>Nombre</th>
                     <th>Cargo</th>
-                    <th>Dirección</th>
+                    <th>Contacto</th>
                     <th>Email</th>
                     <th style="width:180px;">Acciones</th>
                 </tr>
@@ -30,10 +30,9 @@
                 @foreach (var owner in Owners!)
                 {
                     <tr>
-                        <td>@owner.Document</td>
                         <td>@owner.Nombre</td>
                         <td>@owner.Cargo</td>
-                        <td>@owner.Direccion</td>
+                        <td>@owner.Contacto</td>
                         <td>@owner.Email</td>
                         <td>
                             <a href="/Owners/edit/@owner.Id" class="btn btn-warning btn-sm me-1">Editar</a>
@@ -54,10 +53,7 @@
     private async Task Load()
     {
         var response = await repository.GetAsync<List<Owner>>("/api/Owners");
-        if (!response.Error && response.Response is not null)
-            Owners = response.Response;
-        else
-            Owners = new();
+        Owners = (!response.Error && response.Response is not null) ? response.Response : new();
     }
 
     private async Task DeleteAsync(Owner owner)
@@ -70,7 +66,6 @@
             ShowCancelButton = true
         });
 
-        // Si el usuario confirma, result.Value trae algo
         var confirm = !string.IsNullOrEmpty(result.Value);
         if (!confirm) return;
 
