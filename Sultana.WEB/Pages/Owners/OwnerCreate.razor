@@ -1,0 +1,39 @@
+﻿@page "/owners/create"
+
+@* Alias para que Owner sea tu entidad Empleado (sin cambiar tu código) *@
+@using Owner = Sultana.Shared.Entities.Empleado
+
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Sultana.WEB.Repositories
+@using Sultana.Shared.Entities
+
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
+
+<h3>Owner Create</h3>
+
+<OwnerForm @ref="OwnerForm" Owner="owner" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private OwnerForm? OwnerForm;
+    private Owner owner = new();
+
+    private async Task Create()
+    {
+        var responseHttp = await repository.PostAsync("/api/owners", owner);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await swal.FireAsync("Error", message);
+            return;
+        }
+        OwnerForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/Owners");
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("/Owners");
+    }
+}
