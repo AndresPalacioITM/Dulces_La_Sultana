@@ -1,45 +1,44 @@
 ﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
 @using CurrieTechnologies.Razor.SweetAlert2
 @using Sultana.Shared.Entities
-
 @inject SweetAlertService swal
 
-<Microsoft.AspNetCore.Components.Routing.NavigationLock
-    OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
-<EditForm Model="Owner" OnSubmit="OnSubmit">
+<EditForm Model="Model" OnSubmit="OnSubmit">
     <DataAnnotationsValidator />
 
-    @if (Owner.Id > 0)
+    @if (Model.Id > 0)
     {
         <div class="mb-3">
             <label>Id:</label>
-            <InputNumber class="form-control" @bind-Value="Owner.Id" disabled />
+            <InputNumber class="form-control" @bind-Value="Model.Id" disabled />
         </div>
     }
      
     <div class="mb-3">
         <label>Nombre del empleado:</label>
-        <InputText class="form-control" @bind-Value="Owner.Nombre" />
-        <ValidationMessage For="@(() => Owner.Nombre)" />
+        <InputText class="form-control" @bind-Value="Model.Nombre" />
+        <ValidationMessage For="@(() => Model.Nombre)" />
     </div>
 
     <div class="mb-3">
         <label>Cargo:</label>
-        <InputText class="form-control" @bind-Value="Owner.Cargo" />
-        <ValidationMessage For="@(() => Owner.Cargo)" />
+        <InputText class="form-control" @bind-Value="Model.Cargo" />
+        <ValidationMessage For="@(() => Model.Cargo)" />
     </div>
 
     <div class="mb-3">
         <label>Contacto:</label>
-        <InputText class="form-control" @bind-Value="Owner.Contacto" />
-        <ValidationMessage For="@(() => Owner.Contacto)" />
+        <InputText class="form-control" @bind-Value="Model.Contacto" />
+        <ValidationMessage For="@(() => Model.Contacto)" />
     </div>
 
     <div class="mb-3">
         <label>Correo:</label>
-        <InputText class="form-control" type="email" @bind-Value="Owner.Email" />
-        <ValidationMessage For="@(() => Owner.Email)" />
+        <InputText class="form-control" type="email" @bind-Value="Model.Email" />
+        <ValidationMessage For="@(() => Model.Email)" />
     </div>
 
     <div class="d-flex gap-2">
@@ -49,7 +48,7 @@
 </EditForm>
 
 @code {
-    [EditorRequired, Parameter] public Empleado Owner { get; set; } = default!;
+    [EditorRequired, Parameter] public Empleado Model { get; set; } = new();
     [EditorRequired, Parameter] public EventCallback OnSubmit { get; set; }
     [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
     public bool FormPostedSuccessfully { get; set; } = false;
@@ -70,5 +69,4 @@
         if (!confirm) context.PreventNavigation();
     }
 }
-
 
