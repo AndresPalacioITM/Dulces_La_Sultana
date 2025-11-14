@@ -15,11 +15,11 @@ public class Empleado
 
     [Display(Name = "Nombre del empleado")]
     [Required, MaxLength(120)]
-    public string Nombre { get; set; } = null!;
+    public string Nombre { get; set; }
 
     [Display(Name = "Cargo")]
     [Required, MaxLength(80)]
-    public string Cargo { get; set; } = null!;
+    public string Cargo { get; set; }
 
     [Display(Name = "Contacto"), MaxLength(60)]
     public string? Contacto { get; set; }
