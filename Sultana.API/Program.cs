@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Sultana.API.Data;
@@ -11,15 +12,38 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazorClient",
         policy =>
         {
-            policy.WithOrigins("https://localhost:8000")
+            policy.WithOrigins("https://localhost:8000", "https://localhost:7000")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowCredentials();
         });
 });
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+// Configuracion entity framework y sql server
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+
+    // Opciones de usuario
+    options.User.RequireUniqueEmail = true;
+
+    // Configuracion de lockout
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+})
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // Configure Swagger / OpenAPI
 builder.Services.AddSwaggerGen(c =>
@@ -55,22 +79,18 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
-
-//builder.Services.AddTransient<SeedDb>();
-
-
-builder.Services.AddOpenApi();
 
 //Register Helpers and Services
 builder.Services.AddScoped<IAlertaHelper, AlertaHelper>();
 builder.Services.AddHostedService<AlertaBackgroundService>();
 builder.Services.AddScoped<IInventarioHelper, InventarioHelper>(); // Registro del helper de inventario
 
+
+//builder.Services.AddTransient<SeedDb>();
+builder.Services.AddOpenApi();
+
+
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -79,8 +99,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowBlazorClient");
 
+
+app.UseAuthentication();
+app.UseCors("AllowBlazorClient");
 app.UseAuthorization();
 
 //Swagger solo en desarrollo
