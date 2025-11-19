@@ -1,142 +1,135 @@
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.top-row {
-    height: 3.5rem;
-    background-color: #DC3545;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-}
-
-.bi {
-    display: inline-block;
-    position: relative;
-    content: "";
-    width: 80px;
-    height: 80px;
-    margin-right: 0.75rem;
-    top: -1px;
-}
-
-.flex-column {
-    display: flex !important;
-    flex-direction: row !important;
-    padding: 0;
-    margin: 0;
+/*
+ * ----------------------------------------
+ * 1. CONTENEDOR PRINCIPAL Y ESTILO DE BARRA
+ * ----------------------------------------
+ */
+.nav-menu-horizontal-container {
     width: 100%;
-    align-items: center;
-    margin-left: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    /* CAMBIO CLAVE: Degradado de fondo moderno y sombra */
+    background: linear-gradient(90deg, #1f4068 0%, #4f4a7c 100%); /* Degradado de azul oscuro a violeta */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra más profunda para darle "pop" */
+    padding: 0 20px; /* Padding horizontal para el logo y el menú */
 }
 
+/*
+ * ----------------------------------------
+ * 2. LISTA DE ENLACES (Solo para móvil - En escritorio se anula)
+ * ----------------------------------------
+ */
+.nav-links-list {
+    /* Mantenemos el color de fondo para el menú que se despliega en móvil */
+    background-color: #1f4068;
+    padding: 0; /* Eliminar padding innecesario */
+    margin: 0;
+}
+
+/* * ----------------------------------------
+ * 3. ESTILOS DE ELEMENTOS INDIVIDUALES
+ * ----------------------------------------
+ */
 .nav-item {
-    font-size: 0.9rem;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 20px;
+    font-size: 1rem; /* Un poco más grande para mejor legibilidad */
+    padding: 0; /* Lo gestionaremos con el padding del <a> */
+    transition: background-color 0.3s ease; /* Añadimos transiciones */
 }
 
-    .nav-item:first-of-type {
+    /* Eliminamos padding específico que era para la vista vertical */
+    .nav-item:first-of-type, .nav-item:last-of-type {
         padding-top: 0;
-    }
-
-    .nav-item:last-of-type {
         padding-bottom: 0;
     }
 
-    .nav-item ::deep a {
-        color: white;
+
+    /* * ----------------------------------------
+ * 4. ESTILOS DE ENLACES (NavLink)
+ * ----------------------------------------
+ */
+    .nav-item a {
+        /* CAMBIO CLAVE: Texto más claro y fuente de acento */
+        color: #f7f7f7;
         border-radius: 4px;
-        height: auto;
-        display: inline-block;
-        line-height: normal;
-        padding: 10px 15px;
+        height: 100%; /* Ocupa todo el alto */
+        display: flex;
+        align-items: center;
+        padding: 10px 15px; /* Más padding para los enlaces */
+        line-height: normal; /* Normalizamos el line-height */
+        text-decoration: none; /* Quitamos el subrayado si lo tuviera */
+        transition: all 0.3s ease; /* Transición para hover */
     }
 
-        .nav-item ::deep a.active {
-            background-color: rgba(255,255,255,0.37);
-            color: white;
+        /* * ----------------------------------------
+ * 5. EFECTOS DE HOVER Y ACTIVO
+ * ----------------------------------------
+ */
+        .nav-item a.active {
+            /* Resalte más profesional: color de acento y borde inferior */
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #a4e5e0; /* Color de acento (turquesa claro) */
+            border-bottom: 3px solid #a4e5e0;
+            padding-bottom: 7px; /* Ajuste para la línea */
         }
 
-        .nav-item ::deep a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
+        .nav-item a:hover {
+            background-color: rgba(255, 255, 255, 0.15); /* Efecto hover más notable */
+            color: #a4e5e0; /* Usa el color de acento en hover */
+            transform: translateY(-1px); /* Efecto de levantamiento sutil */
         }
 
-.bi-house-door-fill-nav-menu {
-    background-image: url("/Images/icono-menu.jpg");
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
+        /* * ----------------------------------------
+ * 6. ESTILO DE ICONOS
+ * ----------------------------------------
+ */
+        .nav-item a .bi {
+            width: 2rem;
+            text-align: center;
+            margin-right: 8px; /* Espacio entre el icono y el texto */
+        }
 
+/* * ----------------------------------------
+ * 7. ESTILOS RESPONSIVOS (ESCRITORIO)
+ * ----------------------------------------
+ */
 
-@media (max-width: 640.98px) {
-    .nav-scrollable {
-        background-color: #DC3545;
-        padding: 10px 0;
+@media (min-width: 992px) {
+    /* * En escritorios, la lista de enlaces debe ser horizontal (flex).
+     * Esto anula el comportamiento de "colapso" de Bootstrap.
+     */
+    .nav-links-list {
+        display: flex !important;
+        flex-direction: row;
+        background-color: transparent !important; /* El fondo lo da el contenedor principal */
+        align-items: center;
+        height: 100%;
     }
 
-    .flex-column {
-        flex-direction: column !important;
-        align-items: flex-start;
-        margin-left: 0;
-    }
-
+    /* Aseguramos que los enlaces estén en línea y centrados */
     .nav-item {
-        width: 100%;
-        margin-right: 0;
-        padding-left: 20px;
-    }
-}
-
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
+        margin: 0 5px;
     }
 
-    .collapse {
-        display: block !important;
-    }
-
-    .nav-scrollable {
-        height: auto;
-        overflow-y: visible;
-    }
+        .nav-item a {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            height: auto;
+        }
 }
 
 
-
-.bi {
-    display: inline-block; 
-    position: relative;
-    
-    content: "";
-   
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
-    top: -1px;
+/* * ----------------------------------------
+ * 8. ESTILOS DEL BOTÓN HAMBURGUESA
+ * ----------------------------------------
+ */
+.navbar-toggler {
+    /* Más oscuro para contrastar con el fondo claro del logo */
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
-
-
-
-
-
-
-.bi-house-door-fill-nav-menu {
-   
-    background-image: url("/Images/icono-menu.jpg");
-   
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
+    .navbar-toggler:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }

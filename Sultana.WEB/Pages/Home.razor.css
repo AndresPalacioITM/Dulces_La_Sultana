@@ -1,0 +1,63 @@
+﻿/* Este código va en Home.razor.css */
+
+/* Estilo Base de las Tarjetas */
+.custom-card {
+    /* Fondo limpio, esquinas redondeadas */
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    /* Sombra suave para darle profundidad (efecto "flotante") */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Transición para el efecto hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Aseguramos que la tarjeta tenga una altura visualmente agradable */
+    min-height: 150px;
+}
+
+    /* Efecto Hover (Levantar la tarjeta) */
+    .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra más intensa al levantar */
+    }
+
+    /* Estilo de los Títulos */
+    .custom-card .card-title {
+        color: #1f4068; /* Color oscuro que combina con el menú */
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        font-size: 1.4rem;
+    }
+
+        /* Estilo de los Iconos */
+        .custom-card .card-title i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+            /* Color de acento: Turquesa */
+            color: #a4e5e0;
+        }
+
+    /* Estilo del Texto Descriptivo */
+    .custom-card .card-text {
+        color: #6c757d;
+    }
+
+/* * ---------------------------------------
+ * Estilos de Acabado Específico por Tarjeta (Línea de color)
+ * ---------------------------------------
+ */
+
+/* Tarjeta de Empleados: Usa un acento para distinguirla */
+.empleados-card {
+    border-left: 5px solid #a4e5e0; /* Línea turquesa a la izquierda */
+}
+
+/* Tarjeta de Iniciar Sesión (Acción Principal): Usa un acento más fuerte */
+.login-card {
+    border-left: 5px solid #4f4a7c; /* Línea violeta oscuro a la izquierda */
+}
+
+/* Tarjeta de Registrarse: Usa un acento secundario */
+.register-card {
+    border-left: 5px solid #ff6f61; /* Línea de acento cálido (ej. coral) */
+}

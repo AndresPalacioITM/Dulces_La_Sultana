@@ -2,7 +2,7 @@
 
 <div class="nav-menu-horizontal-container" @onclick="ToggleNavMenu">
 
-    <div class="container-fluid d-flex justify-content-between align-items-center p-2">
+    <div class="container-fluid d-flex justify-content-between align-items-center" style="min-height: 60px;">
         <a href=""><img src="images/vet.png" alt="Logo" width="150" height="50" /></a>
 
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -12,7 +12,7 @@
 
     <nav class="@NavMenuCssClass nav-links-list">
 
-        <div class="nav-item px-3">
+        <div class="nav-item">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
             </NavLink>
@@ -20,7 +20,7 @@
 
         <AuthorizeView Roles="Admin">
             <Authorized>
-                <div class="nav-item px-3">
+                <div class="nav-item">
                     <NavLink class="nav-link" href="owners" Match="NavLinkMatch.All">
                         <span aria-hidden="true"></span> <i class="bi bi-list-nested-nav-menu"></i>Owners
                     </NavLink>
@@ -34,7 +34,7 @@
 @code {
     private bool collapseNavMenu = true;
 
-   
+
     private string NavMenuCssClass => collapseNavMenu ? "collapse navbar-collapse" : "navbar-collapse show";
 
     private void ToggleNavMenu()
