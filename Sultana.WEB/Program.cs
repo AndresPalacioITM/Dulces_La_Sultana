@@ -9,7 +9,7 @@ using CurrieTechnologies.Razor.SweetAlert2;
 using Sultana.WEB;
 using Sultana.WEB.Auth;          // JwtAuthenticationStateProvider, ILoginService, LoginService
 using Sultana.WEB.Repositories;
-using Sultana.API.Services;  // IRepository, Repository
+using Sultana.WEB.Services;  // IRepository, Repository
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

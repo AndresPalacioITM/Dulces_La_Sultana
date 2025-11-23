@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Sultana.Shared.DTOs;
+using Sultana.WEB.Auth;
 
 namespace Sultana.WEB.Services
 {
