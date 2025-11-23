@@ -1,0 +1,49 @@
+﻿/* Contenedor general centrado */
+.register-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* Tarjeta principal */
+.register-card {
+    width: 100%;
+    max-width: 550px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
+    /* Sombra suave */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+    /* Borde decorativo suave */
+    border-left: 5px solid #a4e5e0;
+}
+
+    /* Título */
+    .register-card h3 {
+        color: #1f4068;
+        font-weight: 700;
+    }
+
+    /* Inputs */
+    .register-card .form-control {
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+/* Botón de registrar */
+.register-button {
+    min-width: 120px;
+}
+
+    /* Efecto hover en los botones */
+    .register-button:hover {
+        transform: translateY(-2px);
+        transition: 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+
+.btn-outline-secondary:hover {
+    background-color: #e7e7e7;
+}

@@ -1,0 +1,105 @@
+﻿.edit-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+.edit-card {
+    background: #ffffff;
+    padding: 40px;
+    width: 650px;
+    border-radius: 20px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
+    animation: fadeIn 0.3s ease;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading {
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 40px 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+    .input-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+.input {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #c9c9c9;
+    transition: 0.2s ease;
+}
+
+    .input:focus {
+        outline: none;
+        border-color: #0078ff;
+        box-shadow: 0 0 8px rgba(0, 120, 255, 0.3);
+    }
+
+.btn-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 35px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-back {
+    background: #e5e5e5;
+}
+
+    .btn-back:hover {
+        background: #d1d1d1;
+    }
+
+.btn-save {
+    background: #0078ff;
+    color: white;
+}
+
+    .btn-save:hover {
+        background: #005fcc;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

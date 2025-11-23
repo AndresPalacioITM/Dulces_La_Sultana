@@ -1,28 +1,29 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="nav-menu-horizontal-container" @onclick="ToggleNavMenu">
+<div class="nav-container">
+    <div class="nav-inner container-fluid d-flex justify-content-between align-items-center">
+        <a href="/" class="brand">
+            <img src="images/vet.png" alt="Logo" />
+        </a>
 
-    <div class="container-fluid d-flex justify-content-between align-items-center p-2">
-        <a href=""><img src="images/vet.png" alt="Logo" width="150" height="50" /></a>
-
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 
     <nav class="@NavMenuCssClass nav-links-list">
 
-        <div class="nav-item px-3">
+        <div class="nav-item">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
+                <i class="bi bi-house-door-fill"></i> Inicio
             </NavLink>
         </div>
 
         <AuthorizeView Roles="Admin">
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="owners" Match="NavLinkMatch.All">
-                        <span aria-hidden="true"></span> <i class="bi bi-list-nested-nav-menu"></i>Owners
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="owners">
+                        <i class="bi bi-people-fill"></i> Owners
                     </NavLink>
                 </div>
             </Authorized>
@@ -33,8 +34,6 @@
 
 @code {
     private bool collapseNavMenu = true;
-
-   
     private string NavMenuCssClass => collapseNavMenu ? "collapse navbar-collapse" : "navbar-collapse show";
 
     private void ToggleNavMenu()

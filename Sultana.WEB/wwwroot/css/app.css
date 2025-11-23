@@ -2,6 +2,7 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+<<<<<<< HEAD
 :root {
     /* Color Principal (Primary): Dorado / Amarillo Sultana */
     --bs-primary: #FFB300; /* Un tono de amarillo dorado brillante */
@@ -44,6 +45,14 @@ body {
 
 
 
+=======
+.page {
+    /* Ajusta este valor si tu barra es más alta o baja que 60px */
+    padding-top: 75px;
+}
+
+
+>>>>>>> main
 h1:focus {
     outline: none;
 }

@@ -6,74 +6,29 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+
+    @* ESTE ES AHORA TU ÚNICO MENÚ SUPERIOR Y PRINCIPAL *@
+    <NavMenu />
+
     <main class="d-flex flex-column min-vh-100">
-        <header class="top-row sticky-top bg-white border-bottom">
-            <div class="container-fluid d-flex justify-content-between align-items-center px-4 py-2">
-                <a class="navbar-brand m-0" href="/">Sultana</a>
-                <nav class="d-flex gap-3">
-                    <a class="nav-link p-0" href="/">Inicio</a>
-                    <a class="nav-link p-0" href="/empleados">Empleados</a>
-                    <a class="nav-link p-0" href="https://learn.microsoft.com/aspnet/core/" target="_blank">Docs</a>
-                </nav>
-            </div>
-        </header>
 
-        @* <!-- 🔔 Sección de alertas -->
-        @if (alertas?.Any() == true)
-        {
-            <div class="alertas-container p-3">
-                @foreach (var alerta in alertas)
-                {
-                    <div class="alert alert-warning alert-dismissible fade show mb-2 shadow-sm" role="alert">
-                        <strong>@alerta.Tipo:</strong> @alerta.Mensaje
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
-            </div>
-        } *@
+        @* NOTA: Aquí iba el <header> y el sidebar. Ambos han sido eliminados. *@
 
+        @* *@
+        @* @if (alertas?.Any() == true) { ... } *@
+
+        @* El contenido de la página (@Body) ahora comenzará más abajo gracias al CSS global *@
         <article class="content px-4">
             @Body
         </article>
+
     </main>
 </div>
 
-@* @code {
+@* MANTÉN TU BLOQUE @code ORIGINAL AQUÍ ABAJO *@
+@code {
+    // ... Tu código C# original (métodos y variables) va aquí
     private List<Alerta> alertas = new();
     private int proveedorId;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            // Intentar obtener el ID del proveedor autenticado
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            if (user.Identity?.IsAuthenticated == true)
-            {
-                var claim = user.FindFirst("proveedorId");
-                if (claim != null && int.TryParse(claim.Value, out var id))
-                {
-                    proveedorId = id;
-                }
-            }
-
-             // Si no hay autenticación aún, usar un proveedorId fijo para pruebas
-             if (proveedorId == 0)
-             {
-                 proveedorId = 1; // ⚠️ cambia esto por un ID de proveedor real durante las pruebas
-             }
-
-            // Cargar las alertas del proveedor
-            alertas = await AlertasService.GetAlertasProveedorAsync(proveedorId);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error cargando alertas: {ex.Message}");
-        }
-    } *@
-
+    // ... etc.
+}

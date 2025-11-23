@@ -8,72 +8,72 @@
 @inject SweetAlertService swal
 @inject NavigationManager nav
 
-<h3>Editar empleado</h3>
+<div class="edit-container">
+    <div class="edit-card">
+        <h2 class="title">
+            <i class="bi bi-person-badge"></i>
+            Editar empleado
+        </h2>
 
-@if (empleado is null)
-{
-    <p>Cargando...</p>
-}
-else
-{
-    <EditForm Model="empleado" OnValidSubmit="GuardarAsync">
-        <DataAnnotationsValidator />
+        @if (empleado is null)
+        {
+            <div class="loading">Cargando...</div>
+        }
+        else
+        {
+            <EditForm Model="empleado" OnValidSubmit="GuardarAsync">
+                <DataAnnotationsValidator />
 
-        <div class="card">
-            <div class="card-header">
-                <span>
-                    <i class="bi bi-person-badge"></i> Editar empleado
-                    <button class="btn btn-sm btn-primary float-end" type="submit">
-                        <i class="bi bi-check2"></i> Guardar cambios
-                    </button>
-                </span>
-            </div>
+                <div class="form-grid">
 
-            <div class="card-body">
-                <div class="row g-3">
-
-                    <div class="col-md-6">
-                        <label class="form-label">Nombre</label>
-                        <InputText class="form-control" @bind-Value="empleado.Nombre" />
+                    <div class="input-group">
+                        <label>Nombre</label>
+                        <InputText class="input" @bind-Value="empleado.Nombre" />
                         <ValidationMessage For="@(() => empleado.Nombre)" />
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Cargo</label>
-                        <InputText class="form-control" @bind-Value="empleado.Cargo" />
+                    <div class="input-group">
+                        <label>Cargo</label>
+                        <InputText class="input" @bind-Value="empleado.Cargo" />
                         <ValidationMessage For="@(() => empleado.Cargo)" />
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Contacto</label>
-                        <InputText class="form-control" @bind-Value="empleado.Contacto" />
+                    <div class="input-group">
+                        <label>Contacto</label>
+                        <InputText class="input" @bind-Value="empleado.Contacto" />
                         <ValidationMessage For="@(() => empleado.Contacto)" />
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Correo</label>
-                        <InputText class="form-control" type="email" @bind-Value="empleado.Email" />
+                    <div class="input-group">
+                        <label>Correo</label>
+                        <InputText class="input" type="email" @bind-Value="empleado.Email" />
                         <ValidationMessage For="@(() => empleado.Email)" />
                     </div>
 
                 </div>
-            </div>
 
-            <div class="card-footer d-flex gap-2">
-                <button class="btn btn-secondary" type="button" @onclick="Volver">Regresar</button>
-            </div>
-        </div>
-    </EditForm>
-}
+                <div class="btn-row">
+                    <button class="btn btn-back" type="button" @onclick="Volver">
+                        <i class="bi bi-arrow-left"></i> Regresar
+                    </button>
+
+                    <button class="btn btn-save" type="submit">
+                        <i class="bi bi-check2"></i> Guardar cambios
+                    </button>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
 
 @code {
     [Parameter] public int Id { get; set; }
-
     private Empleado? empleado;
 
     protected override async Task OnInitializedAsync()
     {
         var resp = await repository.GetAsync<Empleado>($"/api/empleados/{Id}");
+
         if (resp.Error)
         {
             if (resp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -95,6 +95,7 @@ else
     private async Task GuardarAsync()
     {
         var resp = await repository.PutAsync($"/api/empleados/{empleado!.Id}", empleado);
+
         if (resp.Error)
         {
             var msg = await resp.GetErrorMessageAsync();
