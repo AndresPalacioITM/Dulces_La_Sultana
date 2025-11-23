@@ -5,13 +5,20 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using CurrieTechnologies.Razor.SweetAlert2;
 
+
 using Sultana.WEB;
 using Sultana.WEB.Auth;          // JwtAuthenticationStateProvider, ILoginService, LoginService
-using Sultana.WEB.Repositories;  // IRepository, Repository
+using Sultana.WEB.Repositories;
+using Sultana.API.Services;  // IRepository, Repository
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
+builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+//Configurar HttpClient para la API
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 // ?? Base de la API: pon TU puerto real y DEJA la barra final
 var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7000/";

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Sultana.Shared.DTOs;
 
-namespace Sultana.API.Services
+namespace Sultana.WEB.Services
 {
 
     public interface IAuthenticationService
@@ -46,7 +46,9 @@ namespace Sultana.API.Services
         public async Task<bool> IsAuthenticated()
         {
             var token = await GetToken();
-            return !string.IsNullOrEmpty(token); && !IsTokenExpired();
+
+            var isTokenExpired = await IsTokenExpired();
+            return !string.IsNullOrEmpty(token) && !isTokenExpired;
         }
         public async Task<string> GetToken()
         {

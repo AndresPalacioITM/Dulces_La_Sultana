@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Sultana.Shared\Sultana.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

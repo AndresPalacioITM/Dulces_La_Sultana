@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace Sultana.API.Services
+namespace Sultana.WEB.Services
 {
     public interface ILocalStorageService
     {
