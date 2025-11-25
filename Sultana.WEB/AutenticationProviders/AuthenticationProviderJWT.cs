@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using Sultana.WEB.Auth;
+using Sultana.Shared.DTOs;
 
 namespace Sultana.WEB.AutenticationProviders
 {
@@ -49,10 +50,14 @@ namespace Sultana.WEB.AutenticationProviders
         }
 
         // ILoginService
-        public async Task LoginAsync(string token)
+        public async Task LoginAsync(TokenDTO token)
         {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token);
-            var authState = BuildAuthenticationState(token);
+            if (token == null || string.IsNullOrWhiteSpace(token.Token))
+            {
+                throw new ArgumentException("Token no puede ser nulo o vacio");
+            }
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token.Token);
+            var authState = BuildAuthenticationState(token.Token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
 

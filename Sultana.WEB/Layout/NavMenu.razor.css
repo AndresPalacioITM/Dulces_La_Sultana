@@ -1,143 +1,102 @@
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.top-row {
-    height: 3.5rem;
-    background-color: #DC3545;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-}
-
-.bi {
-    display: inline-block;
-    position: relative;
-    content: "";
-    width: 80px;
-    height: 80px;
-    margin-right: 0.75rem;
-    top: -1px;
-}
-
-.flex-column {
-    display: flex !important;
-    flex-direction: row !important;
-    padding: 0;
-    margin: 0;
+/* CONTENEDOR SUPERIOR */
+.nav-container {
     width: 100%;
-    align-items: center;
-    margin-left: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: linear-gradient(90deg, #1b1f3b 0%, #423e85 100%);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    padding: 0 20px;
 }
 
+/* ZONA INTERNA: LOGO + TOGGLER */
+.nav-inner img {
+    height: 48px;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    transition: transform .2s ease;
+}
+
+    .nav-inner img:hover {
+        transform: scale(1.02);
+    }
+
+/* LISTA DE LINKS (MOBILE) */
+.nav-links-list {
+    background-color: rgba(20, 25, 50, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 0 0 10px 10px;
+    padding: 10px 0;
+}
+
+/* ITEMS */
 .nav-item {
-    font-size: 0.9rem;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 20px;
+    transition: all .3s ease;
 }
 
-    .nav-item:first-of-type {
-        padding-top: 0;
+/* LINKS */
+.nav-link {
+    color: #f2f6fa;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    gap: 10px;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all .25s ease;
+}
+
+    .nav-link i {
+        font-size: 1.2rem;
+        opacity: 0.9;
     }
 
-    .nav-item:last-of-type {
-        padding-bottom: 0;
+    /* ACTIVO */
+    .nav-link.active {
+        background-color: rgba(255,255,255,0.12);
+        border-left: 4px solid #00d1c7;
+        color: #00e0d1;
+        padding-left: 14px;
     }
 
-    .nav-item ::deep a {
-        color: white;
-        border-radius: 4px;
-        height: auto;
-        display: inline-block;
-        line-height: normal;
-        padding: 10px 15px;
+    /* HOVER */
+    .nav-link:hover {
+        background-color: rgba(255,255,255,0.15);
+        transform: translateX(3px);
+        color: #9ffcff;
     }
 
-        .nav-item ::deep a.active {
-            background-color: rgba(255,255,255,0.37);
-            color: white;
-        }
+/* TOGGLER */
+.navbar-toggler {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: all .25s ease;
+}
 
-        .nav-item ::deep a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-/*.bi-house-door-fill-nav-menu {
-    background-image: url("/Images/icono-menu.jpg");
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}*/
-
-
-@media (max-width: 640.98px) {
-    .nav-scrollable {
-        background-color: #DC3545;
-        padding: 10px 0;
+    .navbar-toggler:hover {
+        background: rgba(255,255,255,0.25);
     }
 
-    .flex-column {
-        flex-direction: column !important;
-        align-items: flex-start;
-        margin-left: 0;
+/* DESKTOP */
+@media (min-width: 992px) {
+    .nav-links-list {
+        background: transparent !important;
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0;
     }
 
     .nav-item {
-        width: 100%;
-        margin-right: 0;
-        padding-left: 20px;
-    }
-}
-
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
+        margin: 0 8px;
     }
 
-    .collapse {
-        display: block !important;
+    .nav-link {
+        padding: 15px 20px;
     }
-
-    .nav-scrollable {
-        height: auto;
-        overflow-y: visible;
-    }
-}
-
-
-
-.bi {
-    display: inline-block; 
-    position: relative;
-    
-    content: "";
-   
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
-    top: -1px;
-}
-
-
-
-
-
-
-
-/*.bi-house-door-fill-nav-menu {
-   
-    background-image: url("/Images/icono-menu.jpg");
-   
-    width: 300px;
-    height: 300px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 */

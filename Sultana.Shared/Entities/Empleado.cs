@@ -14,7 +14,7 @@ public class Empleado
     public int Id { get; set; }
 
     [Display(Name = "Nombre del empleado")]
-    [Required, MaxLength(120)]
+    [Required(ErrorMessage = "El nombre es obligatorio")]
     public string Nombre { get; set; }
 
     [Display(Name = "Cargo")]
