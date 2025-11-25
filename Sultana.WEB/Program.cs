@@ -1,13 +1,14 @@
-using System;
-using System.Net.Http;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using CurrieTechnologies.Razor.SweetAlert2;
 using Sultana.WEB;
+using Sultana.WEB.AutenticationProviders;
 using Sultana.WEB.Auth;          // JwtAuthenticationStateProvider, ILoginService, LoginService
 using Sultana.WEB.Repositories;
 using Sultana.WEB.Services;  // IRepository, Repository
+using System;
+using System.Net.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -33,8 +34,8 @@ builder.Services.AddSweetAlert2();
 builder.Services.AddScoped<IRepository, Repository>();
 
 // Auth provider + login service
-builder.Services.AddScoped<JwtAuthenticationStateProvider>();
-builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<JwtAuthenticationStateProvider>()); ;
+builder.Services.AddScoped<AuthenticationProviderJWT>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<AuthenticationProviderJWT>()); ;
 builder.Services.AddScoped<ILoginService, LoginService>();
 
 await builder.Build().RunAsync();

@@ -52,11 +52,11 @@ namespace Sultana.WEB.AutenticationProviders
         // ILoginService
         public async Task LoginAsync(TokenDTO token)
         {
-            if (token == null || string.IsNullOrWhiteSpace(token.Token)) 
+            if (token == null || string.IsNullOrWhiteSpace(token.Token))
             {
                 throw new ArgumentException("Token no puede ser nulo o vacio");
             }
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", TokenKey, token.Token);
             var authState = BuildAuthenticationState(token.Token);
             NotifyAuthenticationStateChanged(Task.FromResult(authState));
         }
