@@ -60,7 +60,7 @@ namespace Sultana.WEB.Services
         private async Task<bool> IsTokenExpired()
         {
             var expiration = await _localStorageService.GetItemAsync<DateTime>("tokenExpiration");
-            return expiration == null || expiration < DateTime.UtcNow;
+            return expiration < DateTime.UtcNow;
         }
     }
 }
