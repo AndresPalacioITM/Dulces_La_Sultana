@@ -49,7 +49,7 @@
             return;
         }
 
-        await loginService.LoginAsync(resp.Response!.Token);
+        await loginService.LoginAsync(resp.Response!);
         nav.NavigateTo("/");
     }
 

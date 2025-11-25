@@ -91,7 +91,7 @@
                 return;
             }
 
-            await loginService.LoginAsync(resp.Response!.Token);
+            await loginService.LoginAsync(resp.Response!);
             await sweet.FireAsync("Registro exitoso", "Bienvenid@, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
             nav.NavigateTo("/");
         }

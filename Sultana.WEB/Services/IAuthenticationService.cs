@@ -16,11 +16,13 @@ namespace Sultana.WEB.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
+        private readonly NavigationManager _navigationManager;
 
-        public AuthenticationService(HttpClient httpClient, ILocalStorageService localStorageService)
+        public AuthenticationService(HttpClient httpClient, ILocalStorageService localStorageService, NavigationManager navigationManager)
         {
             _httpClient = httpClient;
             _localStorageService = localStorageService;
+            _navigationManager = navigationManager;
         }
 
         public async Task Login(TokenDTO token)
@@ -41,7 +43,7 @@ namespace Sultana.WEB.Services
             _httpClient.DefaultRequestHeaders.Authorization = null;
 
             //forzar recarga de la aplicación
-            NavigationManager.NavigateTo("/", true);
+            _navigationManager.NavigateTo("/", true);
         }
 
         public async Task<bool> IsAuthenticated()
