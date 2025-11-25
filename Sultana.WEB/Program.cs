@@ -34,9 +34,7 @@ builder.Services.AddSweetAlert2();
 builder.Services.AddScoped<IRepository, Repository>();
 
 // Auth provider + login service
-builder.Services.AddScoped<AuthenticationProviderJWT>();
-builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<AuthenticationProviderJWT>()); ;
-builder.Services.AddScoped<ILoginService, LoginService>();
-
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationProviderJWT>();
+builder.Services.AddScoped<ILoginService, AuthenticationProviderJWT>();
 await builder.Build().RunAsync();
 
