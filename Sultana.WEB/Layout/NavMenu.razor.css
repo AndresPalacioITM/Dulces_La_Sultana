@@ -1,5 +1,5 @@
 /* CONTENEDOR SUPERIOR */
-.nav-container {
+/*.nav-container {
     width: 100%;
     position: fixed;
     top: 0;
@@ -8,9 +8,19 @@
     background: linear-gradient(90deg, #1b1f3b 0%, #423e85 100%);
     box-shadow: 0 3px 12px rgba(0,0,0,0.25);
     padding: 0 20px;
+}*/
+
+.nav-container {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: linear-gradient(90deg, #1b1f3b 0%, #423e85 100%);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
 }
 
-/* ZONA INTERNA: LOGO + TOGGLER */
+/* LOGO */
 .nav-inner img {
     height: 48px;
     width: auto;
@@ -22,7 +32,7 @@
         transform: scale(1.02);
     }
 
-/* LISTA DE LINKS (MOBILE) */
+/* LISTA DE LINKS (MÓVIL) */
 .nav-links-list {
     background-color: rgba(20, 25, 50, 0.85);
     backdrop-filter: blur(6px);
@@ -35,40 +45,7 @@
     transition: all .3s ease;
 }
 
-/* LINKS */
-.nav-link {
-    color: #f2f6fa;
-    font-size: 1.05rem;
-    display: flex;
-    align-items: center;
-    padding: 12px 18px;
-    gap: 10px;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all .25s ease;
-}
-
-    .nav-link i {
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }
-
-    /* ACTIVO */
-    .nav-link.active {
-        background-color: rgba(255,255,255,0.12);
-        border-left: 4px solid #00d1c7;
-        color: #00e0d1;
-        padding-left: 14px;
-    }
-
-    /* HOVER */
-    .nav-link:hover {
-        background-color: rgba(255,255,255,0.15);
-        transform: translateX(3px);
-        color: #9ffcff;
-    }
-
-/* TOGGLER */
+/* TOGGLER (botón menú móvil) */
 .navbar-toggler {
     background: rgba(255,255,255,0.12);
     border: 1px solid rgba(255,255,255,0.25);
@@ -81,22 +58,77 @@
         background: rgba(255,255,255,0.25);
     }
 
-/* DESKTOP */
+/* ===================================================== */
+/*            BOTONES TIPO PASTILLA (nav-pill)           */
+/* ===================================================== */
+
+/* OJO: aquí usamos a.nav-pill y !important para ganar SIEMPRE */
+a.nav-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 16px !important;
+    margin: 4px 6px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    background: rgba(255,255,255,0.12) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.45) !important;
+    font-size: 0.95rem !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s ease, transform .15s ease, box-shadow .2s ease, color .2s ease;
+}
+
+    /* Hover general */
+    a.nav-pill:hover {
+        background: #f7c948 !important; /* doradito */
+        border-color: #f7c948 !important;
+        color: #1b1f3b !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+    }
+
+    /* Activo (ruta actual) */
+    a.nav-pill.nav-pill-active {
+        background: #f7c948 !important;
+        border-color: #f7c948 !important;
+        color: #1b1f3b !important;
+    }
+
+    /* Botón especial Cerrar sesión */
+    a.nav-pill.nav-pill-logout {
+        border-color: #ff6b6b !important;
+        background: rgba(255,107,107,0.15) !important;
+    }
+
+        a.nav-pill.nav-pill-logout:hover {
+            background: #ff6b6b !important;
+            border-color: #ff6b6b !important;
+            color: #1b1f3b !important;
+        }
+
+/* ===================================================== */
+/*                     VISTA ESCRITORIO                  */
+/* ===================================================== */
+
 @media (min-width: 992px) {
+
+    .navbar-toggler {
+        display: none;
+    }
+
     .nav-links-list {
         background: transparent !important;
         display: flex !important;
         flex-direction: row;
         align-items: center;
+        justify-content: flex-end;
         padding: 0;
     }
 
     .nav-item {
-        margin: 0 8px;
-    }
-
-    .nav-link {
-        padding: 15px 20px;
+        margin: 0 4px;
     }
 }
-*/
