@@ -1,7 +1,331 @@
 ﻿@page "/Empleado/OrdenProduccion"
 
-<h3>OrdenProduccion</h3>
+@using Sultana.Shared.Entities
+@using OrdenProduccionEntity = Sultana.Shared.Entities.OrdenProduccion
+@inject IRepository repository
+@inject NavigationManager nav
+
+<PageTitle>Registrar Orden de Producción</PageTitle>
+
+<div class="orden-page">
+
+    <!-- Encabezado -->
+    <div class="orden-header text-center mb-4">
+        <h1 class="orden-title">Nueva Orden de Producción</h1>
+        <p class="orden-subtitle">
+            Programa una orden de producción indicando el producto terminado, la cantidad objetivo,
+            las fechas y el responsable.
+        </p>
+    </div>
+
+    <div class="row g-4 orden-layout">
+
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="col-lg-7">
+            <div class="card orden-card shadow-sm">
+                <div class="card-body">
+                    <h3 class="section-title mb-3">
+                        <i class="bi bi-journal-check me-2"></i>
+                        Datos de la orden
+                    </h3>
+
+                    <EditForm Model="@orden" OnValidSubmit="Guardar">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="mb-3" />
+
+                        <!-- Paso 1: Producto y lote -->
+                        <div class="orden-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-body">
+                                <h5>Producto y lote</h5>
+                                <p class="step-text">
+                                    Selecciona el producto terminado y define el lote que se generará.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Producto terminado (ID)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="orden.ProductoTerminadoId" />
+                                        <small class="form-text">
+                                            Identificador del producto terminado a fabricar.
+                                        </small>
+                                        <ValidationMessage For="@(() => orden.ProductoTerminadoId)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Lote de producto terminado</label>
+                                        <InputText class="form-control"
+                                                   @bind-Value="orden.LoteProducto" />
+                                        <small class="form-text">
+                                            Código del lote PT que se generará (ej. PT-2501-01).
+                                        </small>
+                                        <ValidationMessage For="@(() => orden.LoteProducto)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Cantidad y responsable -->
+                        <div class="orden-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-body">
+                                <h5>Cantidad objetivo y responsable</h5>
+                                <p class="step-text">
+                                    Define cuánto se debe producir y quién es el responsable de la orden.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cantidad objetivo (kg)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="orden.CantidadPeso" />
+                                        <small class="form-text">
+                                            Cantidad objetivo en kilogramos para esta orden.
+                                        </small>
+                                        <ValidationMessage For="@(() => orden.CantidadPeso)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Responsable (ID)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="orden.ResponsableId" />
+                                        <small class="form-text">
+                                            ID del empleado responsable de la orden.
+                                        </small>
+                                        <ValidationMessage For="@(() => orden.ResponsableId)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Fechas -->
+                        <div class="orden-step">
+                            <div class="step-badge">3</div>
+                            <div class="step-body">
+                                <h5>Fechas de producción</h5>
+                                <p class="step-text">
+                                    Registra la fecha de inicio y, si la conoces, la fecha de vencimiento del lote PT.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de inicio</label>
+                                        <InputDate class="form-control"
+                                                   @bind-Value="orden.FechaHoraInicio" />
+                                        <ValidationMessage For="@(() => orden.FechaHoraInicio)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de vencimiento PT</label>
+                                        <InputDate class="form-control"
+                                                   @bind-Value="orden.FechaVencimientoPT" />
+                                        <ValidationMessage For="@(() => orden.FechaVencimientoPT)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                Cancelar
+                            </button>
+                            <button class="btn btn-sultana-primary" type="submit">
+                                Guardar orden
+                            </button>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: PREVIEW INTERACTIVO -->
+        <div class="col-lg-5">
+            <div class="card preview-card shadow-sm">
+                <div class="card-header">
+                    <i class="bi bi-eye me-2"></i> Vista previa de la orden
+                </div>
+                <div class="card-body">
+
+                    <!-- Estado general -->
+                    <div class="preview-status mb-3">
+                        @if (FormularioCompleto)
+                        {
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Lista para registrar
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Completa los campos obligatorios
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Chips -->
+                    <div class="preview-chips mb-3">
+                        <div class="chip">
+                            <span class="chip-label">Producto</span>
+                            <span class="chip-value">
+                                @(orden.ProductoTerminadoId <= 0 ? "Sin producto" : $"ID {orden.ProductoTerminadoId}")
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Lote PT</span>
+                            <span class="chip-value">
+                                @(string.IsNullOrWhiteSpace(orden.LoteProducto) ? "Sin lote" : orden.LoteProducto)
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Responsable</span>
+                            <span class="chip-value">
+                                @(orden.ResponsableId <= 0 ? "Sin responsable" : orden.ResponsableId.ToString())
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad -->
+                    <div class="preview-section mb-3">
+                        <h6>Cantidad objetivo</h6>
+                        <p class="mb-1">
+                            @if (orden.CantidadPeso <= 0)
+                            {
+                                <span class="text-muted">Aún no has definido la cantidad objetivo.</span>
+                            }
+                            else
+                            {
+                                <span>@orden.CantidadPeso kg programados para esta orden.</span>
+                            }
+                        </p>
+
+                        <div class="progress mt-2">
+                            @{
+                                var cant = orden.CantidadPeso <= 0 ? 0 : orden.CantidadPeso;
+                                var porcentaje = cant >= 1000 ? 100 : (int)(cant / 10); // 0–1000 kg → 0–100 %
+                            }
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: @porcentaje%;"
+                                 aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100">
+                                @porcentaje%
+                            </div>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            La barra es solo una referencia visual (0–1000 kg).
+                        </small>
+                    </div>
+
+                    <!-- Fechas -->
+                    <div class="preview-section mb-3">
+                        <h6>Fechas</h6>
+                        <p class="mb-0">
+                            <strong>Inicio:</strong>
+                            @if (orden.FechaHoraInicio == default)
+                            {
+                                <span class="text-muted">sin asignar</span>
+                            }
+                            else
+                            {
+                                <span>@orden.FechaHoraInicio.ToString("dd/MM/yyyy")</span>
+                            }
+                        </p>
+                        <p class="mb-0">
+                            <strong>Vence PT:</strong>
+                            @if (orden.FechaVencimientoPT is null)
+                            {
+                                <span class="text-muted">sin fecha de vencimiento</span>
+                            }
+                            else
+                            {
+                                <span>@orden.FechaVencimientoPT.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div class="preview-section">
+                        <h6>Resumen</h6>
+                        <p class="preview-summary">
+                            @ResumenOrden
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 @code {
+    // Alias de la entidad para no chocar con el nombre del componente
+    private OrdenProduccionEntity orden = new()
+    {
+        FechaHoraInicio = DateTime.Today
+    };
 
+    private bool FormularioCompleto =>
+        orden.ProductoTerminadoId > 0 &&
+        orden.ResponsableId > 0 &&
+        !string.IsNullOrWhiteSpace(orden.LoteProducto) &&
+        orden.CantidadPeso > 0 &&
+        orden.FechaHoraInicio != default;
+
+    private string ResumenOrden
+    {
+        get
+        {
+            var prod = orden.ProductoTerminadoId <= 0
+                ? "(sin producto)"
+                : orden.ProductoTerminadoId.ToString();
+
+            var lote = string.IsNullOrWhiteSpace(orden.LoteProducto)
+                ? "(sin lote)"
+                : orden.LoteProducto;
+
+            var cant = orden.CantidadPeso <= 0
+                ? "sin cantidad definida"
+                : $"{orden.CantidadPeso} kg objetivo";
+
+            var resp = orden.ResponsableId <= 0
+                ? "(sin responsable)"
+                : orden.ResponsableId.ToString();
+
+            var inicio = orden.FechaHoraInicio == default
+                ? "no asignado"
+                : orden.FechaHoraInicio.ToString("dd/MM/yyyy");
+
+            var vence = orden.FechaVencimientoPT is null
+                ? "sin fecha de vencimiento registrada"
+                : $"vence el {orden.FechaVencimientoPT:dd/MM/yyyy}";
+
+            return $"Orden para producto {prod}, lote {lote}, {cant}, responsable {resp}, inicio {inicio} y {vence}.";
+        }
+    }
+
+    private async Task Guardar()
+    {
+        var response = await repository.PostAsync("api/OrdenProduccion", orden);
+
+        if (response.Error)
+        {
+            // Manejo del error (puedes mostrar un alert o toast)
+            return;
+        }
+
+        // Ajusta la ruta a la que quieras volver (listado de OP, por ejemplo)
+        nav.NavigateTo("/OrdenProduccion");
+    }
+
+    private void Volver()
+    {
+        nav.NavigateTo("/OrdenProduccion");
+    }
+}
 }
