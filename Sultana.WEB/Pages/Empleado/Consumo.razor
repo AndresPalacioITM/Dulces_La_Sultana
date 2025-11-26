@@ -1,8 +1,13 @@
 ﻿@page "/Empleado/Consumo"
 
 @using Sultana.Shared.Entities
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
 @inject IRepository repository
 @inject NavigationManager nav
+@inject AuthenticationStateProvider authStateProvider
+
 
 <PageTitle>Registrar Consumo de Materia Prima</PageTitle>
 
@@ -40,15 +45,18 @@
                         <label class="form-label">Lote de Materia Prima</label>
                         <InputNumber class="form-control" @bind-Value="consumo.LoteMateriaPrimaId" />
                         <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
-                    </div>
-                </div>
-
+                    </div> 
+                  </div>
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Responsable</label>
-                        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId" />
-                        <ValidationMessage For="@(() => consumo.ResponsableId)" />
-                    </div>
+                    <div class="row">
+                        <label class=" form-label">Responsable</label>
+                        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId"
+                                     disable="true" />"
+                                     <ValidationMessage For="@(() => consumo.ResponsableId)" />
+                                         <small class="form-text text-muted">
+                            Tu ID de empleado (asignado automáticamente)
+                        </small>
+                    </div>                   
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Cantidad usada (kg)</label>
@@ -80,6 +88,37 @@
 
 @code {
     private ConsumoMP consumo = new();
+    private int empleadoId = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ObtnerEmpleadoLogueado();
+
+        consumo.ResponsableId = empleadoId;
+        consumo.FechaHora = DateTime.Now;
+    }
+    private async Task ObtnerEmpleadoLogueado()
+    {
+        try
+        {
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if(user.Identity?.IsAuthenticated == true)
+            {
+                var empleadoIdClaim = user.FindFirst("EmpleadoId")?.Value;
+                if (int.TryParse(empleadoIdClaim, out int id))
+                {
+                    empleadoId = id;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            Console.WriteLine($"Error al obtener el empleado logueado: {ex.Message}");
+        }
+    }
 
     private async Task Guardar()
     {
