@@ -1,8 +1,14 @@
 ﻿@page "/Empleado/Consumo"
 
 @using Sultana.Shared.Entities
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using CurrieTechnologies.Razor.SweetAlert2
+
 @inject IRepository repository
 @inject NavigationManager nav
+@inject AuthenticationStateProvider authStateProvider
+@inject SweetAlertService sweetAlertService
 
 <PageTitle>Registrar Consumo de Materia Prima</PageTitle>
 
@@ -76,7 +82,8 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Responsable (ID)</label>
                                         <InputNumber class="form-control"
-                                                     @bind-Value="consumo.ResponsableId" />
+                                                     @bind-Value="consumo.ResponsableId" 
+                                                     disabled ="true"/>                                                     
                                         <small class="form-text">
                                             Identificador interno del empleado responsable.
                                         </small>
@@ -243,6 +250,37 @@
 
 @code {
     private ConsumoMP consumo = new();
+    private int empleadoId = 0;
+    private bool isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ObtenerEmpleadoLogueado();
+        consumo.ResponsableId = empleadoId;
+        consumo.FechaHora = DateTime.Now;
+    }
+    private async Task ObtenerEmpleadoLogueado()
+    {
+        try
+        {
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var empleadoIdClaim = user.FindFirst("EmpleadoId")?.Value;
+                if (int.TryParse(empleadoIdClaim, out int id))
+                {
+                    empleadoId = id;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Manejo de errores (opcional)
+            Console.WriteLine($"Error al obtener el empleado logueado: {ex.Message}");
+        }
+    }
 
     private bool FormularioCompleto =>
         consumo.OrdenProduccionId > 0 &&
@@ -260,15 +298,39 @@
 
     private async Task Guardar()
     {
-        var response = await repository.PostAsync("api/ConsumoMP", consumo);
-
-        if (response.Error)
+        if (isSubmitting) return;
+        isSubmitting = true;
+        try
         {
-            // Manejo del error (puedes agregar un alert o toast aquí si quieres)
-            return;
-        }
+            consumo.ResponsableId = empleadoId;
+            var response = await repository.PostAsync("api/ConsumoMP", consumo);
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
 
-        nav.NavigateTo("/ConsumoMP");
+                return;
+            }
+
+            await sweetAlertService.FireAsync("Éxito", "Consumo de materia prima registrado correctamente.", SweetAlertIcon.Success);
+            LimpiarFomulario();
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }    
+    }
+    private void LimpiarFomulario()
+    {
+        consumo = new ConsumoMP
+        {
+            ResponsableId = empleadoId,
+            FechaHora = DateTime.Now
+        };
     }
 
     private void Volver()
