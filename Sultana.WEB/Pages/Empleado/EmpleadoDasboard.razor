@@ -1,0 +1,43 @@
+﻿@page "/Empleado"
+
+<h2 class="text-center mt-4">Panel de Empleado</h2>
+
+<div class="row g-4 card-grid justify-content-center mt-4">
+
+    <div class="col-md-4 col-sm-6">
+        <NavLink class="card custom-card text-decoration-none" href="/Empleado/Consumo">
+            <div class="card-body">
+                <h5 class="card-title mb-1"><i class="bi bi-speedometer2"></i> Consumo</h5>
+                <p class="card-text">Registrar y consultar consumo de materia prima.</p>
+            </div>
+        </NavLink>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+        <NavLink class="card custom-card text-decoration-none" href="/Empleado/OrdenProduccion">
+            <div class="card-body">
+                <h5 class="card-title mb-1"><i class="bi bi-clipboard-check"></i> Orden de producción</h5>
+                <p class="card-text">Crear y revisar órdenes de producción.</p>
+            </div>
+        </NavLink>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+        <NavLink class="card custom-card text-decoration-none" href="/Empleado/ProductoTerminado">
+            <div class="card-body">
+                <h5 class="card-title mb-1"><i class="bi bi-box-seam"></i> Producto terminado</h5>
+                <p class="card-text">Registrar productos terminados.</p>
+            </div>
+        </NavLink>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+        <NavLink class="card custom-card text-decoration-none" href="/Empleado/LoteProducto">
+            <div class="card-body">
+                <h5 class="card-title mb-1"><i class="bi bi-archive-fill"></i> Lote de producto terminado</h5>
+                <p class="card-text">Gestionar lotes de producción.</p>
+            </div>
+        </NavLink>
+    </div>
+
+</div>
