@@ -6,46 +6,77 @@
 
 <PageTitle>Registrar Consumo de Materia Prima</PageTitle>
 
+<div class="consumo-page">
 
-<h3>Gestión de Consumos</h3>
-
-<EditForm Model="@consumo" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="mb-3">
-        <label class="form-label">Orden de Producción (OP)</label>
-        <InputNumber class="form-control" @bind-Value="consumo.OrdenProduccionId" />
-        <ValidationMessage For="@(() => consumo.OrdenProduccionId)" />
+    <!-- Encabezado bonito -->
+    <div class="consumo-header text-center mb-4">
+        <h1 class="consumo-title">Registro de consumo de materia prima</h1>
+        <p class="consumo-subtitle">
+            Lleva el control de qué lote se usó, en qué orden de producción y quién fue el responsable.
+        </p>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Lote de Materia Prima</label>
-        <InputNumber class="form-control" @bind-Value="consumo.LoteMateriaPrimaId" />
-        <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
-    </div>
+    <!-- Tarjeta principal -->
+    <div class="card consumo-card shadow-sm">
+        <div class="card-body">
 
-    <div class="mb-3">
-        <label class="form-label">Responsable</label>
-        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId" />
-        <ValidationMessage For="@(() => consumo.ResponsableId)" />
-    </div>
+            <h3 class="section-title mb-3">
+                <i class="bi bi-clipboard-check me-2"></i>
+                Datos del consumo
+            </h3>
 
-    <div class="mb-3">
-        <label class="form-label">Cantidad usada (kg)</label>
-        <InputNumber class="form-control" @bind-Value="consumo.CantidadUsada" />
-        <ValidationMessage For="@(() => consumo.CantidadUsada)" />
-    </div>
+            <EditForm Model="@consumo" OnValidSubmit="Guardar">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-    <div class="mb-3">
-        <label class="form-label">Fecha y Hora</label>
-        <InputDate class="form-control" @bind-Value="consumo.FechaHora" />
-        <ValidationMessage For="@(() => consumo.FechaHora)" />
-    </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Orden de Producción (OP)</label>
+                        <InputNumber class="form-control" @bind-Value="consumo.OrdenProduccionId" />
+                        <ValidationMessage For="@(() => consumo.OrdenProduccionId)" />
+                    </div>
 
-    <button class="btn btn-primary" type="submit">Guardar</button>
-    <button class="btn btn-secondary ms-2" @onclick="Volver">Cancelar</button>
-</EditForm>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Lote de Materia Prima</label>
+                        <InputNumber class="form-control" @bind-Value="consumo.LoteMateriaPrimaId" />
+                        <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Responsable</label>
+                        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId" />
+                        <ValidationMessage For="@(() => consumo.ResponsableId)" />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Cantidad usada (kg)</label>
+                        <InputNumber class="form-control" @bind-Value="consumo.CantidadUsada" />
+                        <ValidationMessage For="@(() => consumo.CantidadUsada)" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha y Hora</label>
+                    <InputDate class="form-control" @bind-Value="consumo.FechaHora" />
+                    <ValidationMessage For="@(() => consumo.FechaHora)" />
+                </div>
+
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-sultana-primary" type="submit">
+                        Guardar consumo
+                    </button>
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+</div>
 
 @code {
     private ConsumoMP consumo = new();

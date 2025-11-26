@@ -1,0 +1,82 @@
+﻿@page "/Empleado"
+
+<div class="empleado-page">
+
+    <!-- Encabezado del panel -->
+    <div class="empleado-header text-center">
+        <h2 class="empleado-title">Panel de empleado</h2>
+        <p class="empleado-subtitle">
+            Accede rápidamente a los módulos de producción, consumo y control de producto terminado.
+        </p>
+    </div>
+
+    <!-- Grid de tarjetas -->
+    <div class="row g-4 empleado-grid justify-content-center mt-3">
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <NavLink class="card empleado-card text-decoration-none"
+                     href="/Empleado/Consumo"
+                     ActiveClass="empleado-card-active">
+                <div class="card-body">
+                    <div class="empleado-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                    <h5 class="card-title mb-1">Consumo</h5>
+                    <p class="card-text">
+                        Registrar y consultar consumo de materia prima por lote y OP.
+                    </p>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <NavLink class="card empleado-card text-decoration-none"
+                     href="/Empleado/OrdenProduccion"
+                     ActiveClass="empleado-card-active">
+                <div class="card-body">
+                    <div class="empleado-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+                    <h5 class="card-title mb-1">Orden de producción</h5>
+                    <p class="card-text">
+                        Crear y revisar órdenes de producción para cada jornada.
+                    </p>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <NavLink class="card empleado-card text-decoration-none"
+                     href="/Empleado/ProductoTerminado"
+                     ActiveClass="empleado-card-active">
+                <div class="card-body">
+                    <div class="empleado-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h5 class="card-title mb-1">Producto terminado</h5>
+                    <p class="card-text">
+                        Registrar productos terminados y su cantidad disponible.
+                    </p>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <NavLink class="card empleado-card text-decoration-none"
+                     href="/Empleado/LoteProducto"
+                     ActiveClass="empleado-card-active">
+                <div class="card-body">
+                    <div class="empleado-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-2">
+                        <i class="bi bi-archive-fill"></i>
+                    </div>
+                    <h5 class="card-title mb-1">Lote de producto</h5>
+                    <p class="card-text">
+                        Gestionar lotes de producto terminado y su trazabilidad.
+                    </p>
+                </div>
+            </NavLink>
+        </div>
+
+    </div>
+</div>
+

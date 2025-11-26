@@ -1,0 +1,106 @@
+﻿/* Contenedor general de la página de consumo */
+.consumo-page {
+    max-width: 900px;
+    margin: 1.5rem auto 2.5rem auto;
+}
+
+/* Encabezado */
+.consumo-header {
+    margin-top: 0.5rem;
+}
+
+.consumo-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #7b1010; /* vino Sultana */
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.consumo-subtitle {
+    font-size: 0.98rem;
+    color: #5b3216; /* marrón dulce */
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Tarjeta principal */
+.consumo-card {
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+    border-top: 4px solid #f4c542; /* dorado Sultana */
+}
+
+/* Título de sección dentro de la tarjeta */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #7b1010;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 0.4rem;
+}
+
+/* Labels más claros y coherentes con la marca */
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #5b3216;
+}
+
+/* Inputs más suaves visualmente */
+.form-control {
+    border-radius: 10px;
+    border-color: rgba(123, 16, 16, 0.20);
+}
+
+    .form-control:focus {
+        border-color: #f4c542;
+        box-shadow: 0 0 0 0.15rem rgba(244, 197, 66, 0.25);
+    }
+
+/* Botón principal Sultana */
+.btn-sultana-primary {
+    background-color: #7b1010;
+    border-color: #7b1010;
+    color: #fff7dd;
+    font-weight: 600;
+    border-radius: 999px;
+    padding-inline: 1.5rem;
+}
+
+    .btn-sultana-primary:hover {
+        background-color: #3e0505;
+        border-color: #3e0505;
+        color: #fff7dd;
+    }
+
+/* Botón secundario */
+.btn-sultana-secondary {
+    background-color: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(91, 50, 22, 0.55);
+    color: #5b3216;
+    font-weight: 500;
+    padding-inline: 1.25rem;
+}
+
+    .btn-sultana-secondary:hover {
+        background-color: rgba(91, 50, 22, 0.08);
+        color: #3e0505;
+    }
+
+/* Ajustes responsive para pantallas pequeñas */
+@media (max-width: 576px) {
+    .consumo-page {
+        margin: 1rem 0.5rem 2rem 0.5rem;
+    }
+
+    .consumo-card {
+        border-radius: 14px;
+    }
+}

@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.API", "Sultana.API\Sultana.API.csproj", "{6D3AB933-5AFF-41EB-B104-751CCED20509}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1C268BE5-5BF4-40C2-8540-2858F016C592} = {1C268BE5-5BF4-40C2-8540-2858F016C592}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sultana.WEB", "Sultana.WEB\Sultana.WEB.csproj", "{1C268BE5-5BF4-40C2-8540-2858F016C592}"
 EndProject
