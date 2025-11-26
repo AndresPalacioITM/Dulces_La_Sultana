@@ -3,33 +3,39 @@
 
 <div class="nav-container navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a href="/" class="navbar-brand">
-            <img src="images/icono-menu.jpg" alt="Logo" style="height:48px;" />
+        <!-- LOGO + NOMBRE -->
+        <a href="/" class="navbar-brand brand-logo d-flex align-items-center">
+            <img src="images/icono-menu.jpg" alt="Logo Dulces La Sultana del Valle" />
+            <span class="brand-text d-none d-md-inline ms-2">
+                Dulces La Sultana del Valle
+            </span>
         </a>
 
+        <!-- BOTÓN HAMBURGUESA (MÓVIL) -->
         <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="@NavMenuCssClass justify-content-end">
-            <ul class="navbar-nav">
+        <!-- ZONA DERECHA (BOTONES) -->
+        <div class="@NavMenuCssClass nav-links-wrapper justify-content-end">
+            <ul class="navbar-nav align-items-lg-center">
+
                 <!-- INICIO -->
                 <li class="nav-item">
                     <NavLink href="/"
                              Match="NavLinkMatch.All"
-                             class="btn btn-sm btn-outline-light rounded-pill mx-1"
-                             ActiveClass="btn-light text-dark">
+                             class="btn nav-btn nav-btn-light rounded-pill mx-1"
+                             ActiveClass="nav-btn-active">
                         Inicio
                     </NavLink>
                 </li>
 
-                <!-- CERRAR SESIÓN -->
+                <!-- CERRAR SESIÓN SOLO SI ESTÁ LOGUEADO -->
                 <AuthorizeView>
                     <Authorized>
                         <li class="nav-item">
                             <NavLink href="/auth/logout"
-                                     class="btn btn-sm btn-outline-danger rounded-pill mx-1"
-                                     ActiveClass="btn-danger text-light">
+                                     class="btn nav-btn nav-btn-accent rounded-pill mx-1">
                                 Cerrar sesión
                             </NavLink>
                         </li>
