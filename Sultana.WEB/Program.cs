@@ -15,9 +15,13 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // CONFIGURACIÓN CORRECTA DEL HTTPCLIENT
+var apiBaseAddress = builder.HostEnvironment.IsDevelopment()
+    ? "https://localhost:7000/"  // API local en desarrollo
+    : "https://sultanaapi.azurewebsites.net/"; // API en producción
+
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri("https://sultanaapi.azurewebsites.net/") // ← URL CORRECTA de tu API
+    BaseAddress = new Uri(apiBaseAddress)
 });
 
 //servicios de autenticación
