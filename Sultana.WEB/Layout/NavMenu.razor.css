@@ -1,141 +1,134 @@
-.navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.top-row {
-    height: 3.5rem;
-    background-color: #DC3545;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-}
-
-.bi {
-    display: inline-block;
-    position: relative;
-    content: "";
-    width: 80px;
-    height: 80px;
-    margin-right: 0.75rem;
-    top: -1px;
-}
-
-.flex-column {
-    display: flex !important;
-    flex-direction: row !important;
-    padding: 0;
-    margin: 0;
+/* CONTENEDOR SUPERIOR */
+/*.nav-container {
     width: 100%;
-    align-items: center;
-    margin-left: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: linear-gradient(90deg, #1b1f3b 0%, #423e85 100%);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+    padding: 0 20px;
+}*/
+
+.nav-container {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: linear-gradient(90deg, #1b1f3b 0%, #423e85 100%);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.25);
 }
 
+/* LOGO */
+.nav-inner img {
+    height: 48px;
+    width: auto;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    transition: transform .2s ease;
+}
+
+    .nav-inner img:hover {
+        transform: scale(1.02);
+    }
+
+/* LISTA DE LINKS (MÓVIL) */
+.nav-links-list {
+    background-color: rgba(20, 25, 50, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 0 0 10px 10px;
+    padding: 10px 0;
+}
+
+/* ITEMS */
 .nav-item {
-    font-size: 0.9rem;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 20px;
+    transition: all .3s ease;
 }
 
-    .nav-item:first-of-type {
-        padding-top: 0;
+/* TOGGLER (botón menú móvil) */
+.navbar-toggler {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: all .25s ease;
+}
+
+    .navbar-toggler:hover {
+        background: rgba(255,255,255,0.25);
     }
 
-    .nav-item:last-of-type {
-        padding-bottom: 0;
+/* ===================================================== */
+/*            BOTONES TIPO PASTILLA (nav-pill)           */
+/* ===================================================== */
+
+/* OJO: aquí usamos a.nav-pill y !important para ganar SIEMPRE */
+a.nav-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 16px !important;
+    margin: 4px 6px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(255,255,255,0.5) !important;
+    background: rgba(255,255,255,0.12) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.45) !important;
+    font-size: 0.95rem !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s ease, transform .15s ease, box-shadow .2s ease, color .2s ease;
+}
+
+    /* Hover general */
+    a.nav-pill:hover {
+        background: #f7c948 !important; /* doradito */
+        border-color: #f7c948 !important;
+        color: #1b1f3b !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.5);
     }
 
-    .nav-item ::deep a {
-        color: white;
-        border-radius: 4px;
-        height: auto;
-        display: inline-block;
-        line-height: normal;
-        padding: 10px 15px;
+    /* Activo (ruta actual) */
+    a.nav-pill.nav-pill-active {
+        background: #f7c948 !important;
+        border-color: #f7c948 !important;
+        color: #1b1f3b !important;
     }
 
-        .nav-item ::deep a.active {
-            background-color: rgba(255,255,255,0.37);
-            color: white;
+    /* Botón especial Cerrar sesión */
+    a.nav-pill.nav-pill-logout {
+        border-color: #ff6b6b !important;
+        background: rgba(255,107,107,0.15) !important;
+    }
+
+        a.nav-pill.nav-pill-logout:hover {
+            background: #ff6b6b !important;
+            border-color: #ff6b6b !important;
+            color: #1b1f3b !important;
         }
 
-        .nav-item ::deep a:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
+/* ===================================================== */
+/*                     VISTA ESCRITORIO                  */
+/* ===================================================== */
 
-.bi-house-door-fill-nav-menu {
-    background-image: url("/Images/icono-menu.jpg");
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
+@media (min-width: 992px) {
 
-
-@media (max-width: 640.98px) {
-    .nav-scrollable {
-        background-color: #DC3545;
-        padding: 10px 0;
-    }
-
-    .flex-column {
-        flex-direction: column !important;
-        align-items: flex-start;
-        margin-left: 0;
-    }
-
-    .nav-item {
-        width: 100%;
-        margin-right: 0;
-        padding-left: 20px;
-    }
-}
-
-@media (min-width: 641px) {
     .navbar-toggler {
         display: none;
     }
 
-    .collapse {
-        display: block !important;
+    .nav-links-list {
+        background: transparent !important;
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0;
     }
 
-    .nav-scrollable {
-        height: auto;
-        overflow-y: visible;
+    .nav-item {
+        margin: 0 4px;
     }
 }
-
-
-
-.bi {
-    display: inline-block; 
-    position: relative;
-    
-    content: "";
-   
-    width: 28px;
-    height: 28px;
-    margin-right: 0.75rem;
-    top: -1px;
-}
-
-
-
-
-.bi-house-door-fill-nav-menu {
-   
-    background-image: url("/Images/icono-menu.jpg");
-   
-    width: 80px;
-    height: 80px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-

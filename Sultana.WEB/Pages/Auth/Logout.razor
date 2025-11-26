@@ -8,8 +8,17 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
+        // 1. Ejecutar la lógica de cierre de sesión primero
         await loginService.LogoutAsync();
-        (AuthProvider as JwtAuthenticationStateProvider)!.NotifyLogout();
-        navigation.NavigateTo("/");
+
+        // 2. Intentar obtener el proveedor específico de forma segura
+        if (AuthProvider is JwtAuthenticationStateProvider jwtProvider)
+        {
+            // 3. Si la conversión es exitosa, notificar el logout
+            jwtProvider.NotifyLogout();
+        }
+
+        // 4. Redirigir al inicio, forzando una recarga completa si es necesario
+        navigation.NavigateTo("/", true); // Añadimos 'true' por seguridad
     }
 }
