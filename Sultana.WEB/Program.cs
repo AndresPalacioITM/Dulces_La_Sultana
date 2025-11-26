@@ -22,7 +22,7 @@ builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 // ?? Base de la API: pon TU puerto real y DEJA la barra final
-var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://localhost:7000/";
+var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://sultanaapi.azurewebsites.net/";
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBase) });
 
 // Auth 
