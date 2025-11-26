@@ -1,0 +1,255 @@
+﻿@page "/Empleado/lmp/LotesMateriaPrima"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Gestión de Lotes de Materia Prima</PageTitle>
+
+<link href="css/lote-materia-prima.css" rel="stylesheet" />
+
+<div class="lote-mp-page">
+    <div class="lote-mp-header text-center mb-4">
+        <h1 class="lote-mp-title">Gestión de Lotes de Materia Prima</h1>
+        <p class="lote-mp-subtitle">Administra los lotes de materia prima recibidos</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-lote-outline" @onclick="VolverAlMenu">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Menú
+        </button>
+        <div class="d-flex align-items-center">
+            <span class="badge badge-lote me-3">@lotes.Count lotes</span>
+            <button class="btn btn-lote-success" @onclick="RefrescarDatos">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+            </button>
+        </div>
+    </div>
+
+    @if (cargando)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando lotes de materia prima...</p>
+        </div>
+    }
+    else if (!lotes.Any())
+    {
+        <div class="card text-center py-5 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                <h3 class="text-muted mb-3">No hay lotes registrados</h3>
+                <p class="text-muted mb-4">No se encontraron registros de lotes de materia prima.</p>
+                <button class="btn btn-lote-success" @onclick="IrARegistro">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Crear Primer Lote
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card lote-mp-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-boxes me-2"></i>Lista de Lotes de Materia Prima</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-lote-mp mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>N° Lote</th>
+                                <th>Materia Prima</th>
+                                <th>Proveedor</th>
+                                <th>Cantidad</th>
+                                <th>Recepción</th>
+                                <th>Vencimiento</th>
+                                <th>Inspección</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lote in lotes)
+                            {
+                                <tr>
+                                    <td><span class="id-badge-lote">#@lote.Id</span></td>
+                                    <td>
+                                        <span class="badge-numero-lote">@lote.NumeroLote</span>
+                                    </td>
+                                    <td class="fw-semibold">MP#@lote.MateriaPrimaId</td>
+                                    <td>Prov#@lote.ProveedorId</td>
+                                    <td>
+                                        <span class="badge-cantidad">@lote.CantidadDisponible.ToString("F1") kg</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">@lote.FechaHoraRecepcion.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td>
+                                        @if (lote.FechaVencimiento.HasValue)
+                                        {
+                                            var hoy = DateTime.Today;
+                                            var vencimiento = lote.FechaVencimiento.Value;
+                                            var diasRestantes = (vencimiento - hoy).Days;
+
+                                            if (diasRestantes < 0)
+                                            {
+                                                <span class="vencimiento-vencido" title="Lote vencido">
+                                                    @vencimiento.ToString("dd/MM/yyyy")
+                                                </span>
+                                            }
+                                            else if (diasRestantes <= 30)
+                                            {
+                                                <span class="vencimiento-proximo" title="@diasRestantes días para vencer">
+                                                    @vencimiento.ToString("dd/MM/yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">@vencimiento.ToString("dd/MM/yyyy")</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-1">
+                                            <span class="@(lote.InspeccionColor == "CUMPLE" ? "badge-inspeccion-cumple" : "badge-inspeccion-no-cumple")" title="Color">
+                                                C
+                                            </span>
+                                            <span class="@(lote.InspeccionOlor == "CUMPLE" ? "badge-inspeccion-cumple" : "badge-inspeccion-no-cumple")" title="Olor">
+                                                O
+                                            </span>
+                                            <span class="@(lote.InspeccionTextura == "CUMPLE" ? "badge-inspeccion-cumple" : "badge-inspeccion-no-cumple")" title="Textura">
+                                                T
+                                            </span>
+                                            <span class="@(lote.EstadoEmpaque == "CUMPLE" ? "badge-inspeccion-cumple" : "badge-inspeccion-no-cumple")" title="Empaque">
+                                                E
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-action-group-lote" role="group">
+                                            <button class="btn btn-edit-lote btn-sm"
+                                                    @onclick="() => EditarLote(lote.Id)"
+                                                    title="Editar lote">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-delete-lote btn-sm"
+                                                    @onclick="() => EliminarLote(lote)"
+                                                    title="Eliminar lote">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<LoteMateriaPrima> lotes = new();
+    private bool cargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarLotes();
+    }
+
+    private async Task CargarLotes()
+    {
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var response = await repository.GetAsync<List<LoteMateriaPrima>>("api/LoteMateriaPrima");
+            if (!response.Error)
+            {
+                lotes = response.Response ?? new List<LoteMateriaPrima>();
+            }
+            else
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al cargar: {ex.Message}", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefrescarDatos()
+    {
+        await CargarLotes();
+        await sweetAlertService.FireAsync("Éxito", "Datos actualizados correctamente", SweetAlertIcon.Success);
+    }
+
+    private void VolverAlMenu()
+    {
+        nav.NavigateTo("/Empleado");
+    }
+
+    private void IrARegistro()
+    {
+        nav.NavigateTo("/Empleado/LoteMateriaPrima");
+    }
+
+    private void EditarLote(int id)
+    {
+        nav.NavigateTo($"/Empleado/lmp/EditarLoteMateriaPrima/{id}");
+    }
+
+    private async Task EliminarLote(LoteMateriaPrima lote)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+        {
+            Title = "¿Estás seguro?",
+            Text = $"¿Eliminar el lote: {lote.NumeroLote}? Esta acción no se puede deshacer.",
+            Icon = SweetAlertIcon.Warning,
+            ShowCancelButton = true,
+            ConfirmButtonText = "Sí, eliminar",
+            CancelButtonText = "Cancelar",
+            ConfirmButtonColor = "#dc3545",
+            CancelButtonColor = "#6c757d"
+        });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            try
+            {
+                var response = await repository.DeleteAsync($"api/LoteMateriaPrima/{lote.Id}");
+                if (!response.Error)
+                {
+                    await sweetAlertService.FireAsync("Eliminado", "Lote eliminado correctamente", SweetAlertIcon.Success);
+                    await CargarLotes();
+                }
+                else
+                {
+                    var errorMsg = await response.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                await sweetAlertService.FireAsync("Error", $"Error al eliminar: {ex.Message}", SweetAlertIcon.Error);
+            }
+        }
+    }
+}

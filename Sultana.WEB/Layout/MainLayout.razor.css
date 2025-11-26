@@ -1,24 +1,32 @@
+/* Fondo general y layout */
 .page {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Área principal de las páginas */
 main {
     flex: 1;
-    background-color: #FAFAD2;
+    /* Crema bien rojiza */
+    background-color: #ffd6c8; /* más rojito que antes (#ffe9dd) */
 }
 
+/* Barra superior interna (si la usas) */
 .top-menu-bar {
-    background-color: #DC3545;
+    /* Degradado rojo intenso a rojizo-crema */
+    background: linear-gradient(90deg, #5a0505 0%, #8b1111 35%, #c63426 70%, #ffb68a 100%);
     width: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
 }
 
-
+/* Fila superior (ej: info o botones adicionales) */
 .top-row {
-    background-color: #FFFFE0;
-    border-bottom: 1px solid #d6d5d5;
+    /* Crema muy rojiza */
+    background-color: #ffc8b5; /* más rojito que #ffe1cf */
+    border-bottom: 1px solid #e28f76;
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
@@ -28,12 +36,16 @@ main {
     z-index: 1;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
+    .top-row ::deep a,
+    .top-row ::deep .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
         text-decoration: none;
+        color: #6b0b0b; /* vino rojizo oscuro */
+        font-weight: 500;
     }
 
+/* Layout en pantallas grandes */
 @media (min-width: 641px) {
     .page {
         flex-direction: column;
@@ -46,10 +58,8 @@ main {
         top: 0;
     }
 
-    .top-row {
-    }
-
-    .top-row, article {
+    .top-row,
+    article {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }

@@ -34,5 +34,12 @@ public class RegisterDTO
     [Required, StringLength(20, MinimumLength = 6)]
     [Compare("Password", ErrorMessage = "La contraseña y la confirmación no son iguales.")]
     public string PasswordConfirm { get; set; } = null!;
-}
+
+    //Componentes adicional para proveedores 
+    public string? Nit { get; set; }
+    public string? Empresa { get; set; }
+    public string? Direccion { get; set; }
+
+    }
+    
 

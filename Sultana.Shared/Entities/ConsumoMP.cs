@@ -28,6 +28,7 @@ public class ConsumoMP
 
     //public OrdenProduccion OrdenProduccion { get; set; } = null!;
     //public LoteMateriaPrima LoteMateriaPrima { get; set; } = null!;
+
     public Empleado Responsable { get; set; } = null!;
 
     

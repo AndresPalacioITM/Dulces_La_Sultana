@@ -5,7 +5,7 @@ using Sultana.Shared.Entities;
 
 namespace Sultana.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/lotemateriaprima")]
     [ApiController]
     public class LoteMateriaPrimaController : ControllerBase
     {

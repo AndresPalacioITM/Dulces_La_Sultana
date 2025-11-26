@@ -1,0 +1,91 @@
+﻿@page "/Proveedor"
+
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Nav
+
+<PageTitle>Panel de Proveedor</PageTitle>
+
+<div class="prov-page">
+
+    <div class="prov-header text-center mb-4">
+        <h1 class="prov-title">Panel de proveedor</h1>
+        <p class="prov-subtitle">
+            Desde aquí puedes gestionar la información relacionada con tus entregas
+            de materia prima para <strong>Dulces La Sultana del Valle</strong>.
+        </p>
+    </div>
+
+    <!-- CUALQUIER USUARIO AUTENTICADO -->
+    <AuthorizeView>
+        <Authorized Context="auth">
+            <div class="text-center mb-3">
+                <span class="badge bg-light text-dark prov-badge">
+                    Sesión iniciada como: <strong>@auth.User.Identity!.Name</strong>
+                </span>
+            </div>
+
+            <div class="row g-4 prov-grid justify-content-center">
+
+                <!-- Card: Registrar lote de MP -->
+                <div class="col-md-4 col-sm-6">
+                    <NavLink class="card prov-card text-decoration-none"
+                             href="/Empleado/LoteMateriaPrima">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">
+                                <i class="bi bi-box-seam"></i> Registrar lote de MP
+                            </h5>
+                            <p class="card-text">
+                                Registra la entrega de un nuevo lote de materia prima:
+                                cantidades, fechas, inspección y observaciones.
+                            </p>
+                        </div>
+                    </NavLink>
+                </div>
+
+                <!-- Card: Historial (placeholder) -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="card prov-card disabled-card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">
+                                <i class="bi bi-clock-history"></i> Historial de entregas
+                            </h5>
+                            <p class="card-text">
+                                Aquí podrás consultar más adelante el historial de lotes entregados
+                                y su estado (en desarrollo).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Datos del proveedor (placeholder) -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="card prov-card disabled-card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">
+                                <i class="bi bi-person-lines-fill"></i> Mis datos
+                            </h5>
+                            <p class="card-text">
+                                Sección para revisar y actualizar datos de contacto del proveedor
+                                (en desarrollo).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="alert alert-info mt-4 text-center shadow-sm">
+                Si necesitas registrar una nueva entrega, haz clic en
+                <strong>“Registrar lote de MP”</strong>.
+            </div>
+        </Authorized>
+
+        <NotAuthorized>
+            <div class="alert alert-warning text-center shadow-sm">
+                No has iniciado sesión.
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+

@@ -6,7 +6,7 @@ using Sultana.API.Data;
 namespace Sultana.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/materiaprima")]
     public class MateriaPrimaController : ControllerBase
     {
         private readonly DataContext _context;
@@ -41,6 +41,9 @@ namespace Sultana.API.Controllers
         [HttpPost]
         public async Task<ActionResult<MateriaPrima>> PostMateriaPrima(MateriaPrima materia)
         {
+            var existe = await _context.MateriaPrimas.AnyAsync(m => m.Nombre.ToLower() == materia.Nombre.ToLower());
+            if (existe) return BadRequest($"Ya existe una materia prima con el nombre '{materia.Nombre}'.");
+
             _context.MateriaPrimas.Add(materia);
             await _context.SaveChangesAsync();
 

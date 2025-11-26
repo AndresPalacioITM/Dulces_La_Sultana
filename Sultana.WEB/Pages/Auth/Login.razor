@@ -2,11 +2,13 @@
 
 @using Sultana.Shared.DTOs
 @using CurrieTechnologies.Razor.SweetAlert2
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject IRepository repository
 @inject ILoginService loginService
 @inject NavigationManager nav
 @inject SweetAlertService swal
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <div class="login-wrapper">
     <div class="login-card">
@@ -50,7 +52,17 @@
         }
 
         await loginService.LoginAsync(resp.Response!);
-        nav.NavigateTo("/", forceLoad: true);
+        // Obtener el cargo del usuario y redirigir
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var cargo = authState.User.FindFirst("Cargo")?.Value;
+        var redirectTo = cargo?.ToLower() switch
+        {
+            "admin" => "/EditEmpleados",
+            "empleado" => "/Empleado",
+            "proveedor" => "/Proveedor",
+            _ => "/"
+        };
+        nav.NavigateTo(redirectTo, forceLoad: true);
     }
 
     private void OnCancel() => nav.NavigateTo("/");

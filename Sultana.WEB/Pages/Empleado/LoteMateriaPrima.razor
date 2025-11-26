@@ -1,0 +1,300 @@
+﻿@page "/Empleado/LoteMateriaPrima"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@using LoteMateriaPrimaEntity = Sultana.Shared.Entities.LoteMateriaPrima
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Registrar Lote de Materia Prima</PageTitle>
+
+<link href="css/lote-materia-prima.css" rel="stylesheet" />
+
+<div class="lote-page">
+    <!-- Encabezado -->
+    <div class="lote-header text-center mb-4">
+        <h1 class="lote-title">Nuevo lote de materia prima</h1>
+        <p class="lote-subtitle">
+            Registra la recepción de un lote de materia prima con sus cantidades, fechas
+            e inspección de calidad.
+        </p>
+    </div>
+
+    <div class="row g-4 lote-layout">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="col-lg-7">
+            <div class="card lote-card shadow-sm">
+                <div class="card-body">
+                    <h3 class="section-title mb-3">
+                        <i class="bi bi-box-seam me-2"></i>
+                        Datos del lote
+                    </h3>
+
+                    <EditForm Model="@lote" OnValidSubmit="Guardar">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="mb-3" />
+
+                        <!-- Paso 1: Identificación -->
+                        <div class="lote-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-body">
+                                <h5>Identificación del lote</h5>
+                                <p class="step-text">
+                                    Identifica la materia prima, el proveedor, el responsable y el número de lote.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Materia prima (ID)</label>
+                                        <InputNumber class="form-control" @bind-Value="lote.MateriaPrimaId" />
+                                        <small class="form-text">Identificador de la materia prima recibida.</small>
+                                        <ValidationMessage For="@(() => lote.MateriaPrimaId)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Proveedor (ID)</label>
+                                        <InputNumber class="form-control" @bind-Value="lote.ProveedorId" />
+                                        <small class="form-text">Identificador del proveedor que entrega el lote.</small>
+                                        <ValidationMessage For="@(() => lote.ProveedorId)" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Responsable (ID)</label>
+                                        <InputNumber class="form-control" @bind-Value="lote.ResponsableId" />
+                                        <small class="form-text">ID del empleado que recibe el lote.</small>
+                                        <ValidationMessage For="@(() => lote.ResponsableId)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">N° de lote</label>
+                                        <InputText class="form-control" @bind-Value="lote.NumeroLote" />
+                                        <small class="form-text">Código del lote de materia prima (ej. MP-2403-01).</small>
+                                        <ValidationMessage For="@(() => lote.NumeroLote)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Fechas y cantidades -->
+                        <div class="lote-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-body">
+                                <h5>Fechas y cantidades</h5>
+                                <p class="step-text">
+                                    Registra cuándo se recibe el lote y sus cantidades ingresada y disponible.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de recepción</label>
+                                        <InputDate class="form-control" @bind-Value="lote.FechaHoraRecepcion" />
+                                        <ValidationMessage For="@(() => lote.FechaHoraRecepcion)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de vencimiento</label>
+                                        <InputDate class="form-control" @bind-Value="lote.FechaVencimiento" />
+                                        <ValidationMessage For="@(() => lote.FechaVencimiento)" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cantidad ingresada (kg)</label>
+                                        <InputNumber class="form-control" @bind-Value="lote.CantidadIngresada" />
+                                        <small class="form-text">Cantidad total recibida del lote.</small>
+                                        <ValidationMessage For="@(() => lote.CantidadIngresada)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cantidad disponible (kg)</label>
+                                        <InputNumber class="form-control" @bind-Value="lote.CantidadDisponible" />
+                                        <small class="form-text">Cantidad actualmente disponible (puede ser igual a la ingresada).</small>
+                                        <ValidationMessage For="@(() => lote.CantidadDisponible)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Inspección de calidad -->
+                        <div class="lote-step">
+                            <div class="step-badge">3</div>
+                            <div class="step-body">
+                                <h5>Inspección de calidad</h5>
+                                <p class="step-text">
+                                    Registra el resultado de la inspección sensorial y el estado del empaque.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Color</label>
+                                        <InputSelect class="form-control" @bind-Value="lote.InspeccionColor">
+                                            <option value="CUMPLE">CUMPLE</option>
+                                            <option value="NO CUMPLE">NO CUMPLE</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => lote.InspeccionColor)" />
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Olor</label>
+                                        <InputSelect class="form-control" @bind-Value="lote.InspeccionOlor">
+                                            <option value="CUMPLE">CUMPLE</option>
+                                            <option value="NO CUMPLE">NO CUMPLE</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => lote.InspeccionOlor)" />
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Textura</label>
+                                        <InputSelect class="form-control" @bind-Value="lote.InspeccionTextura">
+                                            <option value="CUMPLE">CUMPLE</option>
+                                            <option value="NO CUMPLE">NO CUMPLE</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => lote.InspeccionTextura)" />
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label class="form-label">Empaque</label>
+                                        <InputSelect class="form-control" @bind-Value="lote.EstadoEmpaque">
+                                            <option value="CUMPLE">CUMPLE</option>
+                                            <option value="NO CUMPLE">NO CUMPLE</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => lote.EstadoEmpaque)" />
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Observaciones</label>
+                                    <InputTextArea class="form-control" rows="3" @bind-Value="lote.Observaciones" />
+                                    <small class="form-text">Detalles adicionales de la inspección.</small>
+                                    <ValidationMessage For="@(() => lote.Observaciones)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <button class="btn btn-lote-outline me-2" type="button" @onclick="IrAGestionLotes">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Gestionar Lotes
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-sultana-primary" type="submit">
+                                    Guardar lote
+                                </button>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: PREVIEW INTERACTIVO -->
+        <div class="col-lg-5">
+            <div class="card preview-card shadow-sm">
+                <div class="card-header">
+                    <i class="bi bi-eye me-2"></i> Vista previa del lote
+                </div>
+                <div class="card-body">
+                    <!-- Mantén tu código existente del preview aquí -->
+                    <!-- ... -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoteMateriaPrimaEntity lote = new()
+    {
+        FechaHoraRecepcion = DateTime.Today,
+        InspeccionColor = "CUMPLE",
+        InspeccionOlor = "CUMPLE",
+        InspeccionTextura = "CUMPLE",
+        EstadoEmpaque = "CUMPLE"
+    };
+
+    private bool LoteAprobado =>
+        lote.InspeccionColor == "CUMPLE" &&
+        lote.InspeccionOlor == "CUMPLE" &&
+        lote.InspeccionTextura == "CUMPLE" &&
+        lote.EstadoEmpaque == "CUMPLE";
+
+    private bool FormularioCompleto =>
+        lote.MateriaPrimaId > 0 &&
+        lote.ProveedorId > 0 &&
+        lote.ResponsableId > 0 &&
+        !string.IsNullOrWhiteSpace(lote.NumeroLote) &&
+        lote.CantidadIngresada > 0 &&
+        lote.CantidadDisponible >= 0 &&
+        lote.FechaHoraRecepcion != default;
+
+    private string ResumenLote
+    {
+        get
+        {
+            var mp = lote.MateriaPrimaId <= 0 ? "(sin MP)" : lote.MateriaPrimaId.ToString();
+            var prov = lote.ProveedorId <= 0 ? "(sin proveedor)" : lote.ProveedorId.ToString();
+            var resp = lote.ResponsableId <= 0 ? "(sin responsable)" : lote.ResponsableId.ToString();
+            var num = string.IsNullOrWhiteSpace(lote.NumeroLote) ? "(sin número)" : lote.NumeroLote;
+            var cantIng = lote.CantidadIngresada <= 0 ? "sin cantidad ingresada" : $"{lote.CantidadIngresada} kg ingresados";
+            var cantDisp = lote.CantidadDisponible < 0 ? "cantidad disponible negativa" : $"{lote.CantidadDisponible} kg disponibles";
+            var recep = lote.FechaHoraRecepcion == default ? "fecha de recepción no asignada" : $"recibido el {lote.FechaHoraRecepcion:dd/MM/yyyy}";
+            var vence = lote.FechaVencimiento is null ? "sin fecha de vencimiento registrada" : $"vence el {lote.FechaVencimiento:dd/MM/yyyy}";
+            var obs = string.IsNullOrWhiteSpace(lote.Observaciones) ? "sin observaciones adicionales" : lote.Observaciones;
+
+            return $"Lote {num} de materia prima {mp}, proveedor {prov}, responsable {resp}, " +
+                   $"{cantIng} y {cantDisp}, {recep} y {vence}. Observaciones: {obs}.";
+        }
+    }
+
+    private async Task Guardar()
+    {
+        try
+        {
+            var response = await repository.PostAsync("api/LoteMateriaPrima", lote);
+
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+                return;
+            }
+            await sweetAlertService.FireAsync("Éxito", "Lote de materia prima registrado correctamente.", SweetAlertIcon.Success);
+            LimpiarFormulario();
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+        }
+    }
+
+    private void LimpiarFormulario()
+    {
+        lote = new LoteMateriaPrimaEntity
+        {
+            FechaHoraRecepcion = DateTime.Today,
+            InspeccionColor = "CUMPLE",
+            InspeccionOlor = "CUMPLE",
+            InspeccionTextura = "CUMPLE",
+            EstadoEmpaque = "CUMPLE"
+        };
+    }
+
+    private void IrAGestionLotes()
+    {
+        nav.NavigateTo("/Empleado/lmp/LotesMateriaPrima");
+    }
+
+    private void Volver()
+    {
+        nav.NavigateTo("/Empleado");
+    }
+}

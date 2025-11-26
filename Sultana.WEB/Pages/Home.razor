@@ -1,33 +1,74 @@
 ﻿@page "/"
 
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity != null && user.Identity.IsAuthenticated)
+        {
+            // Obtener rol del usuario
+            var role = user.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (role == "Empleado")
+            {
+                Nav.NavigateTo("/Empleado");
+                return;
+            }
+
+            if (role == "Proveedor")
+            {
+                Nav.NavigateTo("/Proveedor");
+                return;
+            }
+
+            // Admin NO se redirige (se queda en Home)
+        }
+    }
+}
+
 <PageTitle>Inicio</PageTitle>
 
-<div style="margin-top: 4rem;">
+<div class="home-wrapper">
+
+    <!-- HERO/ENCABEZADO -->
     <div class="home-header text-center mb-4">
+        <span class="home-badge">Sistema interno</span>
         <h1 class="home-title">Dulces La Sultana del Valle</h1>
-        <p class="home-subtitle">Bienvenido(a), gestiona empleados, producción e inventarios fácilmente.</p>
+        <p class="home-subtitle">
+            Administra empleados, producción e inventarios de nuestros dulces artesanales
+            con un solo sistema.
+        </p>
     </div>
 
     <AuthorizeView>
         <Authorized>
-            <!-- OPCIONES SOLO PARA USUARIOS LOGUEADOS -->
+            <!-- OPCIONES SOLO PARA USUARIOS LOGUEADOS (Admin u otros que no redirijan) -->
             <div class="row g-4 card-grid justify-content-center">
 
                 <div class="col-md-4 col-sm-6">
-                    <NavLink class="card custom-card empleados-card text-decoration-none" href="/Empleados">
+                    <NavLink class="card custom-card empleados-card text-decoration-none home-card-link" href="/Empleados">
                         <div class="card-body">
                             <h5 class="card-title mb-1">
                                 <i class="bi bi-person-workspace"></i> Empleados
                             </h5>
-                            <p class="card-text">Crear, editar y eliminar empleados.</p>
+                            <p class="card-text">
+                                Crear, editar y gestionar la información del personal.
+                            </p>
                         </div>
                     </NavLink>
                 </div>
 
-                @* Aquí podrías agregar más opciones según el rol *@
+                @* Aquí podrías agregar más opciones según el rol, cuando tengas las páginas listas *@
             </div>
 
-            <div class="alert alert-success mt-4 text-center shadow-sm">
+            <div class="alert alert-success mt-4 text-center shadow-sm home-alert">
+                <i class="bi bi-check-circle-fill me-2"></i>
                 Sesión iniciada como: @context.User.Identity!.Name
             </div>
         </Authorized>
@@ -37,32 +78,38 @@
             <div class="row g-4 card-grid justify-content-center">
 
                 <div class="col-md-4 col-sm-6">
-                    <NavLink class="card custom-card login-card text-decoration-none" href="/Login">
+                    <NavLink class="card custom-card login-card text-decoration-none home-card-link" href="/Login">
                         <div class="card-body">
                             <h5 class="card-title mb-1">
                                 <i class="bi bi-shield-lock-fill"></i> Iniciar sesión
                             </h5>
-                            <p class="card-text">Accede para ver módulos protegidos.</p>
+                            <p class="card-text">
+                                Ingresa para acceder a los módulos internos del sistema.
+                            </p>
                         </div>
                     </NavLink>
                 </div>
 
                 <div class="col-md-4 col-sm-6">
-                    <NavLink class="card custom-card register-card text-decoration-none" href="/Register">
+                    <NavLink class="card custom-card register-card text-decoration-none home-card-link" href="/Register">
                         <div class="card-body">
                             <h5 class="card-title mb-1">
                                 <i class="bi bi-person-plus-fill"></i> Registrarse
                             </h5>
-                            <p class="card-text">Crear cuenta de empleado.</p>
+                            <p class="card-text">
+                                Crea una cuenta de empleado para comenzar a trabajar.
+                            </p>
                         </div>
                     </NavLink>
                 </div>
 
             </div>
 
-            <div class="alert alert-warning mt-4 text-center shadow-sm">
+            <div class="alert alert-warning mt-4 text-center shadow-sm home-alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
                 No has iniciado sesión.
             </div>
         </NotAuthorized>
     </AuthorizeView>
 </div>
+

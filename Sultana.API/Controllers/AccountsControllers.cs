@@ -40,11 +40,12 @@ namespace Sultana.API.Controllers
             try 
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-
+                //Validacion de que tenga cargo
+                if(string.IsNullOrEmpty(dto.Cargo)) return BadRequest("El campo Cargo es obligatorio.");
+                //Verificar si el email ya existe
                 var exists = await _userManager.FindByEmailAsync(dto.Email);
                 if (exists is not null) return BadRequest("El correo ya está registrado.");
-                var empleadoExistente = await _context.Empleados.FirstOrDefaultAsync(e => e.Nombre == dto.Nombre);
-                if (empleadoExistente is not null) return BadRequest("Ya existe un empleado con ese nombre.");
+                
 
                 var identityUser = new IdentityUser
                 {
@@ -53,35 +54,77 @@ namespace Sultana.API.Controllers
                 };
 
                 var createResult = await _userManager.CreateAsync(identityUser, dto.Password);
-                if (!createResult.Succeeded)
-                    return BadRequest(createResult.Errors.FirstOrDefault()?.Description ?? "No se pudo crear el usuario.");
-
-                // Crear Empleado con los MISMOS datos del registro
-                var empleado = new Empleado
-                {
-                    Nombre = dto.Nombre,
-                    Cargo = dto.Cargo,
-                    Contacto = dto.Contacto,
-                    Email = dto.Email
+                if (!createResult.Succeeded)return BadRequest(createResult.Errors.FirstOrDefault()?.Description ?? "No se pudo crear el usuario.");
+                //Lista de claims base
+                var claims = new List<Claim>
+                    {
+                    new Claim(ClaimTypes.Name, dto.Email ?? string.Empty),
+                    new Claim(ClaimTypes.NameIdentifier, identityUser.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("Cargo", dto.Cargo),
+                    new Claim("Nombre", dto.Nombre)
                 };
-
-                _context.Empleados.Add(empleado);
-                await _context.SaveChangesAsync();
-
-                if (empleado.Id == 0) { return BadRequest("Error al crear el empleado en la base de datos."); }
-
-                // Opcional: claims con la misma info
-                await _userManager.AddClaimsAsync(identityUser, new[]
+                //Proceso segun el cargo
+                if (dto.Cargo == "Empleado") 
                 {
-            new Claim(ClaimTypes.Name, dto.Email),
-            new Claim("EmpleadoId", empleado.Id.ToString()),
-            new Claim("Nombre", empleado.Nombre),
-            new Claim("Cargo", empleado.Cargo ?? string.Empty),
-            new Claim("Photo", dto.Photo ?? string.Empty)
-        });
+                    // Verificar si ya existe un empleado con el mismo nombre
+                    var empleadoExistente = await _context.Empleados.FirstOrDefaultAsync(e => e.Nombre == dto.Nombre);
+                    if (empleadoExistente is not null) return BadRequest("Ya existe un empleado con ese nombre.");
+                    // Crear Empleado con los MISMOS datos del registro
+                    var empleado = new Empleado
+                    {
+                        Nombre = dto.Nombre,
+                        Cargo = dto.Cargo,
+                        Contacto = dto.Contacto,
+                        Email = dto.Email
+                    };
+                    _context.Empleados.Add(empleado);
+                    await _context.SaveChangesAsync();
+
+                    //Claims adicionales para empleado
+                    claims.Add(new Claim("EmpleadoId", empleado.Id.ToString()));
+                    claims.Add(new Claim("TipoEntidad", "Empleado"));
+
+                    if (empleado.Id == 0) { return BadRequest("Error al crear el empleado en la base de datos."); }
+                }
+                else if (dto.Cargo == "Proveedor") 
+                {
+                    // Validar campos adicionales para Proveedor
+                    if (string.IsNullOrEmpty(dto.Empresa) || string.IsNullOrEmpty(dto.Nit)) return BadRequest("Los campos Empresa y Nit son obligatorios para el cargo Proveedor.");
+                    //verificar si ya existe un proveedor con el mismo NIT
+                    if (!string.IsNullOrEmpty(dto.Nit))
+                    {
+                        var proveedorExistente = await _context.Proveedores.FirstOrDefaultAsync(p => p.Nit == dto.Nit);
+                        if (proveedorExistente is not null) return BadRequest("Ya existe un proveedor con ese NIT.");
+                    }
+                    // Crear Proveedor con los datos adicionales
+                    var proveedor = new Proveedor
+                    {
+                        Nit = dto.Nit,
+                        NombreVendedor = dto.Nombre,
+                        Empresa = dto.Empresa,                        
+                        Contacto = dto.Contacto,
+                        Email = dto.Email,
+                        Direccion = dto.Direccion
+                    };
+                    _context.Proveedores.Add(proveedor);
+                    await _context.SaveChangesAsync();
+                    if (proveedor.Id == 0) { return BadRequest("Error al crear el proveedor en la base de datos."); }
+                    //Claims adicionales para proveedor
+                    claims.Add(new Claim("ProvedorId", proveedor.Id.ToString()));
+                    claims.Add(new Claim("Empresa", proveedor.Empresa ?? ""));
+                    claims.Add(new Claim("TipoEntidad", "Proveedor"));
+                    
+                    if(!string.IsNullOrEmpty(proveedor.Nit)) claims.Add(new Claim("Nit", proveedor.Nit));
+                }
+                else
+                {
+                    return BadRequest("Cargo no válido. Debe ser 'Empleado' o 'Proveedor'.");
+                }
+                await _userManager.AddClaimsAsync(identityUser, claims);    
 
                 // Generamos JWT con los mismos datos
-                var token = BuildToken(identityUser, empleado, dto.Photo);
+                var token = BuildToken(claims);
                 return Ok(token);
             }
             catch (Exception ex) {
@@ -99,45 +142,28 @@ namespace Sultana.API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: false);
             if (!result.Succeeded) return BadRequest("Email o contraseña incorrectos.");
 
-            // recuperar empleado por email para inyectar en claims
-            var empleado = _context.Empleados.FirstOrDefault(e => e.Email == dto.Email);
-            return Ok(BuildToken(user, empleado,null));
+            var claims = (await _userManager.GetClaimsAsync(user)).ToList();
+
+            //agregar claims basicos si faltan
+            if(!claims.Any(c => c.Type == ClaimTypes.NameIdentifier))
+                claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            if(!claims.Any(c => c.Type == JwtRegisteredClaimNames.Jti))
+                claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+            return Ok(BuildToken(claims));
         }
 
-        private TokenDTO BuildToken(IdentityUser user, Empleado? empleado, string? photo = null)
+        private TokenDTO BuildToken(List<Claim> claims )
         {
             try 
             {
-                // Puedes agregar más claims si es necesario
+               
                 var jwtKey = _config["Jwt:Key"];
                 if (string.IsNullOrEmpty(jwtKey))
                 {
                     jwtKey =  "MiEmpresaSultana2025!ClaveSuperSecretaParaJWT@12345";
                     Console.WriteLine(" Warning: JWT key not found in configuration. Using default key.");
                 }
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-                if (empleado is not null)
-                {
-                    claims.Add(new Claim("EmpleadoId", empleado.Id.ToString()));
-                    claims.Add(new Claim("Nombre", empleado.Nombre));
-                    claims.Add(new Claim("Cargo", empleado.Cargo ?? string.Empty));
-                }
-                else 
-                {
-                    Console.WriteLine("Empleado es null al generar Token.");
-                }
-
-                if (!string.IsNullOrWhiteSpace(photo))
-                    claims.Add(new Claim("Photo", photo));
-
-                
-
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                 var exp = DateTime.UtcNow.AddDays(30);

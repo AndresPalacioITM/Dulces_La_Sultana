@@ -1,18 +1,20 @@
 ﻿@page "/Register"
-
 @using CurrieTechnologies.Razor.SweetAlert2
 @using Sultana.Shared.DTOs
+@using Sultana.Shared.Entities 
 @using Sultana.WEB.Repositories
 @using Sultana.WEB.Auth
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject IRepository repository
 @inject SweetAlertService sweet
 @inject NavigationManager nav
 @inject ILoginService loginService
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <div class="register-container">
     <div class="register-card">
-        <h3 class="text-center mb-3">Registrar nuevo empleado</h3>
+        <h3 class="text-center mb-3">Registrar nuevo usuario</h3>
 
         <EditForm Model="model" OnValidSubmit="CreateAsync">
             <DataAnnotationsValidator />
@@ -20,39 +22,74 @@
 
             <div class="mb-3">
                 <label class="form-label">Nombre</label>
-                <InputText class="form-control" @bind-Value="model.Nombre" />
+                <InputText class="form-control" @bind-Value="model.Nombre" 
+                          @oninput="FormatName" />
                 <ValidationMessage For="@(() => model.Nombre)" />
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Cargo</label>
-                <InputText class="form-control" @bind-Value="model.Cargo" />
+                <InputSelect class="form-control" @bind-Value="model.Cargo">
+                    <option value="">Seleccione un cargo</option>
+                    <option value="Empleado">Empleado</option>
+                    <option value="Proveedor">Proveedor</option>
+                </InputSelect>
                 <ValidationMessage For="@(() => model.Cargo)" />
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Contacto</label>
-                <InputText class="form-control" @bind-Value="model.Contacto" />
-                <ValidationMessage For="@(() => model.Contacto)" />
-            </div>
+            @if (model.Cargo == "Empleado")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Contacto</label>
+                    <InputText class="form-control" @bind-Value="model.Contacto" />
+                    <ValidationMessage For="@(() => model.Contacto)" />
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Correo</label>
-                <InputText class="form-control" type="email" @bind-Value="model.Email" />
-                <ValidationMessage For="@(() => model.Email)" />
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <InputText class="form-control" type="email" @bind-Value="model.Email" />
+                    <ValidationMessage For="@(() => model.Email)" />
+                </div>
+            }
+            else if (model.Cargo == "Proveedor")
+            {
+                <div class="mb-3">
+                    <label class="form-label">Nit</label>
+                    <InputText class="form-control" @bind-Value="model.Nit" />
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <InputText class="form-control" type="password" @bind-Value="model.Password" />
-                <ValidationMessage For="@(() => model.Password)" />
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Empresa</label>
+                    <InputText class="form-control" @bind-Value="model.Empresa" />
+                </div>
 
-            <div class="mb-4">
-                <label class="form-label">Confirmar contraseña</label>
-                <InputText class="form-control" type="password" @bind-Value="model.PasswordConfirm" />
-                <ValidationMessage For="@(() => model.PasswordConfirm)" />
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Direccion</label>
+                    <InputText class="form-control" @bind-Value="model.Direccion" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo</label>
+                    <InputText class="form-control" type="email" @bind-Value="model.Email" />
+                    <ValidationMessage For="@(() => model.Email)" />
+                </div>
+            }
+
+            <!-- Campos comunes para ambos -->
+            @if (!string.IsNullOrEmpty(model.Cargo))
+            {
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <InputText class="form-control" type="password" @bind-Value="model.Password" />
+                    <ValidationMessage For="@(() => model.Password)" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <InputText class="form-control" type="password" @bind-Value="model.PasswordConfirm" />
+                    <ValidationMessage For="@(() => model.PasswordConfirm)" />
+                </div>
+            }
 
             <div class="d-flex gap-2 justify-content-end">
                 <button class="btn btn-primary register-button" type="submit" disabled="@isSubmitting">
@@ -73,11 +110,27 @@
 
 @code {
     private RegisterDTO model = new();
+    
     private bool isSubmitting;
+
+    private void FormatName(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString();
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            model.Nombre = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
+        }
+    }  
 
     private async Task CreateAsync()
     {
         if (isSubmitting) return;
+        if (string.IsNullOrEmpty(model.Cargo))
+        {
+            await sweet.FireAsync("Error", "Por favor seleccione un cargo", SweetAlertIcon.Error);
+            return;
+        }
+
         isSubmitting = true;
 
         try
@@ -92,8 +145,17 @@
             }
 
             await loginService.LoginAsync(resp.Response!);
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var cargo = authState.User.FindFirst("Cargo")?.Value;
+
+            var redirectTo = cargo?.ToLower() switch
+            {                
+                "empleado" => "/empleado-dashboard",
+                "proveedor" => "/proveedor-dashboard",
+                _ => "/"  
+            };
             await sweet.FireAsync("Registro exitoso", "Bienvenid@, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
-            nav.NavigateTo("/");
+            nav.NavigateTo(redirectTo, forceLoad: true);
         }
         catch (Exception ex)
         {

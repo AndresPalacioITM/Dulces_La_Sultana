@@ -1,0 +1,296 @@
+﻿@page "/Empleado/MateriaPrima"
+
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@using MateriaPrimaEntity = Sultana.Shared.Entities.MateriaPrima
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Registrar Materia Prima</PageTitle>
+
+<div class="mp-page">
+
+    <!-- Encabezado -->
+    <div class="mp-header text-center mb-4">
+        <h1 class="mp-title">Nueva materia prima</h1>
+        <p class="mp-subtitle">
+            Registra una materia prima definiendo su nombre, unidad de medida y stock mínimo recomendado.
+        </p>
+    </div>
+
+    <div class="row g-4 mp-layout">
+
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="col-lg-7">
+            <div class="card mp-card shadow-sm">
+                <div class="card-body">
+                    <h3 class="section-title mb-3">
+                        <i class="bi bi-basket2-fill me-2"></i>
+                        Datos de la materia prima
+                    </h3>
+
+                    <EditForm Model="@materia" OnValidSubmit="Guardar">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="mb-3" />
+
+                        <!-- Paso 1: Nombre -->
+                        <div class="mp-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-body">
+                                <h5>Identificación</h5>
+                                <p class="step-text">
+                                    Asigna un nombre claro a la materia prima para que sea fácil de identificar
+                                    en órdenes de compra, lotes y consumos.
+                                </p>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre de la materia prima</label>
+                                    <InputText class="form-control"
+                                               @bind-Value="materia.Nombre" />
+                                    <small class="form-text">
+                                        Ejemplo: Azúcar blanca, Leche entera en polvo, Pulpa de guayaba, etc.
+                                    </small>
+                                    <ValidationMessage For="@(() => materia.Nombre)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Unidad y stock mínimo -->
+                        <div class="mp-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-body">
+                                <h5>Unidad y stock mínimo</h5>
+                                <p class="step-text">
+                                    Define en qué unidad se manejará la materia prima y cuál es el stock mínimo
+                                    para generar alertas de reposición.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Unidad de medida</label>
+                                        <InputSelect class="form-control"
+                                                     @bind-Value="materia.UnidadMedida">
+                                            <option value="kg">kg</option>
+                                            <option value="g">g</option>
+                                            <option value="L">L</option>
+                                            <option value="ml">ml</option>
+                                            <option value="unid">unid</option>
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => materia.UnidadMedida)" />
+                                    </div>
+
+                                    <div class="col-md-8 mb-3">
+                                        <label class="form-label">Stock mínimo</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="materia.StockMinimo" />
+                                        <small class="form-text">
+                                            Cantidad mínima recomendada antes de generar alerta de compra.
+                                        </small>
+                                        <ValidationMessage For="@(() => materia.StockMinimo)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <button class="btn btn-sultana-outline me-2" type="button" @onclick="IrAGestionMateriasPrimas">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Gestionar Materias Primas
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-sultana-primary" type="submit">
+                                    Guardar materia prima
+                                </button>
+                            </div>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: PREVIEW INTERACTIVO -->
+        <div class="col-lg-5">
+            <div class="card preview-card shadow-sm">
+                <div class="card-header">
+                    <i class="bi bi-eye me-2"></i> Vista previa
+                </div>
+                <div class="card-body">
+
+                    <!-- Estado general -->
+                    <div class="preview-status mb-3">
+                        @if (FormularioCompleto)
+                        {
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Lista para registrar
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Completa los campos obligatorios
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Chips -->
+                    <div class="preview-chips mb-3">
+                        <div class="chip">
+                            <span class="chip-label">Nombre</span>
+                            <span class="chip-value">
+                                @(string.IsNullOrWhiteSpace(materia.Nombre) ? "Sin nombre" : materia.Nombre)
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Unidad</span>
+                            <span class="chip-value">
+                                @(string.IsNullOrWhiteSpace(materia.UnidadMedida) ? "-" : materia.UnidadMedida)
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Stock mín.</span>
+                            <span class="chip-value">
+                                @(materia.StockMinimo < 0 ? "Inválido" : $"{materia.StockMinimo} {materia.UnidadMedida}")
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Stock mínimo visual -->
+                    <div class="preview-section mb-3">
+                        <h6>Referencia de stock mínimo</h6>
+                        <p class="mb-1">
+                            @if (materia.StockMinimo <= 0)
+                            {
+                                <span class="text-muted">Aún no has definido un stock mínimo.</span>
+                            }
+                            else
+                            {
+                                <span>Se generarán alertas cuando el stock sea menor a @materia.StockMinimo @materia.UnidadMedida.</span>
+                            }
+                        </p>
+
+                        <div class="progress mt-2">
+                            @{
+                                var min = materia.StockMinimo <= 0 ? 0 : materia.StockMinimo;
+                                var porcentaje = min >= 1000 ? 100 : (int)(min / 10); // escala 0–1000 → 0–100%
+                            }
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: @porcentaje%;"
+                                 aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100">
+                                @porcentaje%
+                            </div>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            La barra es solo una referencia visual para el nivel de stock mínimo configurado.
+                        </small>
+                    </div>
+
+                    <!-- Resumen -->
+                    <div class="preview-section">
+                        <h6>Resumen</h6>
+                        <p class="preview-summary">
+                            @ResumenMateria
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private MateriaPrimaEntity materia = new()
+    {
+        UnidadMedida = "kg",
+        StockMinimo = 0
+    };
+
+    private bool FormularioCompleto =>
+        !string.IsNullOrWhiteSpace(materia.Nombre) &&
+        !string.IsNullOrWhiteSpace(materia.UnidadMedida) &&
+        materia.StockMinimo >= 0;
+
+    private string ResumenMateria
+    {
+        get
+        {
+            var nombre = string.IsNullOrWhiteSpace(materia.Nombre)
+                ? "(sin nombre)"
+                : materia.Nombre;
+
+            var unidad = string.IsNullOrWhiteSpace(materia.UnidadMedida)
+                ? "-"
+                : materia.UnidadMedida;
+
+            var stock = materia.StockMinimo < 0
+                ? "stock mínimo inválido"
+                : $"{materia.StockMinimo} {unidad} como stock mínimo";
+
+            return $"Materia prima {nombre}, manejada en {unidad}, con {stock}.";
+        }
+    }
+
+    private async Task Guardar()
+    {
+        try
+        {
+            var response = await repository.PostAsync("api/MateriaPrima", materia);
+
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                if (errorMsg.Contains("duplicate key") || errorMsg.Contains("ya existe"))
+                {
+                    await sweetAlertService.FireAsync("Error",
+                        $"Ya existe una materia prima con el nombre '{materia.Nombre}'. Por favor usa un nombre diferente.",
+                        SweetAlertIcon.Error);
+                }
+                else
+                {
+                    await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+
+                }
+
+                return;
+            }
+            await sweetAlertService.FireAsync("Éxito", "Materia prima registrada correctamente.", SweetAlertIcon.Success);
+            LimpiarFormulario();
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+        }
+    }
+
+    private void LimpiarFormulario()
+    {
+        materia = new MateriaPrimaEntity
+        {
+            UnidadMedida = "kg",
+            StockMinimo = 0
+        };
+    }
+
+    private void IrAGestionMateriasPrimas()
+    {
+        nav.NavigateTo("/Empleado/mp/MateriasPrimas");
+    }
+
+    private void Volver()
+    {
+        nav.NavigateTo("/Empleado");
+    }
+}

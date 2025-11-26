@@ -1,0 +1,89 @@
+﻿@page "/Empleado"
+
+<div class="empleado-page">
+
+    <!-- HERO / ENCABEZADO -->
+    <section class="empleado-hero">
+        <div class="empleado-hero-badge">Panel interno · Empleado</div>
+        <h1 class="empleado-title">Gestión de producción</h1>
+        <p class="empleado-subtitle">
+            Accede a los módulos clave para registrar consumos, órdenes de producción y control de producto terminado
+            en <strong>Dulces La Sultana del Valle</strong>.
+        </p>
+    </section>
+
+    <!-- GRID DE MÓDULOS -->
+    <section class="empleado-grid row g-4 mt-2 justify-content-center">
+
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <NavLink class="empleado-card text-decoration-none"
+                     href="/Empleado/Consumo"
+                     ActiveClass="empleado-card-active">
+                <div class="empleado-card-inner">
+                    <div class="empleado-icon">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                    <h5 class="empleado-card-title">Consumo</h5>
+                    <p class="empleado-card-text">
+                        Registra el consumo de materia prima por lote, orden de producción y responsable.
+                    </p>
+                    <span class="empleado-card-tag">Materia prima</span>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <NavLink class="empleado-card text-decoration-none"
+                     href="/Empleado/OrdenProduccion"
+                     ActiveClass="empleado-card-active">
+                <div class="empleado-card-inner">
+                    <div class="empleado-icon">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+                    <h5 class="empleado-card-title">Orden de producción</h5>
+                    <p class="empleado-card-text">
+                        Crea y consulta órdenes de producción para cada jornada y producto.
+                    </p>
+                    <span class="empleado-card-tag">Planificación</span>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <NavLink class="empleado-card text-decoration-none"
+                     href="/Empleado/MateriaPrima"
+                     ActiveClass="empleado-card-active">
+                <div class="empleado-card-inner">
+                    <div class="empleado-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h5 class="empleado-card-title">Materia Prima</h5>
+                    <p class="empleado-card-text">
+                        Registra lotes de producto terminado y controla cantidades disponibles.
+                    </p>
+                    <span class="empleado-card-tag">Almacén</span>
+                </div>
+            </NavLink>
+        </div>
+
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <NavLink class="empleado-card text-decoration-none"
+                     href="/Empleado/LoteMateriaPrima"
+                     ActiveClass="empleado-card-active">
+                <div class="empleado-card-inner">
+                    <div class="empleado-icon">
+                        <i class="bi bi-archive-fill"></i>
+                    </div>
+                    <h5 class="empleado-card-title">Lote Materia Prima</h5>
+                    <p class="empleado-card-text">
+                        Gestiona lotes de producto terminado y su trazabilidad interna.
+                    </p>
+                    <span class="empleado-card-tag">Trazabilidad</span>
+                </div>
+            </NavLink>
+        </div>
+
+    </section>
+</div>
+
+

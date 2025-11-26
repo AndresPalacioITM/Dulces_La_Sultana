@@ -27,6 +27,9 @@ public class Proveedor
     [Display(Name = "Contacto"), MaxLength(60)]
     public string? Contacto { get; set; }
 
+    [Display(Name = "Correo"), EmailAddress, MaxLength(120)]
+    public string Email { get; set; }
+
     [Display(Name = "Dirección"), MaxLength(150)]
     public string? Direccion { get; set; }
 

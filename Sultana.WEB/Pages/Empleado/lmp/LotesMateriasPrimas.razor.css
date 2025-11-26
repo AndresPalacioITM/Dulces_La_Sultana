@@ -1,0 +1,289 @@
+﻿/* Estilos específicos para páginas de Lote Materia Prima */
+.lote-mp-page {
+    padding: 1rem;
+}
+
+.lote-mp-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.lote-mp-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.lote-mp-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.lote-mp-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+    .lote-mp-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+    }
+
+        .lote-mp-card .card-header h5 {
+            margin: 0;
+            color: white;
+            font-weight: 600;
+        }
+
+    .lote-mp-card .card-body {
+        padding: 2rem;
+    }
+
+/* Tabla de lotes */
+.table-lote-mp {
+    margin: 0;
+}
+
+    .table-lote-mp thead th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #667eea;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-lote-mp tbody td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .table-lote-mp tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+
+/* Badges específicos para lotes */
+.badge-lote {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+.badge-numero-lote {
+    background: linear-gradient(135deg, #20c997, #12b886);
+    color: white;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.badge-cantidad {
+    background: linear-gradient(135deg, #fd7e14, #e8590c);
+    color: white;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.badge-inspeccion-cumple {
+    background: linear-gradient(135deg, #51cf66, #40c057);
+    color: white;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+.badge-inspeccion-no-cumple {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+}
+
+/* Estados de vencimiento */
+.vencimiento-proximo {
+    background: linear-gradient(135deg, #ffd43b, #fcc419);
+    color: #495057;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+.vencimiento-vencido {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+}
+
+/* Botones de acción */
+.btn-action-group-lote {
+    display: flex;
+    gap: 0.25rem;
+}
+
+    .btn-action-group-lote .btn {
+        border-radius: 6px;
+        margin: 0 1px;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+.btn-edit-lote {
+    background: linear-gradient(135deg, #17a2b8, #6f42c1);
+    border: none;
+    color: white;
+}
+
+    .btn-edit-lote:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+        background: linear-gradient(135deg, #138496, #5a32a3);
+    }
+
+.btn-delete-lote {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+    border: none;
+    color: white;
+}
+
+    .btn-delete-lote:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(135deg, #c82333, #d91a7a);
+    }
+
+/* Botones generales */
+.btn-lote-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-lote-outline:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.btn-lote-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-lote-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lote-mp-title {
+        font-size: 2rem;
+    }
+
+    .lote-mp-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .lote-mp-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .btn-lote-outline,
+    .btn-lote-success {
+        padding: 0.6rem 1.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .table-lote-mp {
+        font-size: 0.875rem;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeInLote {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lote-mp-page {
+    animation: fadeInLote 0.5s ease-in;
+}
+
+/* Indicadores de stock */
+.stock-indicator-lote {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.stock-bajo {
+    background: linear-gradient(135deg, #ffa94d, #ff922b);
+    color: white;
+}
+
+.stock-critico {
+    background: linear-gradient(135deg, #ff6b6b, #fa5252);
+    color: white;
+}
+
+.stock-ok {
+    background: linear-gradient(135deg, #51cf66, #40c057);
+    color: white;
+}
+
+/* Badge de ID */
+.id-badge-lote {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}

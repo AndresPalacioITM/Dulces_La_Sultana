@@ -6,7 +6,7 @@ using Sultana.Shared.Entities;
 namespace Sultana.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/proveedores")]
     public class ProveedorController : ControllerBase
     {
         private readonly DataContext _context;
