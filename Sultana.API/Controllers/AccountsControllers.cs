@@ -1,4 +1,5 @@
 ﻿// Sultana.API/Controllers/AccountsController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,7 @@ namespace Sultana.API.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult<TokenDTO>> Register([FromBody] RegisterDTO dto)
         {
             try 
