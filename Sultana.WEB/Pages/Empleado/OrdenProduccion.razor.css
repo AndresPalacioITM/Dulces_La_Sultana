@@ -1,0 +1,218 @@
+﻿.orden-page {
+    max-width: 1100px;
+    margin: 1.5rem auto 2.5rem auto;
+}
+
+/* Encabezado */
+.orden-header {
+    margin-top: 0.5rem;
+}
+
+.orden-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #7b1010; /* vino Sultana */
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.orden-subtitle {
+    font-size: 0.98rem;
+    color: #5b3216;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.orden-layout {
+    align-items: flex-start;
+}
+
+/* Tarjeta formulario */
+.orden-card {
+    border: none;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+    border-top: 4px solid #f4c542;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #7b1010;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 0.4rem;
+}
+
+/* Pasos */
+.orden-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+}
+
+.step-badge {
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #7b1010;
+    color: #fff7dd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    margin-top: 0.2rem;
+}
+
+.step-body h5 {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #5b3216;
+}
+
+.step-text {
+    font-size: 0.85rem;
+    color: #7b6a58;
+    margin-bottom: 0.75rem;
+}
+
+/* Labels e inputs */
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #5b3216;
+}
+
+.form-text {
+    font-size: 0.8rem;
+    color: #8a7a6a;
+}
+
+.form-control {
+    border-radius: 10px;
+    border-color: rgba(123, 16, 16, 0.20);
+}
+
+    .form-control:focus {
+        border-color: #f4c542;
+        box-shadow: 0 0 0 0.15rem rgba(244, 197, 66, 0.25);
+    }
+
+/* Botones Sultana (mismos que usas en Consumo) */
+.btn-sultana-primary {
+    background-color: #7b1010;
+    border-color: #7b1010;
+    color: #fff7dd;
+    font-weight: 600;
+    border-radius: 999px;
+    padding-inline: 1.5rem;
+}
+
+    .btn-sultana-primary:hover {
+        background-color: #3e0505;
+        border-color: #3e0505;
+        color: #fff7dd;
+    }
+
+.btn-sultana-secondary {
+    background-color: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(91, 50, 22, 0.55);
+    color: #5b3216;
+    font-weight: 500;
+    padding-inline: 1.25rem;
+}
+
+    .btn-sultana-secondary:hover {
+        background-color: rgba(91, 50, 22, 0.08);
+        color: #3e0505;
+    }
+
+/* Preview */
+.preview-card {
+    border-radius: 18px;
+    border: none;
+    background: #fffdf6;
+}
+
+    .preview-card .card-header {
+        background: linear-gradient(90deg, #7b1010 0%, #b72424 50%, #f4c542 100%);
+        color: #fff;
+        font-weight: 600;
+        border-radius: 18px 18px 0 0;
+    }
+
+.preview-status .badge {
+    font-size: 0.8rem;
+}
+
+.preview-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.15rem 0.75rem;
+    background-color: #fff7dd;
+    border: 1px solid rgba(123, 16, 16, 0.18);
+    font-size: 0.8rem;
+}
+
+.chip-label {
+    font-weight: 600;
+    color: #7b1010;
+    margin-right: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.chip-value {
+    color: #5b3216;
+}
+
+.preview-section h6 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #5b3216;
+}
+
+.preview-summary {
+    font-size: 0.88rem;
+    color: #5c4a3a;
+}
+
+/* Barra de progreso */
+.progress {
+    height: 0.7rem;
+    border-radius: 999px;
+    background-color: #f2e1c4;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #7b1010, #f4c542);
+    border-radius: 999px;
+    font-size: 0.7rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .orden-page {
+        margin: 1rem 0.5rem 2rem 0.5rem;
+    }
+
+    .orden-card,
+    .preview-card {
+        border-radius: 14px;
+    }
+}
