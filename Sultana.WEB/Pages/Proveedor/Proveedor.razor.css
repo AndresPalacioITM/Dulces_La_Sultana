@@ -1,0 +1,96 @@
+﻿@*.prov-page {
+    max-width: 1100px;
+    margin: 1.5rem auto 2.5rem auto;
+}
+
+.prov-header {
+    margin-top: 0.5rem;
+}
+
+.prov-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #7b1010;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.prov-subtitle {
+    font-size: 0.98rem;
+    color: #5b3216;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.prov-badge {
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(123,16,16,0.25);
+    background-color: #fff7dd;
+}
+
+.prov-grid {
+    margin-top: 0.5rem;
+}
+
+/* Tarjetas */
+.prov-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: none;
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+    transition: all 0.25s ease;
+    min-height: 170px;
+    border-left: 4px solid #f4c542;
+}
+
+    .prov-card .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        color: #5b3216;
+    }
+
+        .prov-card .card-title i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            color: #f4c542;
+        }
+
+    .prov-card .card-text {
+        color: #6c757d;
+        font-size: 0.93rem;
+    }
+
+    .prov-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+    }
+
+/* Tarjetas deshabilitadas (placeholders) */
+.disabled-card {
+    opacity: 0.65;
+    border-left-color: rgba(0,0,0,0.08);
+    cursor: default;
+}
+
+    .disabled-card:hover {
+        transform: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.10);
+    }
+
+/* Responsive */
+@media (max-width: 576px) {
+    .prov-page {
+        margin: 1rem 0.5rem 2rem 0.5rem;
+    }
+
+    .prov-card {
+        border-radius: 12px;
+    }
+}
