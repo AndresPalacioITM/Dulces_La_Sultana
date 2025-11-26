@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Sultana.Shared.Entities;
@@ -28,6 +29,7 @@ public class ConsumoMP
 
     //public OrdenProduccion OrdenProduccion { get; set; } = null!;
     //public LoteMateriaPrima LoteMateriaPrima { get; set; } = null!;
+    [JsonIgnore]
     public Empleado Responsable { get; set; } = null!;
 
     

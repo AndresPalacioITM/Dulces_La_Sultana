@@ -1,4 +1,71 @@
 ﻿@page "/Empleado/Consumo"
 
+@using Sultana.Shared.Entities
+@inject IRepository repository
+@inject NavigationManager nav
+
+<PageTitle>Registrar Consumo de Materia Prima</PageTitle>
+
+
 <h3>Gestión de Consumos</h3>
-<p>Página para registrar o consultar consumos.</p>
+
+<EditForm Model="@consumo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Orden de Producción (OP)</label>
+        <InputNumber class="form-control" @bind-Value="consumo.OrdenProduccionId" />
+        <ValidationMessage For="@(() => consumo.OrdenProduccionId)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lote de Materia Prima</label>
+        <InputNumber class="form-control" @bind-Value="consumo.LoteMateriaPrimaId" />
+        <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Responsable</label>
+        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId" />
+        <ValidationMessage For="@(() => consumo.ResponsableId)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cantidad usada (kg)</label>
+        <InputNumber class="form-control" @bind-Value="consumo.CantidadUsada" />
+        <ValidationMessage For="@(() => consumo.CantidadUsada)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Fecha y Hora</label>
+        <InputDate class="form-control" @bind-Value="consumo.FechaHora" />
+        <ValidationMessage For="@(() => consumo.FechaHora)" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-secondary ms-2" @onclick="Volver">Cancelar</button>
+</EditForm>
+
+@code {
+    private ConsumoMP consumo = new();
+
+    private async Task Guardar()
+    {
+        var response = await repository.PostAsync("api/ConsumoMP", consumo);
+
+        if (response.Error)
+        {
+            // Manejo del error
+            return;
+        }
+
+        nav.NavigateTo("/ConsumoMP");
+    }
+
+    private void Volver()
+    {
+        nav.NavigateTo("/ConsumoMP");
+    }
+}
+
