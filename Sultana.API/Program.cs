@@ -136,15 +136,15 @@ app.UseCors("AllowBlazorClient");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Swagger solo en desarrollo
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+});
+
+// Mapear controladores
+app.MapControllers();
+
 
 app.MapControllers();
 
