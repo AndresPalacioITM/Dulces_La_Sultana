@@ -1,9 +1,11 @@
 ﻿@page "/Empleado/MateriaPrima"
 
 @using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
 @using MateriaPrimaEntity = Sultana.Shared.Entities.MateriaPrima
 @inject IRepository repository
 @inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
 
 <PageTitle>Registrar Materia Prima</PageTitle>
 
@@ -234,21 +236,38 @@
     }
 
     private async Task Guardar()
-    {
-        var response = await repository.PostAsync("api/MateriaPrima", materia);
-
-        if (response.Error)
+    {        
+        try
         {
-            // Manejo del error (alerta, toast, etc.)
-            return;
-        }
+            var response = await repository.PostAsync("api/MateriaPrima", materia);
 
-        // Ajusta la ruta al listado real si es diferente
-        nav.NavigateTo("/MateriaPrima");
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                if (errorMsg.Contains("duplicate key") || errorMsg.Contains("ya existe"))
+                {
+                    await sweetAlertService.FireAsync("Error",
+                        $"Ya existe una materia prima con el nombre '{materia.Nombre}'. Por favor usa un nombre diferente.",
+                        SweetAlertIcon.Error);
+                }
+                else
+                {
+                    await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+
+                }
+                
+                return;
+            }
+            await sweetAlertService.FireAsync("Éxito", "Consumo de materia prima registrado correctamente.", SweetAlertIcon.Success);
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+        }
     }
 
     private void Volver()
     {
-        nav.NavigateTo("/MateriaPrima");
+        nav.NavigateTo("/Empleado");
     }
 }

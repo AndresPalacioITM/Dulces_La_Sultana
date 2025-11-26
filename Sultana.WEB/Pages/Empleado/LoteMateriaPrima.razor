@@ -1,9 +1,11 @@
 ﻿@page "/Empleado/LoteMateriaPrima"
 
 @using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
 @using LoteMateriaPrimaEntity = Sultana.Shared.Entities.LoteMateriaPrima
 @inject IRepository repository
 @inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
 
 <PageTitle>Registrar Lote de Materia Prima</PageTitle>
 
@@ -440,20 +442,27 @@
 
     private async Task Guardar()
     {
-        var response = await repository.PostAsync("api/LoteMateriaPrima", lote);
-
-        if (response.Error)
+        try
         {
-            // Manejo del error (alerta, toast, etc.)
-            return;
-        }
+            var response = await repository.PostAsync("api/LoteMateriaPrima", lote);
 
-        // Ajusta la ruta al listado real de lotes si es diferente
-        nav.NavigateTo("/LoteMateriaPrima");
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+
+                return;
+            }
+            await sweetAlertService.FireAsync("Éxito", "Consumo de materia prima registrado correctamente.", SweetAlertIcon.Success);
+        }
+       catch(Exception ex)
+        {
+              await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);          
+        }
     }
 
     private void Volver()
     {
-        nav.NavigateTo("/LoteMateriaPrima");
+        nav.NavigateTo("/Empleado");
     }
 }

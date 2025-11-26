@@ -1,6 +1,12 @@
 ﻿@page "/Empleado/OrdenProduccion"
 
 @using Sultana.Shared.Entities
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using CurrieTechnologies.Razor.SweetAlert2
+
+@inject SweetAlertService sweetAlertService
+@inject AuthenticationStateProvider authenticationStateProvider
 @using OrdenProduccionEntity = Sultana.Shared.Entities.OrdenProduccion
 @inject IRepository repository
 @inject NavigationManager nav
@@ -89,9 +95,10 @@
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Responsable (ID)</label>
                                         <InputNumber class="form-control"
-                                                     @bind-Value="orden.ResponsableId" />
+                                                     @bind-Value="orden.ResponsableId"
+                                                     disabled="true" />
                                         <small class="form-text">
-                                            ID del empleado responsable de la orden.
+                                            Tu ID de empleado (asignado automáticamente)
                                         </small>
                                         <ValidationMessage For="@(() => orden.ResponsableId)" />
                                     </div>
@@ -186,7 +193,7 @@
                         <div class="chip">
                             <span class="chip-label">Responsable</span>
                             <span class="chip-value">
-                                @(orden.ResponsableId <= 0 ? "Sin responsable" : orden.ResponsableId.ToString())
+                                @(orden.ResponsableId <= 0 ? "Sin responsable" : $"ID: {orden.ResponsableId}")
                             </span>
                         </div>
                     </div>
@@ -264,11 +271,19 @@
 </div>
 
 @code {
+
     // Alias de la entidad para no chocar con el nombre del componente
     private OrdenProduccionEntity orden = new()
     {
         FechaHoraInicio = DateTime.Today
     };
+    protected override async Task OnInitializedAsync()
+    {
+        await ObtenerEmpleadoLogueado();
+        orden.ResponsableId = empleadoId;
+    }
+    private int empleadoId = 0;
+    private bool isSubmitting = false;
 
     private bool FormularioCompleto =>
         orden.ProductoTerminadoId > 0 &&
@@ -276,6 +291,29 @@
         !string.IsNullOrWhiteSpace(orden.LoteProducto) &&
         orden.CantidadPeso > 0 &&
         orden.FechaHoraInicio != default;
+
+    private async Task ObtenerEmpleadoLogueado()
+    {
+        try
+        {
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var empleadoIdClaim = user.FindFirst("EmpleadoId")?.Value;
+                if (int.TryParse(empleadoIdClaim, out int id))
+                {
+                    empleadoId = id;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Manejo de errores (opcional)
+            Console.WriteLine($"Error al obtener el empleado logueado: {ex.Message}");
+        }
+    }
 
     private string ResumenOrden
     {
@@ -311,21 +349,45 @@
 
     private async Task Guardar()
     {
-        var response = await repository.PostAsync("api/OrdenProduccion", orden);
 
-        if (response.Error)
+
+        if (isSubmitting) return;
+        isSubmitting = true;
+        try
         {
-            // Manejo del error (puedes mostrar un alert o toast)
-            return;
-        }
+            orden.ResponsableId = empleadoId;
+            var response = await repository.PostAsync("api/OrdenProduccion", orden); ;
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
 
-        // Ajusta la ruta a la que quieras volver (listado de OP, por ejemplo)
-        nav.NavigateTo("/OrdenProduccion");
+                return;
+            }
+            await sweetAlertService.FireAsync("Éxito", "Orden de Produccion registrado correctamente.", SweetAlertIcon.Success);
+            LimpiarFomulario();
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
+        }
+        finally
+        {
+            isSubmitting = false;            
+        }
+    }
+    private void LimpiarFomulario()
+    {
+        orden = new OrdenProduccionEntity
+        {
+            ResponsableId = empleadoId,
+            FechaHoraInicio = DateTime.Now
+        };
     }
 
     private void Volver()
     {
-        nav.NavigateTo("/OrdenProduccion");
+        nav.NavigateTo("/Empleado");
     }
 }
 }

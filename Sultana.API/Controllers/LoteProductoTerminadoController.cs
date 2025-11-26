@@ -6,7 +6,7 @@ using Sultana.API.Data;
 namespace Sultana.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/loteproductoterminado")]
     public class LoteProductoTerminadoController : ControllerBase
     {
         private readonly DataContext _context;
