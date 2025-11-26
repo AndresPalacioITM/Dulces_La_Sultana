@@ -1,4 +1,4 @@
-using CurrieTechnologies.Razor.SweetAlert2;
+﻿using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -14,18 +14,18 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://sultanaapi.azurewebsites.net/";
+// CONFIGURACIÓN CORRECTA DEL HTTPCLIENT
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new Uri(apiBase)
+    BaseAddress = new Uri("https://sultanaapi.azurewebsites.net/") // ← URL CORRECTA de tu API
 });
 
-//servicios de autenticaci�n
+//servicios de autenticación
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 //Configurar HttpClient
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
 
 // Auth 
 builder.Services.AddOptions();
