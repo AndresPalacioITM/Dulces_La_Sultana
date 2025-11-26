@@ -1,124 +1,262 @@
 ﻿@page "/Empleado/Consumo"
 
 @using Sultana.Shared.Entities
-@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
-
 @inject IRepository repository
 @inject NavigationManager nav
-@inject AuthenticationStateProvider authStateProvider
-
 
 <PageTitle>Registrar Consumo de Materia Prima</PageTitle>
 
 <div class="consumo-page">
 
-    <!-- Encabezado bonito -->
+    <!-- Encabezado -->
     <div class="consumo-header text-center mb-4">
         <h1 class="consumo-title">Registro de consumo de materia prima</h1>
         <p class="consumo-subtitle">
-            Lleva el control de qué lote se usó, en qué orden de producción y quién fue el responsable.
+            Registra cada uso de materia prima indicando orden de producción, lote, responsable y cantidad.
         </p>
     </div>
 
-    <!-- Tarjeta principal -->
-    <div class="card consumo-card shadow-sm">
-        <div class="card-body">
+    <div class="row g-4 consumo-layout">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="col-lg-7">
+            <div class="card consumo-card shadow-sm">
+                <div class="card-body">
+                    <h3 class="section-title mb-3">
+                        <i class="bi bi-clipboard-check me-2"></i>
+                        Datos del consumo
+                    </h3>
 
-            <h3 class="section-title mb-3">
-                <i class="bi bi-clipboard-check me-2"></i>
-                Datos del consumo
-            </h3>
+                    <EditForm Model="@consumo" OnValidSubmit="Guardar">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="mb-3" />
 
-            <EditForm Model="@consumo" OnValidSubmit="Guardar">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                        <!-- Paso 1: Identificación -->
+                        <div class="consumo-step">
+                            <div class="step-badge">1</div>
+                            <div class="step-body">
+                                <h5>Identificación del consumo</h5>
+                                <p class="step-text">
+                                    Relaciona el consumo con una orden de producción y el lote de materia prima utilizado.
+                                </p>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Orden de Producción (OP)</label>
-                        <InputNumber class="form-control" @bind-Value="consumo.OrdenProduccionId" />
-                        <ValidationMessage For="@(() => consumo.OrdenProduccionId)" />
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Orden de Producción (OP)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="consumo.OrdenProduccionId" />
+                                        <small class="form-text">
+                                            Número de la orden asociada a este consumo.
+                                        </small>
+                                        <ValidationMessage For="@(() => consumo.OrdenProduccionId)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Lote de Materia Prima</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="consumo.LoteMateriaPrimaId" />
+                                        <small class="form-text">
+                                            Lote específico del insumo utilizado.
+                                        </small>
+                                        <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Responsable y Cantidad -->
+                        <div class="consumo-step">
+                            <div class="step-badge">2</div>
+                            <div class="step-body">
+                                <h5>Responsable y cantidad</h5>
+                                <p class="step-text">
+                                    Indica quién realizó el consumo y cuánta materia prima se usó.
+                                </p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Responsable (ID)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="consumo.ResponsableId" />
+                                        <small class="form-text">
+                                            Identificador interno del empleado responsable.
+                                        </small>
+                                        <ValidationMessage For="@(() => consumo.ResponsableId)" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Cantidad usada (kg)</label>
+                                        <InputNumber class="form-control"
+                                                     @bind-Value="consumo.CantidadUsada" />
+                                        <small class="form-text">
+                                            Registra la cantidad neta utilizada en kilogramos.
+                                        </small>
+                                        <ValidationMessage For="@(() => consumo.CantidadUsada)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Momento del consumo -->
+                        <div class="consumo-step">
+                            <div class="step-badge">3</div>
+                            <div class="step-body">
+                                <h5>Momento del consumo</h5>
+                                <p class="step-text">
+                                    Registra la fecha y hora en la que se realizó el consumo.
+                                </p>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha</label>
+                                    <InputDate class="form-control"
+                                               @bind-Value="consumo.FechaHora" />
+                                    <small class="form-text">
+                                        Si no la seleccionas, se asumirá la fecha actual al guardar (si así lo define tu API).
+                                    </small>
+                                    <ValidationMessage For="@(() => consumo.FechaHora)" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-flex justify-content-end mt-3">
+                            <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                Cancelar
+                            </button>
+                            <button class="btn btn-sultana-primary" type="submit">
+                                Guardar consumo
+                            </button>
+                        </div>
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: PREVIEW INTERACTIVO -->
+        <div class="col-lg-5">
+            <div class="card preview-card shadow-sm">
+                <div class="card-header">
+                    <i class="bi bi-eye me-2"></i> Vista previa del registro
+                </div>
+                <div class="card-body">
+
+                    <!-- Estado general -->
+                    <div class="preview-status mb-3">
+                        @if (FormularioCompleto)
+                        {
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Listo para guardar
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Completa los campos pendientes
+                            </span>
+                        }
                     </div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Lote de Materia Prima</label>
-                        <InputNumber class="form-control" @bind-Value="consumo.LoteMateriaPrimaId" />
-                        <ValidationMessage For="@(() => consumo.LoteMateriaPrimaId)" />
-                    </div> 
-                  </div>
-                <div class="row">
-                    <div class="row">
-                        <label class=" form-label">Responsable</label>
-                        <InputNumber class="form-control" @bind-Value="consumo.ResponsableId"
-                                     disable="true" />"
-                                     <ValidationMessage For="@(() => consumo.ResponsableId)" />
-                                         <small class="form-text text-muted">
-                            Tu ID de empleado (asignado automáticamente)
+                    <!-- Chips resumen -->
+                    <div class="preview-chips mb-3">
+                        <div class="chip">
+                            <span class="chip-label">OP</span>
+                            <span class="chip-value">
+                                @(consumo.OrdenProduccionId == 0 ? "Sin asignar" : consumo.OrdenProduccionId.ToString())
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Lote MP</span>
+                            <span class="chip-value">
+                                @(consumo.LoteMateriaPrimaId == 0 ? "Sin lote" : consumo.LoteMateriaPrimaId.ToString())
+                            </span>
+                        </div>
+
+                        <div class="chip">
+                            <span class="chip-label">Responsable</span>
+                            <span class="chip-value">
+                                @(consumo.ResponsableId == 0 ? "Sin responsable" : consumo.ResponsableId.ToString())
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Cantidad -->
+                    <div class="preview-section mb-3">
+                        <h6>Cantidad estimada</h6>
+                        <p class="mb-1">
+                            @if (consumo.CantidadUsada <= 0)
+                            {
+                                <span class="text-muted">Aún no has registrado la cantidad utilizada.</span>
+                            }
+                            else
+                            {
+                                <span>@consumo.CantidadUsada kg de materia prima registrados.</span>
+                            }
+                        </p>
+
+                        <div class="progress mt-2">
+                            @{
+                                var porcentaje = consumo.CantidadUsada <= 0 ? 0 :
+                                consumo.CantidadUsada >= 100 ? 100 : (int)consumo.CantidadUsada;
+                            }
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: @porcentaje%;"
+                                 aria-valuenow="@porcentaje" aria-valuemin="0" aria-valuemax="100">
+                                @porcentaje%
+                            </div>
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            La barra es solo una referencia visual (0–100 kg).
                         </small>
-                    </div>                   
-
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Cantidad usada (kg)</label>
-                        <InputNumber class="form-control" @bind-Value="consumo.CantidadUsada" />
-                        <ValidationMessage For="@(() => consumo.CantidadUsada)" />
                     </div>
+
+                    <!-- Fecha -->
+                    <div class="preview-section mb-3">
+                        <h6>Fecha de consumo</h6>
+                        <p class="mb-0">
+                            @if (consumo.FechaHora == default)
+                            {
+                                <span class="text-muted">Sin fecha seleccionada.</span>
+                            }
+                            else
+                            {
+                                <span>@consumo.FechaHora.ToString("dd/MM/yyyy")</span>
+                            }
+                        </p>
+                    </div>
+
+                    <!-- Resumen textual -->
+                    <div class="preview-section">
+                        <h6>Resumen</h6>
+                        <p class="preview-summary">
+                            @ResumenConsumo
+                        </p>
+                    </div>
+
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Fecha y Hora</label>
-                    <InputDate class="form-control" @bind-Value="consumo.FechaHora" />
-                    <ValidationMessage For="@(() => consumo.FechaHora)" />
-                </div>
-
-                <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
-                        Cancelar
-                    </button>
-                    <button class="btn btn-sultana-primary" type="submit">
-                        Guardar consumo
-                    </button>
-                </div>
-
-            </EditForm>
-
+            </div>
         </div>
     </div>
 </div>
 
 @code {
     private ConsumoMP consumo = new();
-    private int empleadoId = 0;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await ObtnerEmpleadoLogueado();
+    private bool FormularioCompleto =>
+        consumo.OrdenProduccionId > 0 &&
+        consumo.LoteMateriaPrimaId > 0 &&
+        consumo.ResponsableId > 0 &&
+        consumo.CantidadUsada > 0 &&
+        consumo.FechaHora != default;
 
-        consumo.ResponsableId = empleadoId;
-        consumo.FechaHora = DateTime.Now;
-    }
-    private async Task ObtnerEmpleadoLogueado()
-    {
-        try
-        {
-            var authState = await authStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            if(user.Identity?.IsAuthenticated == true)
-            {
-                var empleadoIdClaim = user.FindFirst("EmpleadoId")?.Value;
-                if (int.TryParse(empleadoIdClaim, out int id))
-                {
-                    empleadoId = id;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            
-            Console.WriteLine($"Error al obtener el empleado logueado: {ex.Message}");
-        }
-    }
+    private string ResumenConsumo
+        => $"OP {(consumo.OrdenProduccionId == 0 ? "-" : consumo.OrdenProduccionId.ToString())}, " +
+           $"lote {(consumo.LoteMateriaPrimaId == 0 ? "-" : consumo.LoteMateriaPrimaId.ToString())}, " +
+           $"responsable {(consumo.ResponsableId == 0 ? "-" : consumo.ResponsableId.ToString())}, " +
+           $"{(consumo.CantidadUsada <= 0 ? "sin cantidad registrada" : $"{consumo.CantidadUsada} kg")} " +
+           $"y fecha {(consumo.FechaHora == default ? "no seleccionada" : consumo.FechaHora.ToString("dd/MM/yyyy"))}.";
 
     private async Task Guardar()
     {
@@ -126,7 +264,7 @@
 
         if (response.Error)
         {
-            // Manejo del error
+            // Manejo del error (puedes agregar un alert o toast aquí si quieres)
             return;
         }
 
