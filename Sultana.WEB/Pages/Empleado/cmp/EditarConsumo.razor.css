@@ -1,0 +1,239 @@
+﻿/* Estilos para la página de editar consumo */
+.editar-consumo-page {
+    padding: 1rem;
+}
+
+.consumo-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.consumo-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.consumo-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+/* Tarjeta del formulario */
+.editar-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+    .editar-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+    }
+
+        .editar-card .card-header h5 {
+            margin: 0;
+            color: white;
+            font-weight: 600;
+        }
+
+    .editar-card .card-body {
+        padding: 2rem;
+    }
+
+/* Formulario estilizado */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+/* Botones con estilo Sultana */
+.btn-sultana-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-sultana-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+.btn-sultana-secondary {
+    background: transparent;
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-sultana-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+/* Spinner personalizado */
+.spinner-border.text-sultana {
+    color: #667eea !important;
+}
+
+/* Alertas y validaciones */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+}
+
+.validation-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.validation-summary {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+/* Mejoras para inputs específicos */
+.input-group {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .input-group .form-control {
+        border-radius: 0;
+    }
+
+.input-group-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+/* Efectos hover en el formulario */
+.form-control:hover {
+    border-color: #adb5bd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .consumo-title {
+        font-size: 2rem;
+    }
+
+    .consumo-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .editar-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .btn-sultana-primary,
+    .btn-sultana-secondary {
+        padding: 0.6rem 1.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Animaciones suaves */
+.editar-consumo-page {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Badge para el ID del consumo */
+.consumo-id-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Estilo para campos deshabilitados */
+.form-control:disabled {
+    background-color: #f8f9fa;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Mejora para los steps del formulario */
+.form-step {
+    border-left: 3px solid #667eea;
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.form-step-title {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Preview de datos (similar a la página de registro) */
+.preview-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.preview-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.preview-value {
+    color: #667eea;
+    font-weight: 600;
+}

@@ -1,0 +1,221 @@
+﻿@page "/Empleado/mp/MateriasPrimas"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Gestión de Materias Primas</PageTitle>
+
+<link href="css/materia-prima.css" rel="stylesheet" />
+
+<div class="materia-prima-page">
+    <div class="materia-prima-header text-center mb-4">
+        <h1 class="materia-prima-title">Gestión de Materias Primas</h1>
+        <p class="materia-prima-subtitle">Administra las materias primas del sistema</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-sultana-outline" @onclick="VolverAlMenu">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Menú
+        </button>
+        <div class="d-flex align-items-center">
+            <span class="badge badge-sultana me-3">@materiasPrimas.Count registros</span>
+            <button class="btn btn-sultana-success" @onclick="RefrescarDatos">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+            </button>
+        </div>
+    </div>
+
+    @if (cargando)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando materias primas...</p>
+        </div>
+    }
+    else if (!materiasPrimas.Any())
+    {
+        <div class="card text-center py-5 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                <h3 class="text-muted mb-3">No hay materias primas registradas</h3>
+                <p class="text-muted mb-4">No se encontraron registros de materias primas.</p>
+                <button class="btn btn-materia-prima-primary" @onclick="IrARegistro">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Crear Primera Materia Prima
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card materia-prima-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Lista de Materias Primas</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-materia-prima mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Unidad Medida</th>
+                                <th>Stock Mínimo</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var mp in materiasPrimas)
+                            {
+                                <tr>
+                                    <td><span class="id-badge-mp">#@mp.Id</span></td>
+                                    <td class="fw-semibold">@mp.Nombre</td>
+                                    <td>
+                                        <span class="badge-unidad">@mp.UnidadMedida</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge-stock-minimo">@mp.StockMinimo.ToString("F2")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-action-group" role="group">
+                                            <button class="btn btn-edit btn-sm"
+                                                    @onclick="() => EditarMateriaPrima(mp.Id)"
+                                                    title="Editar materia prima">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-delete btn-sm"
+                                                    @onclick="() => EliminarMateriaPrima(mp)"
+                                                    title="Eliminar materia prima">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie de página con estadísticas -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card bg-light border-0">
+                    <div class="card-body py-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Total: @materiasPrimas.Count materias primas registradas
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <small class="text-muted">
+                    Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </small>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<MateriaPrima> materiasPrimas = new();
+    private bool cargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarMateriasPrimas();
+    }
+
+    private async Task CargarMateriasPrimas()
+    {
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var response = await repository.GetAsync<List<MateriaPrima>>("api/MateriaPrima");
+            if (!response.Error)
+            {
+                materiasPrimas = response.Response ?? new List<MateriaPrima>();
+            }
+            else
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al cargar: {ex.Message}", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefrescarDatos()
+    {
+        await CargarMateriasPrimas();
+        await sweetAlertService.FireAsync("Éxito", "Datos actualizados correctamente", SweetAlertIcon.Success);
+    }
+
+    private void VolverAlMenu()
+    {
+        nav.NavigateTo("/Empleado");
+    }
+
+    private void IrARegistro()
+    {
+        nav.NavigateTo("/Empleado/MateriaPrima");
+    }
+
+    private void EditarMateriaPrima(int id)
+    {
+        nav.NavigateTo($"/Empleado/mp/EditarMateriaPrima/{id}");
+    }
+
+    private async Task EliminarMateriaPrima(MateriaPrima mp)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+        {
+            Title = "¿Estás seguro?",
+            Text = $"¿Eliminar la materia prima: {mp.Nombre}? Esta acción no se puede deshacer.",
+            Icon = SweetAlertIcon.Warning,
+            ShowCancelButton = true,
+            ConfirmButtonText = "Sí, eliminar",
+            CancelButtonText = "Cancelar",
+            ConfirmButtonColor = "#dc3545",
+            CancelButtonColor = "#6c757d"
+        });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            try
+            {
+                var response = await repository.DeleteAsync($"api/MateriaPrima/{mp.Id}");
+                if (!response.Error)
+                {
+                    await sweetAlertService.FireAsync("Eliminado", "Materia prima eliminada correctamente", SweetAlertIcon.Success);
+                    await CargarMateriasPrimas();
+                }
+                else
+                {
+                    var errorMsg = await response.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                await sweetAlertService.FireAsync("Error", $"Error al eliminar: {ex.Message}", SweetAlertIcon.Error);
+            }
+        }
+    }
+}

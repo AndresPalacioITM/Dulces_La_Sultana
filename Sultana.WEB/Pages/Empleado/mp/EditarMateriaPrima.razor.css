@@ -1,0 +1,310 @@
+﻿/* Estilos específicos para edición de Materia Prima */
+.editar-materia-prima-page {
+    padding: 1rem;
+}
+
+.editar-materia-prima-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 1rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.editar-materia-prima-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.editar-materia-prima-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.editar-materia-prima-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+    .editar-materia-prima-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1.5rem;
+    }
+
+        .editar-materia-prima-card .card-header h5 {
+            margin: 0;
+            color: white;
+            font-weight: 600;
+        }
+
+    .editar-materia-prima-card .card-body {
+        padding: 2rem;
+    }
+
+/* Formulario de edición */
+.materia-prima-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.materia-prima-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.materia-prima-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+    .materia-prima-form .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+.materia-prima-form .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Secciones del formulario */
+.form-section-mp {
+    border-left: 3px solid #667eea;
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+.form-section-title-mp {
+    color: #667eea;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+    .form-section-title-mp i {
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+    }
+
+/* Botones específicos para edición */
+.btn-editar-mp-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-editar-mp-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+.btn-editar-mp-secondary {
+    background: transparent;
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-editar-mp-secondary:hover {
+        background: #6c757d;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+/* Badge de ID en edición */
+.id-badge-editar {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+}
+
+/* Mensajes de validación específicos */
+.validation-message-editar {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.validation-summary-mp {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Input groups para unidades */
+.input-group-mp {
+    position: relative;
+}
+
+    .input-group-mp .form-control {
+        padding-right: 4rem;
+    }
+
+    .input-group-mp .input-group-text {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        border-radius: 0 8px 8px 0;
+    }
+
+/* Estados de los campos */
+.field-required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.field-optional {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Información de ayuda */
+.help-text {
+    background: #e7f5ff;
+    border: 1px solid #a5d8ff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+    .help-text h6 {
+        color: #1971c2;
+        margin-bottom: 0.5rem;
+    }
+
+    .help-text p {
+        margin-bottom: 0;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+/* Responsive para edición */
+@media (max-width: 768px) {
+    .editar-materia-prima-title {
+        font-size: 2rem;
+    }
+
+    .editar-materia-prima-header {
+        padding: 1.5rem 1rem;
+    }
+
+    .editar-materia-prima-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .btn-editar-mp-primary,
+    .btn-editar-mp-secondary {
+        padding: 0.6rem 1.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-section-mp {
+        padding-left: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Animaciones para edición */
+@keyframes slideInMP {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.editar-materia-prima-page {
+    animation: slideInMP 0.5s ease-in;
+}
+
+/* Estados de carga */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+    .loading-state .spinner {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.3em;
+    }
+
+/* Preview de datos */
+.data-preview {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+    .data-preview h6 {
+        color: #495057;
+        margin-bottom: 1rem;
+    }
+
+.preview-item {
+    display: flex;
+    justify-content: between;
+    margin-bottom: 0.5rem;
+}
+
+.preview-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 120px;
+}
+
+.preview-value {
+    color: #667eea;
+    font-weight: 600;
+}

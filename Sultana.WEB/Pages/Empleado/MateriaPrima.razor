@@ -94,13 +94,21 @@
                         </div>
 
                         <!-- Botones -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
-                                Cancelar
-                            </button>
-                            <button class="btn btn-sultana-primary" type="submit">
-                                Guardar materia prima
-                            </button>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <button class="btn btn-sultana-outline me-2" type="button" @onclick="IrAGestionMateriasPrimas">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Gestionar Materias Primas
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-sultana-primary" type="submit">
+                                    Guardar materia prima
+                                </button>
+                            </div>
                         </div>
 
                     </EditForm>
@@ -236,7 +244,7 @@
     }
 
     private async Task Guardar()
-    {        
+    {
         try
         {
             var response = await repository.PostAsync("api/MateriaPrima", materia);
@@ -255,15 +263,30 @@
                     await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
 
                 }
-                
+
                 return;
             }
-            await sweetAlertService.FireAsync("Éxito", "Consumo de materia prima registrado correctamente.", SweetAlertIcon.Success);
+            await sweetAlertService.FireAsync("Éxito", "Materia prima registrada correctamente.", SweetAlertIcon.Success);
+            LimpiarFormulario();
         }
         catch (Exception ex)
         {
             await sweetAlertService.FireAsync("Error inesperado", ex.Message, SweetAlertIcon.Error);
         }
+    }
+
+    private void LimpiarFormulario()
+    {
+        materia = new MateriaPrimaEntity
+        {
+            UnidadMedida = "kg",
+            StockMinimo = 0
+        };
+    }
+
+    private void IrAGestionMateriasPrimas()
+    {
+        nav.NavigateTo("/Empleado/mp/MateriasPrimas");
     }
 
     private void Volver()

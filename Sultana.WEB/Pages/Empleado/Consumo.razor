@@ -126,13 +126,21 @@
                         </div>
 
                         <!-- Botones de acción -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
-                                Cancelar
-                            </button>
-                            <button class="btn btn-sultana-primary" type="submit">
-                                Guardar consumo
-                            </button>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <button class="btn btn-sultana-outline me-2" type="button" @onclick="IrAGestionConsumos">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Gestionar Consumos
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-sultana-primary" type="submit">
+                                    Guardar consumo
+                                </button>
+                            </div>
                         </div>
 
                     </EditForm>
@@ -337,6 +345,11 @@
     private void Volver()
     {
         nav.NavigateTo("/Empleado");
+    }
+
+    private void IrAGestionConsumos()
+    {
+        nav.NavigateTo("/Empleado/cmp/Consumos");
     }
 }
 

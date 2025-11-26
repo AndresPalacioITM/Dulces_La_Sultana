@@ -1,0 +1,82 @@
+﻿/* Estilos para botones de acción en tablas */
+.btn-action-group {
+    display: flex;
+    gap: 0.25rem;
+}
+
+    .btn-action-group .btn {
+        border-radius: 6px;
+        margin: 0 1px;
+        transition: all 0.3s ease;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+.btn-edit {
+    background: linear-gradient(135deg, #17a2b8, #6f42c1);
+    border: none;
+    color: white;
+}
+
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+        background: linear-gradient(135deg, #138496, #5a32a3);
+    }
+
+.btn-delete {
+    background: linear-gradient(135deg, #dc3545, #e83e8c);
+    border: none;
+    color: white;
+}
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        background: linear-gradient(135deg, #c82333, #d91a7a);
+    }
+
+/* Badge general para acciones */
+.badge-sultana {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+/* Botones generales */
+.btn-sultana-outline {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-sultana-outline:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+.btn-sultana-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .btn-sultana-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    }
