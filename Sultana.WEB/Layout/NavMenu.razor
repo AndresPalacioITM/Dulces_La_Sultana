@@ -1,5 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Routing
+@using System.Security.Claims
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="nav-container navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
@@ -20,19 +23,18 @@
         <div class="@NavMenuCssClass nav-links-wrapper justify-content-end">
             <ul class="navbar-nav align-items-lg-center">
 
-                <!-- INICIO -->
+                <!-- INICIO - Redirige según el cargo -->
                 <li class="nav-item">
-                    <NavLink href="/"
-                             Match="NavLinkMatch.All"
-                             class="btn nav-btn nav-btn-light rounded-pill mx-1"
-                             ActiveClass="nav-btn-active">
+                    <button @onclick="RedirectToHome"
+                            class="btn nav-btn nav-btn-light rounded-pill mx-1">
                         Inicio
-                    </NavLink>
+                    </button>
                 </li>
 
-                <!-- CERRAR SESIÓN SOLO SI ESTÁ LOGUEADO -->
+                <!-- Enlaces según autenticación -->
                 <AuthorizeView>
                     <Authorized>
+                        <!-- CERRAR SESIÓN -->
                         <li class="nav-item">
                             <NavLink href="/auth/logout"
                                      class="btn nav-btn nav-btn-accent rounded-pill mx-1">
@@ -40,6 +42,15 @@
                             </NavLink>
                         </li>
                     </Authorized>
+                    <NotAuthorized>
+                        <!-- INICIAR SESIÓN -->
+                        <li class="nav-item">
+                            <NavLink href="/login"
+                                     class="btn nav-btn nav-btn-light rounded-pill mx-1">
+                                Iniciar Sesión
+                            </NavLink>
+                        </li>
+                    </NotAuthorized>
                 </AuthorizeView>
             </ul>
         </div>
@@ -51,6 +62,40 @@
 
     private string NavMenuCssClass =>
         collapseNavMenu ? "collapse navbar-collapse" : "navbar-collapse show";
+
+    private async void RedirectToHome()
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var cargo = user.FindFirst("Cargo")?.Value?.ToLower();
+
+                var redirectTo = cargo switch
+                {
+                    "admin" => "/EditEmpleados",
+                    "empleado" => "/Empleado",
+                    "proveedor" => "/Proveedor",
+                    _ => "/"
+                };
+
+                Navigation.NavigateTo(redirectTo);
+            }
+            else
+            {
+                // Si no está autenticado, ir a la página principal
+                Navigation.NavigateTo("/");
+            }
+        }
+        catch (Exception ex)
+        {
+            // En caso de error, ir a la página principal
+            Navigation.NavigateTo("/");
+        }
+    }
 
     private void ToggleNavMenu()
     {

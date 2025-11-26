@@ -40,11 +40,29 @@ namespace Sultana.API.Controllers
 
         // POST: /api/consumomp
         [HttpPost]
-        public async Task<ActionResult> Post(ConsumoMP consumoMP)
+        public async Task<ActionResult<ConsumoMP>> Post(ConsumoMP consumoMP)
         {
-            _context.ConsumoMPs.Add(consumoMP);
-            await _context.SaveChangesAsync();
-            return Ok(consumoMP); // 200
+            try 
+            {
+                var lote = await _context.LoteMateriaPrimas.FindAsync(consumoMP.LoteMateriaPrimaId);
+                if (lote == null) return BadRequest("Lote de materia prima no encontrado.");
+                var empleado = await _context.Empleados.FindAsync(consumoMP.ResponsableId);
+                if (empleado == null) return BadRequest("Empleado responsable no encontrado.");
+                var orden = await _context.OrdenProducciones.FindAsync(consumoMP.OrdenProduccionId);
+                if (orden == null) return BadRequest("Orden de producción no encontrada.");
+                if (lote.CantidadDisponible < consumoMP.CantidadUsada) return BadRequest("Cantidad usada excede la cantidad disponible en el lote.");
+
+                lote.CantidadDisponible -= consumoMP.CantidadUsada;
+                _context.ConsumoMPs.Add(consumoMP);
+                await _context.SaveChangesAsync();
+
+                return Ok(consumoMP); // 200
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno del servidor: {ex.Message}");
+            }            
         }
 
         // PUT: /api/consumomp
