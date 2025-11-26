@@ -4,11 +4,13 @@
 @using Sultana.Shared.Entities 
 @using Sultana.WEB.Repositories
 @using Sultana.WEB.Auth
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject IRepository repository
 @inject SweetAlertService sweet
 @inject NavigationManager nav
 @inject ILoginService loginService
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <div class="register-container">
     <div class="register-card">
@@ -118,26 +120,7 @@
         {
             model.Nombre = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value.ToLower());
         }
-    }
-
-    // private void OnCargoChanged(ChangeEventArgs e)
-    // {
-        
-        
-    //     // Limpiar campos específicos al cambiar de cargo
-    //     if (model.Cargo != "Proveedor")
-    //     {
-    //         model.Nit = null;
-    //         model.Empresa = null;
-    //         model.Direccion = null;
-    //         model.Email = null;
-    //     }
-    //     if (model.Cargo != "Empleado")
-    //     {
-    //         model.Contacto = null;
-    //         model.Email = null;
-    //     }
-    // }
+    }  
 
     private async Task CreateAsync()
     {
@@ -162,8 +145,17 @@
             }
 
             await loginService.LoginAsync(resp.Response!);
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var cargo = authState.User.FindFirst("Cargo")?.Value;
+
+            var redirectTo = cargo?.ToLower() switch
+            {                
+                "empleado" => "/empleado-dashboard",
+                "proveedor" => "/proveedor-dashboard",
+                _ => "/"  
+            };
             await sweet.FireAsync("Registro exitoso", "Bienvenid@, tu sesión se inició automáticamente.", SweetAlertIcon.Success);
-            nav.NavigateTo("/");
+            nav.NavigateTo(redirectTo, forceLoad: true);
         }
         catch (Exception ex)
         {

@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Sultana.API.Data;
 using Sultana.API.Helpers;
 using Sultana.API.Services;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,11 +93,26 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.MapOpenApi();
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        await CreateAdminUser(userManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Error");
+    }
 }
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+    }
 
 app.UseHttpsRedirection();
 
@@ -118,3 +134,26 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
+
+async Task CreateAdminUser(UserManager<IdentityUser> userManager)
+{
+    var adminEmail = "admin@sultana.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        var result = await userManager.CreateAsync(adminUser, "Admin123@");
+        if (result.Succeeded)
+        {
+            await userManager.AddClaimAsync(adminUser, new Claim("Cargo", "admin"));
+            await userManager.AddClaimAsync(adminUser, new Claim("Nombre", "Administrador"));
+
+        }
+    }
+}
+

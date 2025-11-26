@@ -42,6 +42,7 @@ namespace Sultana.API.Data
             modelBuilder.Entity<OrdenProduccion>().HasIndex(o => new { o.ProductoTerminadoId, o.LoteProducto }).IsUnique();
             modelBuilder.Entity<LoteProductoTerminado>().HasIndex(l => l.OrdenProduccionId).IsUnique();
 
+
             foreach (var p in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties().Where(p => p.ClrType == typeof(decimal))))
             {
                 p.SetPrecision(18);
@@ -49,5 +50,6 @@ namespace Sultana.API.Data
             }
 
         }
+        
     }
 }
