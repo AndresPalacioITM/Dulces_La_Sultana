@@ -13,7 +13,14 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazorClient",
         policy =>
         {
-            policy.WithOrigins("https://localhost:8000", "https://localhost:7000")
+            policy.WithOrigins(
+                    "https://sultanaweb-f9dkeae2cqe0hghq.brazilsouth-01.azurewebsites.net", 
+                    "https://localhost:8000",
+                    "https://localhost:7000",
+                    "https://localhost:7001",
+                    "https://localhost:5000",
+                    "https://localhost:5001"
+                  )
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -116,9 +123,10 @@ using (var scope = app.Services.CreateScope())
 
 app.UseHttpsRedirection();
 
-
-app.UseAuthentication();
+app.UseRouting();
 app.UseCors("AllowBlazorClient");
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 //Swagger solo en desarrollo

@@ -14,16 +14,18 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://sultanaapi.azurewebsites.net/";
+builder.Services.AddScoped(sp => new HttpClient
+{
+    BaseAddress = new Uri(apiBase)
+});
+
 //servicios de autenticación
 builder.Services.AddScoped<ILocalStorageService, LocalStorageService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 //Configurar HttpClient
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-// ?? Base de la API: pon TU puerto real y DEJA la barra final
-var apiBase = builder.Configuration["ApiBaseUrl"] ?? "https://sultanaapi.azurewebsites.net/";
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(apiBase) });
 
 // Auth 
 builder.Services.AddOptions();
