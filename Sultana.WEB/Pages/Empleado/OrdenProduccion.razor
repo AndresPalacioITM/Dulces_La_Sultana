@@ -134,13 +134,22 @@
                         </div>
 
                         <!-- Botones -->
-                        <div class="d-flex justify-content-end mt-3">
-                            <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
-                                Cancelar
-                            </button>
-                            <button class="btn btn-sultana-primary" type="submit">
-                                Guardar orden
-                            </button>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div>
+                                <!-- BOTÓN AGREGADO: Gestionar Órdenes de Producción -->
+                                <button class="btn btn-sultana-outline me-2" type="button" @onclick="IrAGestionOrdenesProduccion">
+                                    <i class="bi bi-list-check me-2"></i>
+                                    Gestionar Órdenes de Producción
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                    Cancelar
+                                </button>
+                                <button class="btn btn-sultana-primary" type="submit" disabled="@isSubmitting">
+                                    @(isSubmitting ? "Guardando..." : "Guardar orden")
+                                </button>
+                            </div>
                         </div>
 
                     </EditForm>
@@ -349,8 +358,6 @@
 
     private async Task Guardar()
     {
-
-
         if (isSubmitting) return;
         isSubmitting = true;
         try
@@ -373,9 +380,10 @@
         }
         finally
         {
-            isSubmitting = false;            
+            isSubmitting = false;
         }
     }
+
     private void LimpiarFomulario()
     {
         orden = new OrdenProduccionEntity
@@ -389,5 +397,10 @@
     {
         nav.NavigateTo("/Empleado");
     }
-}
+
+    // MÉTODO AGREGADO: Navegar a la gestión de órdenes
+    private void IrAGestionOrdenesProduccion()
+    {
+        nav.NavigateTo("/Empleado/op/OrdenesProduccion");
+    }
 }

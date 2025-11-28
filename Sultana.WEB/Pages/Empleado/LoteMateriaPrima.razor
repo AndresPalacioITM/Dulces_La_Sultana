@@ -2,9 +2,11 @@
 @using Sultana.Shared.Entities
 @using CurrieTechnologies.Razor.SweetAlert2
 @using LoteMateriaPrimaEntity = Sultana.Shared.Entities.LoteMateriaPrima
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IRepository repository
 @inject NavigationManager nav
 @inject SweetAlertService sweetAlertService
+@inject AuthenticationStateProvider authStateProvider
 
 <PageTitle>Registrar Lote de Materia Prima</PageTitle>
 
@@ -183,7 +185,7 @@
                                 </button>
                             </div>
                             <div>
-                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="Volver">
+                                <button class="btn btn-sultana-secondary me-2" type="button" @onclick="ObtenerEmpleadoLogueado">
                                     Cancelar
                                 </button>
                                 <button class="btn btn-sultana-primary" type="submit">
@@ -212,6 +214,9 @@
 </div>
 
 @code {
+    private string empleadologeadoId = "";
+    private bool isEmpleadoLoaded = false;
+
     private LoteMateriaPrimaEntity lote = new()
     {
         FechaHoraRecepcion = DateTime.Today,
@@ -254,6 +259,32 @@
                    $"{cantIng} y {cantDisp}, {recep} y {vence}. Observaciones: {obs}.";
         }
     }
+    private async Task ObtenerEmpleadoLogueado()
+    {
+        try
+        {
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user.Identity?.IsAuthenticated == true)
+            {
+                var empleadoCargo = user.FindFirst("Cargo")?.Value;
+                if (empleadoCargo == "Proveedor")
+                {
+                    nav.NavigateTo("/Proveedor");
+                }
+                else
+                {
+                    nav.NavigateTo("/Empleado"); 
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Manejo de errores (opcional)
+            Console.WriteLine($"Error al obtener el empleado logueado: {ex.Message}");
+        }
+    }
 
     private async Task Guardar()
     {
@@ -293,8 +324,9 @@
         nav.NavigateTo("/Empleado/lmp/LotesMateriaPrima");
     }
 
-    private void Volver()
-    {
-        nav.NavigateTo("/Empleado");
-    }
+    // private void Volver()
+    // {
+    //     // var volver = await ObtenerEmpleadoLogueado();
+        
+    // }
 }

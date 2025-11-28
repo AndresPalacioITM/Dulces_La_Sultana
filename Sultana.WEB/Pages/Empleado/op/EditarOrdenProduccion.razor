@@ -1,0 +1,313 @@
+﻿@page "/Empleado/op/EditarOrdenProduccion/{Id:int}"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Editar Orden de Producción</PageTitle>
+
+<link href="css/orden-produccion.css" rel="stylesheet" />
+
+<div class="editar-orden-produccion-page">
+    <div class="editar-orden-produccion-header text-center mb-4">
+        <h1 class="editar-orden-produccion-title">Editar Orden de Producción</h1>
+        <p class="editar-orden-produccion-subtitle">Modifica los datos de la orden de producción</p>
+    </div>
+
+    @if (cargando)
+    {
+        <div class="loading-state">
+            <div class="spinner-border text-primary loading-state" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando orden de producción...</p>
+        </div>
+    }
+    else if (ordenProduccion == null)
+    {
+        <div class="alert alert-danger text-center">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            No se encontró la orden de producción solicitada.
+        </div>
+        <div class="text-center">
+            <button class="btn btn-editar-op-primary" @onclick="VolverAGestion">
+                <i class="bi bi-arrow-left me-2"></i>
+                Volver a la gestión
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Información de ayuda -->
+                <div class="help-text">
+                    <h6><i class="bi bi-info-circle me-2"></i>Información importante</h6>
+                    <p class="mb-0">
+                        Actualiza los datos de la orden de producción. Los campos marcados con <span class="field-required">*</span> son obligatorios.
+                    </p>
+                </div>
+
+                <div class="card editar-orden-produccion-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            Editando Orden de Producción <span class="id-badge-editar">#@ordenProduccion.Id</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <EditForm Model="@ordenProduccion" OnValidSubmit="ActualizarOrdenProduccion" class="orden-produccion-form">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="validation-summary-op" />
+
+                            <!-- Información Básica -->
+                            <div class="form-section-op">
+                                <h6 class="form-section-title-op">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Información Básica
+                                </h6>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label field-required">Producto Terminado</label>
+                                        <InputSelect class="form-control" @bind-Value="ordenProduccion.ProductoTerminadoId">
+                                            <option value="">Seleccione un producto</option>
+                                            @foreach (var producto in productosTerminados)
+                                            {
+                                                <option value="@producto.Id">@producto.Nombre</option>
+                                            }
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => ordenProduccion.ProductoTerminadoId)" class="validation-message-editar" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label field-required">Responsable</label>
+                                        <InputSelect class="form-control" @bind-Value="ordenProduccion.ResponsableId">
+                                            <option value="">Seleccione un responsable</option>
+                                            @foreach (var empleado in empleados)
+                                            {
+                                                <option value="@empleado.Id">@empleado.Nombre</option>
+                                            }
+                                        </InputSelect>
+                                        <ValidationMessage For="@(() => ordenProduccion.ResponsableId)" class="validation-message-editar" />
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label field-required">Lote Producto</label>
+                                        <InputText class="form-control" @bind-Value="ordenProduccion.LoteProducto"
+                                                   placeholder="Ingrese el número de lote" />
+                                        <div class="form-text">Número único de identificación del lote</div>
+                                        <ValidationMessage For="@(() => ordenProduccion.LoteProducto)" class="validation-message-editar" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label field-required">Cantidad/Peso</label>
+                                        <InputNumber class="form-control" @bind-Value="ordenProduccion.CantidadPeso"
+                                                     step="0.001" min="0" max="999999999" />
+                                        <div class="form-text">Cantidad o peso a producir</div>
+                                        <ValidationMessage For="@(() => ordenProduccion.CantidadPeso)" class="validation-message-editar" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fechas y Tiempos -->
+                            <div class="form-section-op">
+                                <h6 class="form-section-title-op">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    Fechas y Tiempos
+                                </h6>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label field-required">Fecha/Hora Inicio</label>
+                                        <InputDate class="form-control"
+                                                   @bind-Value="ordenProduccion.FechaHoraInicio" />
+                                        <ValidationMessage For="@(() => ordenProduccion.FechaHoraInicio)" class="validation-message-editar" />
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha Vencimiento PT</label>
+                                        <InputDate class="form-control" @bind-Value="ordenProduccion.FechaVencimientoPT" />
+                                        <div class="form-text">Fecha de vencimiento del producto terminado (opcional)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vista previa de cambios -->
+                            <div class="data-preview">
+                                <h6><i class="bi bi-eye me-2"></i>Vista Previa</h6>
+                                <div class="preview-item">
+                                    <span class="preview-label">Producto:</span>
+                                    <span class="preview-value">@(GetProductoNombre(ordenProduccion.ProductoTerminadoId))</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">Responsable:</span>
+                                    <span class="preview-value">@(GetEmpleadoNombre(ordenProduccion.ResponsableId))</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">Lote:</span>
+                                    <span class="preview-value">@ordenProduccion.LoteProducto</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">Cantidad:</span>
+                                    <span class="preview-value">@ordenProduccion.CantidadPeso.ToString("F3")</span>
+                                </div>
+                                <div class="preview-item">
+                                    <span class="preview-label">Inicio:</span>
+                                    <span class="preview-value">@ordenProduccion.FechaHoraInicio.ToString("dd/MM/yyyy HH:mm")</span>
+                                </div>
+                            </div>
+
+                            <!-- Botones de acción -->
+                            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                                <button type="button" class="btn btn-editar-op-secondary" @onclick="VolverAGestion">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-editar-op-primary" disabled="@isSubmitting">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    @(isSubmitting ? "Actualizando..." : "Actualizar Orden")
+                                </button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+
+                <!-- Información del registro -->
+                <div class="card mt-4 border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="mb-3"><i class="bi bi-clock-history me-2"></i>Información del Registro</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">ID del Registro: <strong>#@ordenProduccion.Id</strong></small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <small class="text-muted">Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private OrdenProduccion? ordenProduccion;
+    private List<ProductoTerminado> productosTerminados = new();
+    private List<Empleado> empleados = new();
+    private bool cargando = true;
+    private bool isSubmitting = false;
+    private DateTime fechaInicio;
+    private TimeSpan horaInicio;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarDatos();
+    }
+
+    private async Task CargarDatos()
+    {
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            // Cargar orden de producción
+            var responseOrden = await repository.GetAsync<OrdenProduccion>($"api/OrdenProduccion/{Id}");
+            if (!responseOrden.Error && responseOrden.Response != null)
+            {
+                ordenProduccion = responseOrden.Response;
+                fechaInicio = ordenProduccion.FechaHoraInicio.Date;
+                horaInicio = ordenProduccion.FechaHoraInicio.TimeOfDay;
+            }
+            else
+            {
+                await sweetAlertService.FireAsync("Error", "No se pudo cargar la orden de producción", SweetAlertIcon.Error);
+                VolverAGestion();
+                return;
+            }
+
+            // Cargar productos terminados
+            var responseProductos = await repository.GetAsync<List<ProductoTerminado>>("api/ProductoTerminado");
+            if (!responseProductos.Error && responseProductos.Response != null)
+            {
+                productosTerminados = responseProductos.Response;
+            }
+
+            // Cargar empleados
+            var responseEmpleados = await repository.GetAsync<List<Empleado>>("api/Empleado");
+            if (!responseEmpleados.Error && responseEmpleados.Response != null)
+            {
+                empleados = responseEmpleados.Response;
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al cargar: {ex.Message}", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ActualizarOrdenProduccion()
+    {
+        if (ordenProduccion == null) return;
+
+        // Combinar fecha y hora
+        ordenProduccion.FechaHoraInicio = fechaInicio.Add(horaInicio);
+
+        isSubmitting = true;
+        StateHasChanged();
+
+        try
+        {
+            var response = await repository.PutAsync($"api/OrdenProduccion/{Id}", ordenProduccion);
+            if (!response.Error)
+            {
+                await sweetAlertService.FireAsync("Éxito", "Orden de producción actualizada correctamente", SweetAlertIcon.Success);
+                VolverAGestion();
+            }
+            else
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+            }
+        }
+        catch (HttpRequestException httpEx)
+        {
+            await sweetAlertService.FireAsync("Error de conexión", "No se pudo conectar con el servidor", SweetAlertIcon.Error);
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error inesperado: {ex.Message}", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private string GetProductoNombre(int? productoId)
+    {
+        return productosTerminados.FirstOrDefault(p => p.Id == productoId)?.Nombre ?? "No seleccionado";
+    }
+
+    private string GetEmpleadoNombre(int? empleadoId)
+    {
+        return empleados.FirstOrDefault(e => e.Id == empleadoId)?.Nombre ?? "No seleccionado";
+    }
+
+    private void VolverAGestion()
+    {
+        nav.NavigateTo("/Empleado/op/OrdeneProduccion");
+    }
+}

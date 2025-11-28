@@ -22,7 +22,7 @@ public class LoteProductoTerminado
     [Display(Name = "Vence PT")]
     public DateTime? FechaVencimientoPT { get; set; }
 
-
+    [JsonIgnore]
     public OrdenProduccion OrdenProduccion { get; set; } = null!;
     //[JsonIgnore] public ICollection<VentaDetalle> Ventas { get; set; } = new List<VentaDetalle>();
 }

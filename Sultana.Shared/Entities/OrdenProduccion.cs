@@ -34,7 +34,7 @@ public class OrdenProduccion
 
     [JsonIgnore]
     public ProductoTerminado ProductoTerminado { get; set; } = null!;
-
+    [JsonIgnore]
     public Empleado Responsable { get; set; } = null!;
     [JsonIgnore]
     public LoteProductoTerminado? LotePT { get; set; }

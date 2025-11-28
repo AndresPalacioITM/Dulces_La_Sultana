@@ -32,11 +32,13 @@ builder.Services.AddCors(options =>
                 "https://localhost:5001"
             )
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
         // IMPORTANTE: con tokens en header NO necesitas AllowCredentials
         // Si algún día usas cookies de auth, ahí sí lo revisamos.
     });
 });
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -129,8 +131,23 @@ if (app.Environment.IsDevelopment())
 // ===== Pipeline =====
 app.UseHttpsRedirection();
 
+//middleware CORS manual 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://sultana1.azurewebsites.net");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.StatusCode = 200;
+        return;
+    }
+    await next();
+});
+
 // IMPORTANTE: CORS debe ir ANTES de Authentication/Authorization
 app.UseRouting();
+app.UseCors();
 app.UseCors("AllowBlazorClient");
 
 app.UseAuthentication();

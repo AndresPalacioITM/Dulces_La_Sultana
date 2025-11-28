@@ -1,0 +1,306 @@
+﻿@page "/Empleado/op/OrdenesProduccion"
+@using Sultana.Shared.Entities
+@using CurrieTechnologies.Razor.SweetAlert2
+@inject IRepository repository
+@inject NavigationManager nav
+@inject SweetAlertService sweetAlertService
+
+<PageTitle>Gestión de Órdenes de Producción</PageTitle>
+
+<link href="css/orden-produccion.css" rel="stylesheet" />
+
+<div class="orden-produccion-page">
+    <div class="orden-produccion-header text-center mb-4">
+        <h1 class="orden-produccion-title">Gestión de Órdenes de Producción</h1>
+        <p class="orden-produccion-subtitle">Administra las órdenes de producción del sistema</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <button class="btn btn-sultana-outline" @onclick="VolverAlMenu">
+            <i class="bi bi-arrow-left me-2"></i>Volver al Menú
+        </button>
+        <div class="d-flex align-items-center">
+            <span class="badge badge-sultana me-3">@ordenes.Count órdenes</span>
+            <button class="btn btn-sultana-success" @onclick="RefrescarDatos">
+                <i class="bi bi-arrow-clockwise me-2"></i>Actualizar
+            </button>
+        </div>
+    </div>
+
+    @if (cargando)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-3 text-muted">Cargando órdenes de producción...</p>
+        </div>
+    }
+    else if (!ordenes.Any())
+    {
+        <div class="card text-center py-5 border-0 shadow-sm">
+            <div class="card-body">
+                <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+                <h3 class="text-muted mb-3">No hay órdenes registradas</h3>
+                <p class="text-muted mb-4">No se encontraron registros de órdenes de producción.</p>
+                <button class="btn btn-sultana-primary" @onclick="IrARegistro">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Crear Primera Orden
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card orden-produccion-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Lista de Órdenes de Producción</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-orden-produccion mb-0">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Lote</th>
+                                <th>Producto</th>
+                                <th>Responsable</th>
+                                <th>Cantidad</th>
+                                <th>Inicio</th>
+                                <th>Vencimiento</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var orden in ordenes)
+                            {
+                                <tr>
+                                    <td><span class="id-badge">#@orden.Id</span></td>
+                                    <td>
+                                        <span class="badge-lote">@orden.LoteProducto</span>
+                                    </td>
+                                    <td class="fw-semibold">
+                                        @if (orden.ProductoTerminado != null)
+                                        {
+                                            @orden.ProductoTerminado.Nombre
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Producto #@orden.ProductoTerminadoId</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (orden.Responsable != null)
+                                        {
+                                            @orden.Responsable.Nombre
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Empleado #@orden.ResponsableId</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge-cantidad">@orden.CantidadPeso.ToString("F1")</span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">@orden.FechaHoraInicio.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </td>
+                                    <td>
+                                        @if (orden.FechaVencimientoPT.HasValue)
+                                        {
+                                            var hoy = DateTime.Today;
+                                            var vencimiento = orden.FechaVencimientoPT.Value;
+                                            var diasRestantes = (vencimiento - hoy).Days;
+
+                                            if (diasRestantes < 0)
+                                            {
+                                                <span class="badge-vencido" title="Producto vencido">
+                                                    @vencimiento.ToString("dd/MM/yyyy")
+                                                </span>
+                                            }
+                                            else if (diasRestantes <= 15)
+                                            {
+                                                <span class="badge-proximo" title="@diasRestantes días para vencer">
+                                                    @vencimiento.ToString("dd/MM/yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <small class="text-muted">@vencimiento.ToString("dd/MM/yyyy")</small>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @{
+                                            var estado = ObtenerEstadoOrden(orden);
+                                        }
+                                        <span class="@estado.Clase" title="@estado.Tooltip">
+                                            @estado.Texto
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-action-group" role="group">
+                                            <button class="btn btn-warning btn-edit btn-sm"
+                                                    @onclick="() => EditarOrden(orden.Id)"
+                                                    title="Editar orden">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-delete btn-sm"
+                                                    @onclick="() => EliminarOrden(orden)"
+                                                    title="Eliminar orden">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie de página con estadísticas -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card bg-light border-0">
+                    <div class="card-body py-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Total: @ordenes.Count órdenes de producción registradas
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <small class="text-muted">
+                    Última actualización: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </small>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<OrdenProduccion> ordenes = new();
+    private bool cargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarOrdenes();
+    }
+
+    private async Task CargarOrdenes()
+    {
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var response = await repository.GetAsync<List<OrdenProduccion>>("api/OrdenProduccion");
+            if (!response.Error)
+            {
+                ordenes = response.Response ?? new List<OrdenProduccion>();
+            }
+            else
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", $"Error al cargar: {ex.Message}", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefrescarDatos()
+    {
+        await CargarOrdenes();
+        await sweetAlertService.FireAsync("Éxito", "Datos actualizados correctamente", SweetAlertIcon.Success);
+    }
+
+    private void VolverAlMenu()
+    {
+        nav.NavigateTo("/Empleado");
+    }
+
+    private void IrARegistro()
+    {
+        nav.NavigateTo("/Empleado/op/RegistrarOrdenProduccion");
+    }
+
+    private void EditarOrden(int id)
+    {
+        nav.NavigateTo($"/Empleado/op/EditarOrdenProduccion/{id}");
+    }
+
+    private async Task EliminarOrden(OrdenProduccion orden)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+        {
+            Title = "¿Estás seguro?",
+            Text = $"¿Eliminar la orden: {orden.LoteProducto}? Esta acción no se puede deshacer.",
+            Icon = SweetAlertIcon.Warning,
+            ShowCancelButton = true,
+            ConfirmButtonText = "Sí, eliminar",
+            CancelButtonText = "Cancelar",
+            ConfirmButtonColor = "#dc3545",
+            CancelButtonColor = "#6c757d"
+        });
+
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            try
+            {
+                var response = await repository.DeleteAsync($"api/OrdenProduccion/{orden.Id}");
+                if (!response.Error)
+                {
+                    await sweetAlertService.FireAsync("Eliminado", "Orden eliminada correctamente", SweetAlertIcon.Success);
+                    await CargarOrdenes();
+                }
+                else
+                {
+                    var errorMsg = await response.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", errorMsg, SweetAlertIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                await sweetAlertService.FireAsync("Error", $"Error al eliminar: {ex.Message}", SweetAlertIcon.Error);
+            }
+        }
+    }
+
+    private (string Texto, string Clase, string Tooltip) ObtenerEstadoOrden(OrdenProduccion orden)
+    {
+        var hoy = DateTime.Today;
+
+        if (orden.FechaVencimientoPT.HasValue && orden.FechaVencimientoPT.Value < hoy)
+        {
+            return ("Vencido", "badge-vencido", "Producto vencido");
+        }
+        else if (orden.FechaVencimientoPT.HasValue && (orden.FechaVencimientoPT.Value - hoy).Days <= 7)
+        {
+            return ("Por Vencer", "badge-proximo", "Producto próximo a vencer");
+        }
+        else if (orden.FechaHoraInicio > DateTime.Now)
+        {
+            return ("Programada", "badge-programada", "Orden programada para futuro");
+        }
+        else
+        {
+            return ("Activa", "badge-activa", "Orden en producción");
+        }
+    }
+}
