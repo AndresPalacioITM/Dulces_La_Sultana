@@ -31,8 +31,12 @@ public class OrdenProduccion
     [Range(0, 1_000_000_000)]
     public decimal CantidadPeso { get; set; }
 
+
+    [JsonIgnore]
     public ProductoTerminado ProductoTerminado { get; set; } = null!;
+
     public Empleado Responsable { get; set; } = null!;
+    [JsonIgnore]
     public LoteProductoTerminado? LotePT { get; set; }
     //[JsonIgnore] public ICollection<ConsumoMP> Consumos { get; set; } = new List<ConsumoMP>();
 }

@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "https://sultanaweb-f9dkeae2cqe0hghq.brazilsouth-01.azurewebsites.net",
+                "https://sultana1.azurewebsites.net",
                 "https://localhost:8000",
                 "https://localhost:7000",
                 "https://localhost:7001",
@@ -43,7 +43,7 @@ builder.Services.AddControllers();
 
 // Configuración Entity Framework y SQL Server
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(connectionString,sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(maxRetryCount:5,maxRetryDelay:TimeSpan.FromSeconds(30),errorNumbersToAdd:null)));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

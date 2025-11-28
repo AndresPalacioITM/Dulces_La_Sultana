@@ -7,7 +7,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5229;http://sultanaapi.azurewebsites.net",
-      ,
+      
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

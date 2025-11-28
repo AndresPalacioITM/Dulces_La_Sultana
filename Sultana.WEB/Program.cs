@@ -17,7 +17,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // CONFIGURACIÓN CORRECTA DEL HTTPCLIENT
 var apiBaseAddress = builder.HostEnvironment.IsDevelopment()
     ? "https://localhost:7000/"  // API local en desarrollo
-    : "https://sultanaapi.azurewebsites.net/"; // API en producción
+    : "https://sultanaapi2221.azurewebsites.net/"; // API en producción
 
 builder.Services.AddScoped(sp => new HttpClient
 {

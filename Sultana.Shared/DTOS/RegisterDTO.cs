@@ -1,5 +1,6 @@
 ﻿// Sultana.Shared/DTOs/RegisterDTO.cs
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Sultana.Shared.DTOs;
 
@@ -22,6 +23,7 @@ public class RegisterDTO
     public string Email { get; set; } = null!;
 
     // Opcional (avatar)
+    [JsonIgnore]
     public string? Photo { get; set; }
 
     [DataType(DataType.Password)]
@@ -36,9 +38,12 @@ public class RegisterDTO
     public string PasswordConfirm { get; set; } = null!;
 
     //Componentes adicional para proveedores 
-    public string? Nit { get; set; }
-    public string? Empresa { get; set; }
-    public string? Direccion { get; set; }
+    
+    public string Nit { get; set; }
+    
+    public string Empresa { get; set; }
+    
+    public string Direccion { get; set; }
 
     }
     
