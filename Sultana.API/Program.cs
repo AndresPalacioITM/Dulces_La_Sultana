@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "https://sultanaweb-f9dkeae2cqe0hghq.brazilsouth-01.azurewebsites.net",
+                "https://sultana1.azurewebsites.net",
                 "https://localhost:8000",
                 "https://localhost:7000",
                 "https://localhost:7001",
