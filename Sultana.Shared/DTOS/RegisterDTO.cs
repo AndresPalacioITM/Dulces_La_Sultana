@@ -38,12 +38,12 @@ public class RegisterDTO
     public string PasswordConfirm { get; set; } = null!;
 
     //Componentes adicional para proveedores 
-    [JsonIgnore]
-    public string? Nit { get; set; }
-    [JsonIgnore]
-    public string? Empresa { get; set; }
-    [JsonIgnore]
-    public string? Direccion { get; set; }
+    
+    public string Nit { get; set; }
+    
+    public string Empresa { get; set; }
+    
+    public string Direccion { get; set; }
 
     }
     
