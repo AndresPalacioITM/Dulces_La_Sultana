@@ -50,8 +50,11 @@ public class LoteMateriaPrima
     [Display(Name = "Observaciones"), MaxLength(250)]
     public string? Observaciones { get; set; }
 
+    [JsonIgnore]
     public MateriaPrima MateriaPrima { get; set; } = null!;
+    [JsonIgnore]
     public Proveedor Proveedor { get; set; } = null!;
+    [JsonIgnore]
     public Empleado Responsable { get; set; } = null!;
 
     //[JsonIgnore]
